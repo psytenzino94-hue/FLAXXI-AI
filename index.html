@@ -102,7 +102,7 @@
         .limit-bar { font-size: 11px; color: var(--text-sub); text-align: center; margin-bottom: 6px; font-weight: 600; }
         .limit-bar span { color: var(--accent-red); font-weight: 800; }
 
-        .input-row { display: flex; align-items: center; gap: 10px; }
+        .input-row { display: flex; align-items: center; gap: 8px; }
         .chat-textarea { width: 100%; background: transparent; border: none; color: white; font-size: 15px; outline: none; resize: none; height: 38px; }
         .btn-send-round { background: var(--accent-red); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .action-icon { color: var(--text-sub); cursor: pointer; font-size: 16px; transition: color 0.2s; }
@@ -261,13 +261,13 @@
                 </select>
 
                 <!-- Multilingual Speech-to-Text Button -->
-                <i class="fa-solid fa-microphone action-icon" id="micBtn" title="Voice Input (All Languages)" onclick="toggleVoiceInput()"></i>
+                <i class="fa-solid fa-microphone action-icon" id="micBtn" title="Voice Input" onclick="toggleVoiceInput()"></i>
                 
                 <!-- Play Audio Button -->
                 <i class="fa-solid fa-play action-icon" id="playBtn" title="Play Last AI Speech" onclick="playLastResponse()"></i>
                 
                 <textarea class="chat-textarea" id="chatInput" placeholder="What can I do for you?"></textarea>
-                <button class="btn-send-round" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
+                <button class="btn-send-round" id="sendBtn" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
             </div>
         </div>
     </div>
@@ -394,14 +394,14 @@
             document.getElementById('filePreview').style.display = 'none';
         }
 
-        // All Languages Voice Input (Speech-to-Text)
+        // Voice Input (Speech-to-Text)
         function toggleVoiceInput() {
             const micBtn = document.getElementById('micBtn');
             const selectedLang = document.getElementById('voiceLangSelect').value;
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
             if (!SpeechRecognition) {
-                alert("Speech recognition is not supported in this browser. Please use Google Chrome.");
+                alert("Speech recognition is not supported in this browser.");
                 return;
             }
 
@@ -440,20 +440,16 @@
             recognition.start();
         }
 
-        // Smart Multilingual Text-to-Speech (Play Response)
+        // Text-to-Speech (Play Response)
         function playLastResponse() {
             if (!lastBotMessageText) {
                 alert("No AI message available to play!");
                 return;
             }
-
             window.speechSynthesis.cancel();
             const utterance = new SpeechSynthesisUtterance(lastBotMessageText);
-
-            // Auto language detection for speech synthesis
             const selectedLang = document.getElementById('voiceLangSelect').value;
             utterance.lang = selectedLang;
-
             window.speechSynthesis.speak(utterance);
         }
 
@@ -603,6 +599,7 @@
             toggleSidebar();
         }
 
+        // FIXED SEND MESSAGE FUNCTION
         async function sendMessage() {
             const currentUser = localStorage.getItem('flaxxi_current_user');
             if (!currentUser) { openModal('authOverlay'); return; }
@@ -649,10 +646,11 @@
             botBubble.className = 'msg-bubble msg-bot';
             botBubble.innerText = "Thinking...";
             chatMessages.appendChild(botBubble);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
 
             const apiKey = localStorage.getItem('flaxxi_gemini_key');
             if (!apiKey) {
-                botBubble.innerText = "Error: Please set API Key in Admin Panel.";
+                botBubble.innerText = "Error: API Key is missing in Admin Panel/Local Storage. Please set 'flaxxi_gemini_key'.";
                 return;
             }
 
@@ -662,18 +660,33 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ contents: [{ parts: [{ text: messageText }] }] })
                 });
+
                 const data = await response.json();
-                const textResp = data.candidates?.[0]?.content?.parts?.[0]?.text || "Error getting response.";
-                botBubble.innerText = textResp;
-                lastBotMessageText = textResp;
+                
+                if (data.error) {
+                    botBubble.innerText = "API Error: " + data.error.message;
+                } else {
+                    const textResp = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+                    botBubble.innerText = textResp;
+                    lastBotMessageText = textResp;
+                }
             } catch (err) {
-                botBubble.innerText = "Failed to fetch response.";
+                botBubble.innerText = "Network Error: Unable to communicate with AI Server.";
             }
+
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
         window.onload = function() {
             initUserSession();
+
+            // Enter Key Listener to Send Message
+            document.getElementById('chatInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
         };
     </script>
 </body>
