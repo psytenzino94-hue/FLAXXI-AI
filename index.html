@@ -38,9 +38,12 @@
         .logo { font-size: 20px; font-weight: 900; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .logo span { color: var(--accent-red); }
 
-        .header-right { display: flex; align-items: center; gap: 12px; }
-        .badge-pro { background: var(--accent-red); color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; box-shadow: 0 0 10px var(--accent-glow); }
-        .avatar-account { width: 32px; height: 32px; background: var(--accent-red); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); }
+        .header-right { display: flex; align-items: center; gap: 10px; }
+        .icon-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-main); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+        .icon-btn:hover { background: var(--accent-red); color: white; }
+
+        .badge-pro { background: var(--accent-red); color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; box-shadow: 0 0 10px var(--accent-glow); }
+        .avatar-account { width: 34px; height: 34px; background: var(--accent-red); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); }
 
         .chat-container { max-width: 550px; margin: 0 auto; width: 100%; height: calc(100vh - 70px); display: flex; flex-direction: column; justify-content: space-between; padding: 20px 15px; }
         .chat-messages { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
@@ -59,6 +62,8 @@
         .input-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
         .chat-textarea { width: 100%; background: transparent; border: none; color: white; font-size: 15px; outline: none; resize: none; height: 38px; }
         .btn-send-round { background: var(--accent-red); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+        .limit-info { font-size: 11px; color: var(--text-sub); text-align: right; margin-bottom: 4px; font-weight: 600; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: var(--card-bg); border: 1px solid var(--border-color); width: 90%; max-width: 420px; padding: 24px; border-radius: 20px; position: relative; max-height: 90vh; overflow-y: auto; }
@@ -80,6 +85,7 @@
             <div class="logo"><i class="fa-solid fa-fire" style="color: var(--accent-red);"></i> FLAXXI <span>GPT</span></div>
         </div>
         <div class="header-right">
+            <div class="icon-btn" onclick="openModal('settingsModal')" title="Settings"><i class="fa-solid fa-gear"></i></div>
             <div class="badge-pro" onclick="openModal('proModal')">Pro</div>
             <div class="avatar-account" onclick="openModal('accountModal')">A</div>
         </div>
@@ -90,15 +96,38 @@
             <div class="chat-hero" id="heroBanner">
                 <h1>FLAXXI <span>GPT</span></h1>
                 <h2>AI without limits.</h2>
-                <div class="sub-tags">GEMINI AI · CODE · RESEARCH · ALL LANGUAGES</div>
+                <div class="sub-tags">GEMINI AI · UNLIMITED ACCESS · ALL LANGUAGES</div>
             </div>
         </div>
 
         <div class="chat-input-card">
+            <div class="limit-info" id="limitDisplay">Free Limit: Loading...</div>
             <div class="input-row">
                 <textarea class="chat-textarea" id="chatInput" placeholder="Ask Gemini AI anything..."></textarea>
                 <button class="btn-send-round" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
             </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('settingsModal')">&times;</span>
+            <div style="font-size: 18px; font-weight: 800; margin-bottom: 15px; text-align: center;">
+                <i class="fa-solid fa-gear" style="color:var(--accent-red)"></i> Application Settings
+            </div>
+            
+            <div class="plan-card">
+                <div><strong style="color:white;">Account Status</strong></div>
+                <div id="accountStatusText" style="color:var(--accent-red); font-weight:800;">FREE PLAN</div>
+            </div>
+
+            <div class="plan-card">
+                <div><strong style="color:white;">Questions Remaining</strong></div>
+                <div id="questionsLeftText" style="color:#25d366; font-weight:800;">Checking...</div>
+            </div>
+
+            <button class="btn-red-full" onclick="closeModal('settingsModal'); openModal('proModal');">Upgrade to Pro</button>
         </div>
     </div>
 
@@ -107,7 +136,7 @@
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('accountModal')">&times;</span>
             <div style="font-size: 18px; font-weight: 800; margin-bottom: 15px; text-align: center;">
-                <i class="fa-solid fa-user-plus" style="color:var(--accent-red)"></i> Create Account
+                <i class="fa-solid fa-user-plus" style="color:var(--accent-red)"></i> Access Activation
             </div>
             
             <div class="form-group">
@@ -116,17 +145,12 @@
             </div>
 
             <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" class="form-input" placeholder="example@flaxxi.ai">
-            </div>
-
-            <div class="form-group">
                 <label>Access Key</label>
-                <input type="text" id="accessKeyInput" class="form-input" placeholder="Paste generated key here">
+                <input type="text" id="accessKeyInput" class="form-input" placeholder="Paste Access Key here">
             </div>
             <div class="error-msg" id="keyError">Invalid Access Key! Please enter a valid key.</div>
 
-            <button class="btn-red-full" onclick="validateAndSubmit()">Create Account</button>
+            <button class="btn-red-full" onclick="validateAndSubmit()">Activate Premium</button>
         </div>
     </div>
 
@@ -154,20 +178,80 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
+        // Daily tracker setup
+        function getTodayDateStr() {
+            const today = new Date();
+            return `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+        }
+
+        function updateLimitDisplay() {
+            const isPremium = localStorage.getItem('flaxxi_is_premium') === 'true';
+            const limitDisplay = document.getElementById('limitDisplay');
+            const accountStatusText = document.getElementById('accountStatusText');
+            const questionsLeftText = document.getElementById('questionsLeftText');
+
+            if (isPremium) {
+                limitDisplay.innerText = "Status: PREMIUM (Unlimited Questions)";
+                accountStatusText.innerText = "PREMIUM VIP";
+                accountStatusText.style.color = "#ffb703";
+                questionsLeftText.innerText = "UNLIMITED";
+            } else {
+                const maxFree = parseInt(localStorage.getItem('flaxxi_free_limit')) || 5;
+                const lastDate = localStorage.getItem('flaxxi_usage_date');
+                const currentDate = getTodayDateStr();
+
+                let usedCount = parseInt(localStorage.getItem('flaxxi_used_count')) || 0;
+                if (lastDate !== currentDate) {
+                    usedCount = 0;
+                    localStorage.setItem('flaxxi_usage_date', currentDate);
+                    localStorage.setItem('flaxxi_used_count', 0);
+                }
+
+                const remaining = Math.max(0, maxFree - usedCount);
+                limitDisplay.innerText = `Free Limit Today: ${remaining}/${maxFree} Left`;
+                accountStatusText.innerText = "FREE PLAN";
+                accountStatusText.style.color = "var(--accent-red)";
+                questionsLeftText.innerText = `${remaining} Left Today`;
+            }
+        }
+
+        window.onload = function() {
+            updateLimitDisplay();
+        };
+
         function validateAndSubmit() {
             const keyInput = document.getElementById('accessKeyInput').value.trim();
             const storedKeys = JSON.parse(localStorage.getItem('flaxxi_active_keys')) || [];
             const defaultValidKeys = ["FLAXXI-7ILJHH-2026", "FLAXXI-PRO-2026"];
 
             if (storedKeys.includes(keyInput) || defaultValidKeys.includes(keyInput)) {
-                alert("Account created successfully!");
+                localStorage.setItem('flaxxi_is_premium', 'true');
+                alert("Premium Activated Successfully! Enjoy Unlimited Questions.");
                 closeModal('accountModal');
+                updateLimitDisplay();
             } else {
                 document.getElementById('keyError').style.display = 'block';
             }
         }
 
         async function sendMessage() {
+            const isPremium = localStorage.getItem('flaxxi_is_premium') === 'true';
+            const maxFree = parseInt(localStorage.getItem('flaxxi_free_limit')) || 5;
+            const currentDate = getTodayDateStr();
+            const lastDate = localStorage.getItem('flaxxi_usage_date');
+            
+            let usedCount = parseInt(localStorage.getItem('flaxxi_used_count')) || 0;
+            if (lastDate !== currentDate) {
+                usedCount = 0;
+                localStorage.setItem('flaxxi_usage_date', currentDate);
+            }
+
+            if (!isPremium && usedCount >= maxFree) {
+                alert("Aapka Aaj Ka Free Daily Question Limit Finish Ho Gaya Hai! Unlimited Questions Ke Liye Premium Code Enter Karein.");
+                openModal('proModal');
+                return;
+            }
+
             const input = document.getElementById('chatInput');
             const messageText = input.value.trim();
             const chatMessages = document.getElementById('chatMessages');
@@ -185,6 +269,13 @@
             input.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
+            // Increment usage if Free user
+            if (!isPremium) {
+                usedCount++;
+                localStorage.setItem('flaxxi_used_count', usedCount);
+                updateLimitDisplay();
+            }
+
             // Bot Thinking Bubble
             const botBubble = document.createElement('div');
             botBubble.className = 'msg-bubble msg-bot';
@@ -199,7 +290,6 @@
                 return;
             }
 
-            // Direct Google Gemini 1.5 Flash Endpoint
             const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
             try {
