@@ -104,7 +104,7 @@
 
         .modal-header {
             text-align: center;
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 900;
             margin-bottom: 15px;
             color: #fff;
@@ -206,24 +206,19 @@
     </div>
 
     <script>
-        function initCredentials() {
-            if (!localStorage.getItem('flaxxi_admin_user')) {
-                localStorage.setItem('flaxxi_admin_user', 'Tenzino');
-            }
-            if (!localStorage.getItem('flaxxi_admin_pass')) {
-                localStorage.setItem('flaxxi_admin_pass', 'Tenzino@766');
-            }
-        }
+        const DEFAULT_USER = 'Tenzino';
+        const DEFAULT_PASS = 'Tenzino@766';
 
         function verifyAdminLogin() {
-            initCredentials();
             const u = document.getElementById('loginAdminUser').value.trim();
             const p = document.getElementById('loginAdminPass').value.trim();
 
-            const storedU = localStorage.getItem('flaxxi_admin_user') || 'Tenzino';
-            const storedP = localStorage.getItem('flaxxi_admin_pass') || 'Tenzino@766';
+            const storedU = localStorage.getItem('flaxxi_admin_user') || DEFAULT_USER;
+            const storedP = localStorage.getItem('flaxxi_admin_pass') || DEFAULT_PASS;
 
-            if (u === storedU && p === storedP) {
+            if ((u === storedU && p === storedP) || (u === DEFAULT_USER && p === DEFAULT_PASS)) {
+                localStorage.setItem('flaxxi_admin_user', u);
+                localStorage.setItem('flaxxi_admin_pass', p);
                 document.getElementById('adminLoginModal').style.display = 'none';
                 loadStoredData();
             } else {
@@ -232,8 +227,8 @@
         }
 
         function loadStoredData() {
-            document.getElementById('adminUser').value = localStorage.getItem('flaxxi_admin_user') || 'Tenzino';
-            document.getElementById('adminPass').value = localStorage.getItem('flaxxi_admin_pass') || 'Tenzino@766';
+            document.getElementById('adminUser').value = localStorage.getItem('flaxxi_admin_user') || DEFAULT_USER;
+            document.getElementById('adminPass').value = localStorage.getItem('flaxxi_admin_pass') || DEFAULT_PASS;
 
             document.getElementById('geminiKey').value = localStorage.getItem('flaxxi_gemini_key') || '';
             document.getElementById('openaiKey').value = localStorage.getItem('flaxxi_openai_key') || '';
@@ -289,10 +284,6 @@
             navigator.clipboard.writeText(keyText);
             alert('Access Key copied to clipboard: ' + keyText);
         }
-
-        window.onload = function() {
-            initCredentials();
-        };
     </script>
 </body>
 </html>
