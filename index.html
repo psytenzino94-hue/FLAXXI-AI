@@ -27,7 +27,6 @@
             background-image: radial-gradient(circle at 50% 20%, rgba(255, 42, 85, 0.12) 0%, transparent 60%);
         }
 
-        /* Top Header Navigation */
         .navbar {
             display: flex;
             align-items: center;
@@ -69,7 +68,6 @@
             font-size: 14px;
         }
 
-        /* Main Chat Area */
         .chat-container {
             flex: 1;
             max-width: 650px;
@@ -110,7 +108,6 @@
             color: #ff6b8b;
         }
 
-        /* Input Bar Area */
         .input-bar-container {
             position: fixed;
             bottom: 0;
@@ -170,7 +167,6 @@
 </head>
 <body>
 
-    <!-- Header Navigation -->
     <div class="navbar">
         <div class="brand">
             <i class="fa-solid fa-fire-flame-curved"></i>
@@ -182,12 +178,8 @@
         </div>
     </div>
 
-    <!-- Chat Bubbles Area -->
-    <div class="chat-container" id="chatContainer">
-        <!-- Messages load dynamically -->
-    </div>
+    <div class="chat-container" id="chatContainer"></div>
 
-    <!-- Bottom Input Area -->
     <div class="input-bar-container">
         <div class="input-status-tag">Unlimited Access ⚡</div>
         <div class="input-box-wrapper">
@@ -206,7 +198,6 @@
             const message = inputField.value.trim();
             if (!message) return;
 
-            // 1. Check if App is Banned / Disabled from Admin
             const isAppActive = localStorage.getItem('flaxxi_app_active') !== 'false';
             if (!isAppActive) {
                 const banMsg = localStorage.getItem('flaxxi_ban_message') || 'App is currently under maintenance.';
@@ -214,34 +205,20 @@
                 return;
             }
 
-            // 2. Check Website Paid/Free Access Mode
-            const accessMode = localStorage.getItem('flaxxi_access_mode') || 'FREE';
-            if (accessMode === 'PAID') {
-                const isPaidUser = localStorage.getItem('flaxxi_user_paid') === 'true';
-                if (!isPaidUser) {
-                    const noticeMsg = localStorage.getItem('flaxxi_paid_notice') || 'Paid Mode is Enabled! Please buy a subscription key to use the app.';
-                    appendMessage(noticeMsg, 'msg-error');
-                    return;
-                }
-            }
-
-            // Display User Message
             appendMessage(message, 'msg-user');
             inputField.value = '';
 
-            // 3. Get API Key from LocalStorage
             const apiKey = localStorage.getItem('flaxxi_gemini_key');
             if (!apiKey) {
                 appendMessage("Error: API Key is missing in Local Storage. Please set 'flaxxi_gemini_key' from Admin Panel.", 'msg-error');
                 return;
             }
 
-            // Show Loading Bubble
             appendMessage("Thinking...", 'msg-ai', 'temp-loading');
 
             try {
-                // Fixed Gemini API Endpoint
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                // Correct Endpoint for Gemini API
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
