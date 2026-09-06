@@ -99,6 +99,9 @@
         .msg-bot { background: #1d1018; color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); }
 
         .chat-input-card { background: #120a0f; border: 1px solid var(--border-color); border-radius: 20px; padding: 12px 16px; }
+        .limit-bar { font-size: 11px; color: var(--text-sub); text-align: center; margin-bottom: 6px; font-weight: 600; }
+        .limit-bar span { color: var(--accent-red); font-weight: 800; }
+
         .input-row { display: flex; align-items: center; gap: 10px; }
         .chat-textarea { width: 100%; background: transparent; border: none; color: white; font-size: 15px; outline: none; resize: none; height: 38px; }
         .btn-send-round { background: var(--accent-red); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -113,6 +116,25 @@
         .plan-card-dark .val { font-size: 15px; color: white; font-weight: 800; margin-top: 2px; }
 
         .redeem-box { background: #1a0c16; border: 1px dashed var(--accent-red); padding: 14px; border-radius: 12px; margin-top: 15px; }
+
+        /* Pricing Cards */
+        .pricing-list { display: flex; flex-direction: column; gap: 10px; margin: 15px 0; }
+        .pricing-card {
+            background: #170b12; border: 1px solid #2d1322; border-radius: 14px; padding: 12px 16px;
+            display: flex; justify-content: space-between; align-items: center; transition: all 0.2s ease;
+        }
+        .pricing-card.popular { border: 1px solid var(--accent-red); box-shadow: 0 0 12px rgba(255, 42, 85, 0.25); }
+        .pricing-card.lifetime { border: 1px solid #ffb703; box-shadow: 0 0 12px rgba(255, 183, 3, 0.2); }
+        .plan-title { font-size: 15px; font-weight: 800; color: white; display: flex; align-items: center; gap: 8px; }
+        .plan-sub { font-size: 11px; color: var(--text-sub); margin-top: 2px; }
+        .price-tag { font-size: 18px; font-weight: 900; color: var(--accent-red); }
+        .price-tag.gold { color: #ffb703; }
+        .tag-popular { background: var(--accent-red); color: white; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 10px; text-transform: uppercase; }
+
+        .btn-whatsapp {
+            background: #25d366; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center;
+            gap: 8px; width: 100%; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 14px; margin-top: 12px;
+        }
     </style>
 </head>
 <body>
@@ -177,7 +199,7 @@
                     <div style="font-size:10px; color:var(--text-sub); text-transform:uppercase;" id="sidebarPlanTag">DISCOVERY VERSION</div>
                     <div style="font-size:13px; font-weight:800; color:white;" id="sidebarUsername">--</div>
                 </div>
-                <button class="badge-pro" onclick="openModal('subscriptionModal')" style="font-size:10px; padding:4px 8px;">Upgrade</button>
+                <button class="badge-pro" onclick="openModal('planModal')" style="font-size:10px; padding:4px 8px;">Upgrade</button>
             </div>
 
             <button class="sidebar-menu-btn" onclick="toggleSidebar(); openModal('subscriptionModal');"><i class="fa-solid fa-id-card"></i> Subscription</button>
@@ -192,7 +214,7 @@
             <div class="logo"><i class="fa-solid fa-fire" style="color: var(--accent-red);"></i> FLAXXI <span>AI</span></div>
         </div>
         <div class="header-right">
-            <div class="badge-pro" onclick="openModal('subscriptionModal')">Plan</div>
+            <div class="badge-pro" onclick="openModal('planModal')">Plan</div>
             <div class="avatar-account" id="headerAvatar" onclick="openModal('subscriptionModal')">U</div>
         </div>
     </header>
@@ -208,6 +230,7 @@
         </div>
 
         <div class="chat-input-card">
+            <div class="limit-bar" id="limitIndicator">Daily Free Messages: <span id="usedMsgCount">0</span> / 7</div>
             <div class="input-row">
                 <i class="fa-solid fa-paperclip" style="color:var(--text-sub); cursor:pointer;"></i>
                 <i class="fa-solid fa-microphone" style="color:var(--text-sub); cursor:pointer;"></i>
@@ -217,7 +240,70 @@
         </div>
     </div>
 
-    <!-- Subscription & Access Key Redeem Modal -->
+    <!-- Plan Modal -->
+    <div class="modal" id="planModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('planModal')">&times;</span>
+            <div style="font-size: 20px; font-weight: 900; text-align: center; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                <i class="fa-solid fa-crown" style="color:var(--accent-red)"></i> FLAXXI GPT PRO
+            </div>
+            <div style="font-size: 11px; color: var(--text-sub); text-align: center; margin-bottom: 16px; line-height: 1.4;">
+                Choose your plan & get access to Uncensored Models, Code Master & Unlimited Queries.
+            </div>
+
+            <div class="pricing-list">
+                <div class="pricing-card">
+                    <div>
+                        <div class="plan-title">1 Day Pass</div>
+                        <div class="plan-sub">Trial Access</div>
+                    </div>
+                    <div class="price-tag">₹49</div>
+                </div>
+
+                <div class="pricing-card">
+                    <div>
+                        <div class="plan-title">7 Days Pass</div>
+                        <div class="plan-sub">Weekly Access</div>
+                    </div>
+                    <div class="price-tag">₹199</div>
+                </div>
+
+                <div class="pricing-card popular">
+                    <div>
+                        <div class="plan-title">1 Month Pass <span class="tag-popular">POPULAR</span></div>
+                        <div class="plan-sub">Standard Monthly</div>
+                    </div>
+                    <div class="price-tag">₹499</div>
+                </div>
+
+                <div class="pricing-card">
+                    <div>
+                        <div class="plan-title">1 Year Pass</div>
+                        <div class="plan-sub">Annual Unlimited</div>
+                    </div>
+                    <div class="price-tag">₹2,999</div>
+                </div>
+
+                <div class="pricing-card lifetime">
+                    <div>
+                        <div class="plan-title">Lifetime Pass 👑</div>
+                        <div class="plan-sub">VIP Permanent Access</div>
+                    </div>
+                    <div class="price-tag gold">₹4,999</div>
+                </div>
+            </div>
+
+            <div style="font-size: 11px; color: var(--text-sub); text-align: center; margin-top: 10px;">
+                Contact us on WhatsApp to select your plan and get an instant Access Key.
+            </div>
+
+            <a href="https://wa.me/9779819833267?text=Hello%20FLAXXI%20AI,%20I%20want%20to%20buy%20a%20Plan%20Access%20Key." target="_blank" class="btn-whatsapp">
+                <i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i> Buy via WhatsApp (+977 981-9833267)
+            </a>
+        </div>
+    </div>
+
+    <!-- Subscription Modal -->
     <div class="modal" id="subscriptionModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('subscriptionModal')">&times;</span>
@@ -254,6 +340,8 @@
     </div>
 
     <script>
+        const DAILY_FREE_LIMIT = 7;
+
         function toggleAuthMode(mode) {
             document.getElementById('signupCard').style.display = (mode === 'signup') ? 'block' : 'none';
             document.getElementById('loginCard').style.display = (mode === 'login') ? 'block' : 'none';
@@ -288,6 +376,27 @@
             }
         }
 
+        function getTodayDateString() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function getUserDailyChatCount(username) {
+            const today = getTodayDateString();
+            const usageData = JSON.parse(localStorage.getItem('flaxxi_usage_' + username)) || {};
+            if (usageData.date !== today) {
+                return 0; // New day reset
+            }
+            return usageData.count || 0;
+        }
+
+        function incrementUserDailyChatCount(username) {
+            const today = getTodayDateString();
+            const currentCount = getUserDailyChatCount(username);
+            const usageData = { date: today, count: currentCount + 1 };
+            localStorage.setItem('flaxxi_usage_' + username, JSON.stringify(usageData));
+            return currentCount + 1;
+        }
+
         function initUserSession() {
             const currentUser = localStorage.getItem('flaxxi_current_user');
             if (!currentUser) {
@@ -305,6 +414,19 @@
                 document.getElementById('subPlanVal').innerText = userObj.plan;
                 document.getElementById('subStatusVal').innerText = userObj.plan === 'Discovery' ? 'Discovery' : 'Active Premium';
                 document.getElementById('subExpiryVal').innerText = userObj.expiry || '—';
+
+                updateLimitUI(userObj);
+            }
+        }
+
+        function updateLimitUI(userObj) {
+            const limitIndicator = document.getElementById('limitIndicator');
+            if (userObj.plan !== 'Discovery') {
+                limitIndicator.innerHTML = `Unlimited Premium Access ⚡`;
+            } else {
+                const used = getUserDailyChatCount(userObj.username);
+                document.getElementById('usedMsgCount').innerText = used;
+                limitIndicator.innerHTML = `Daily Free Messages: <span>${used}</span> / ${DAILY_FREE_LIMIT}`;
             }
         }
 
@@ -367,12 +489,34 @@
         }
 
         async function sendMessage() {
+            const currentUser = localStorage.getItem('flaxxi_current_user');
+            if (!currentUser) { openModal('authOverlay'); return; }
+
+            const userObj = JSON.parse(localStorage.getItem('flaxxi_user_' + currentUser)) || { plan: 'Discovery' };
+
+            // Check Daily Limit for Discovery (Free) Plan
+            if (userObj.plan === 'Discovery') {
+                const currentUsed = getUserDailyChatCount(currentUser);
+                if (currentUsed >= DAILY_FREE_LIMIT) {
+                    alert('Daily free limit reached (7/7 messages)! Upgrade to Premium for unlimited chat.');
+                    openModal('planModal');
+                    return;
+                }
+            }
+
             const input = document.getElementById('chatInput');
             const messageText = input.value.trim();
             const chatMessages = document.getElementById('chatMessages');
             const heroBanner = document.getElementById('heroBanner');
 
             if (!messageText) return;
+
+            // Increment Limit Count on Valid Send
+            if (userObj.plan === 'Discovery') {
+                incrementUserDailyChatCount(currentUser);
+                updateLimitUI(userObj);
+            }
+
             if (heroBanner) heroBanner.style.display = 'none';
 
             const userBubble = document.createElement('div');
