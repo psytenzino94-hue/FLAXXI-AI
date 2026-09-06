@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FLAXXI GPT - AI Without Limits</title>
-    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -31,6 +30,8 @@
             background-image: radial-gradient(circle at 50% 20%, rgba(255, 42, 85, 0.15) 0%, transparent 60%);
             background-attachment: fixed;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Top Header Navigation */
@@ -54,7 +55,7 @@
         }
 
         .logo {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 900;
             color: var(--text-main);
             letter-spacing: -0.5px;
@@ -71,7 +72,6 @@
             gap: 12px;
         }
 
-        /* Profile & Account Badges */
         .badge-pro {
             background: var(--accent-red);
             color: white;
@@ -151,15 +151,25 @@
             font-weight: 600;
         }
 
-        /* Chat Page UI */
+        /* Chat Layout */
         .chat-container {
-            max-width: 500px;
+            max-width: 550px;
             margin: 0 auto;
-            height: calc(100vh - 80px);
+            width: 100%;
+            height: calc(100vh - 70px);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             padding: 20px 15px;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
         .chat-hero {
@@ -177,7 +187,7 @@
         .chat-hero h1 span { color: var(--accent-red); }
 
         .chat-hero h2 {
-            font-size: 18px;
+            font-size: 16px;
             color: white;
             margin-top: 6px;
             font-weight: 700;
@@ -192,21 +202,45 @@
             text-transform: uppercase;
         }
 
-        /* Exact Red-Glow Chat Input Container */
+        /* Message Bullets */
+        .msg-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .msg-user {
+            background: var(--accent-red);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .msg-bot {
+            background: #1d1018;
+            color: var(--text-main);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Chat Input Area */
         .chat-input-card {
             background: #120a0f;
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 16px;
+            padding: 14px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            position: relative;
         }
 
         .chat-controls-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .chat-controls-left {
@@ -223,12 +257,18 @@
             background: #1a0e16;
             border: 1px solid var(--border-color);
             color: white;
-            padding: 6px 14px;
+            padding: 5px 12px;
             border-radius: 12px;
             font-size: 12px;
             outline: none;
             cursor: pointer;
             font-weight: 600;
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .chat-textarea {
@@ -239,8 +279,7 @@
             font-size: 15px;
             outline: none;
             resize: none;
-            height: 45px;
-            margin-top: 5px;
+            height: 38px;
         }
 
         .btn-send-round {
@@ -256,10 +295,10 @@
             justify-content: center;
             font-size: 15px;
             box-shadow: 0 0 12px var(--accent-glow);
-            float: right;
+            flex-shrink: 0;
         }
 
-        /* Account / Profile Modal Drawer ("A" Account Click) */
+        /* Modals Generic Styling */
         .modal {
             display: none;
             position: fixed;
@@ -275,53 +314,47 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             width: 90%;
-            max-width: 400px;
-            padding: 25px;
-            border-radius: 24px;
+            max-width: 380px;
+            padding: 24px;
+            border-radius: 20px;
             position: relative;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
         }
 
         .close-btn {
             position: absolute;
-            top: 18px; right: 18px;
+            top: 16px; right: 16px;
             color: var(--text-sub);
             cursor: pointer;
-            font-size: 20px;
+            font-size: 18px;
         }
 
-        .account-header-box {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 20px;
+        .modal-title {
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-align: center;
         }
 
-        .account-avatar-large {
-            width: 50px;
-            height: 50px;
-            background: var(--accent-red);
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: #0d060a;
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            border-radius: 10px;
             color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            font-weight: 900;
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
-
-        .account-info h3 { font-size: 16px; font-weight: 800; }
-        .account-info p { font-size: 12px; color: var(--text-sub); }
-
-        .account-item-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px dashed var(--border-color);
+            outline: none;
             font-size: 13px;
         }
 
@@ -329,30 +362,54 @@
             background: var(--accent-red);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 11px;
+            border-radius: 10px;
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
             width: 100%;
-            margin-top: 20px;
+            margin-top: 10px;
             box-shadow: 0 4px 15px var(--accent-glow);
             text-align: center;
             text-decoration: none;
             display: block;
         }
 
-        .btn-outline-admin {
-            background: transparent;
-            border: 1px solid var(--accent-red);
-            color: var(--accent-red);
-            padding: 10px;
-            border-radius: 12px;
+        .whatsapp-btn {
+            background: #25d366;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
             font-weight: 700;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .price-box {
+            background: #1c0e17;
+            border: 1px solid var(--accent-red);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .price-box h3 { font-size: 22px; color: white; }
+        .price-box p { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+
+        .error-msg {
+            color: #ff4d4d;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
             text-align: center;
         }
     </style>
@@ -368,89 +425,106 @@
             </div>
         </div>
         <div class="header-right">
-            <div class="badge-pro">Pro</div>
-            <!-- Account Profile Button "A" -->
-            <div class="avatar-account" onclick="openModal('accountModal')" title="User Account">A</div>
+            <!-- Pro Badge to Open Pricing -->
+            <div class="badge-pro" onclick="openModal('proModal')">Pro</div>
+            <!-- 'A' Avatar to Open Create Account -->
+            <div class="avatar-account" onclick="openModal('accountModal')" title="Create Account">A</div>
         </div>
     </header>
 
-    <!-- Side Navigation Drawer -->
+    <!-- Side Drawer Navigation -->
     <div class="drawer-overlay" id="overlay" onclick="toggleDrawer()"></div>
     <div class="drawer" id="drawer">
         <div class="close-drawer" onclick="toggleDrawer()"><i class="fa-solid fa-xmark"></i></div>
         <div class="drawer-links">
-            <a href="#"><i class="fa-solid fa-plus"></i> New Chat</a>
-            <a href="#" onclick="openModal('accountModal')"><i class="fa-solid fa-user"></i> My Account</a>
-            <a href="admin.html" style="color: var(--accent-red);"><i class="fa-solid fa-user-shield"></i> Admin Panel</a>
+            <a href="#" onclick="location.reload()"><i class="fa-solid fa-plus"></i> New Chat</a>
+            <a href="#" onclick="openModal('accountModal'); toggleDrawer();"><i class="fa-solid fa-user"></i> Create Account</a>
+            <a href="#" onclick="openModal('proModal'); toggleDrawer();"><i class="fa-solid fa-crown" style="color: var(--accent-red);"></i> Upgrade to Pro</a>
         </div>
     </div>
 
-    <!-- Main Chat Interface -->
+    <!-- Main Chat Screen Layout -->
     <div class="chat-container">
-        <div class="chat-hero">
-            <h1>Dark<span>GPT</span></h1>
-            <h2>AI without limits.</h2>
-            <div class="sub-tags">CODE · RESEARCH · ANALYSIS · CREATION</div>
+        
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-hero" id="heroBanner">
+                <h1>FLAXXI <span>GPT</span></h1>
+                <h2>AI without limits.</h2>
+                <div class="sub-tags">CODE · RESEARCH · ANALYSIS · CREATION</div>
+            </div>
         </div>
 
-        <!-- Chat Input Field Card -->
+        <!-- Chat Input Field -->
         <div class="chat-input-card">
             <div class="chat-controls-top">
                 <div class="chat-controls-left">
-                    <i class="fa-solid fa-paperclip" title="Attach Document/Image"></i>
+                    <i class="fa-solid fa-paperclip" title="Attach Document"></i>
                     <i class="fa-solid fa-microphone" title="Voice Input"></i>
                 </div>
                 <select class="model-select">
-                    <option>No Limit v</option>
-                    <option>OSINT Mode</option>
                     <option>Code Master</option>
+                    <option>No Limit v1</option>
+                    <option>OSINT Mode</option>
                 </select>
             </div>
             
-            <textarea class="chat-textarea" placeholder="What can I do for you?"></textarea>
-            
-            <button class="btn-send-round"><i class="fa-solid fa-arrow-up"></i></button>
+            <div class="input-row">
+                <textarea class="chat-textarea" id="chatInput" placeholder="What can I do for you?"></textarea>
+                <button class="btn-send-round" id="sendBtn" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
+            </div>
         </div>
     </div>
 
-    <!-- Account Details Modal (Opens when clicking "A") -->
+    <!-- Account / Sign-Up Modal (Triggers on 'A' Click) -->
     <div class="modal" id="accountModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('accountModal')">&times;</span>
+            <div class="modal-title"><i class="fa-solid fa-user-plus" style="color:var(--accent-red)"></i> Create Account</div>
             
-            <div class="account-header-box">
-                <div class="account-avatar-large">A</div>
-                <div class="account-info">
-                    <h3>Account Profile</h3>
-                    <p>user@flaxxi-gpt.ai</p>
-                </div>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" class="form-input" placeholder="Enter full name">
             </div>
 
-            <div class="account-item-row">
-                <span style="color: var(--text-sub);">Subscription Plan</span>
-                <span style="color: var(--accent-red); font-weight: 800;">PRO / UNLIMITED</span>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" class="form-input" placeholder="example@flaxxi.ai">
             </div>
 
-            <div class="account-item-row">
-                <span style="color: var(--text-sub);">Access Key</span>
-                <span style="font-family: monospace; font-size: 11px;">FLAXXI-8921-X</span>
+            <div class="form-group">
+                <label>Access Key</label>
+                <input type="text" id="accessKeyInput" class="form-input" placeholder="Enter key (e.g. FLAXXI-PRO)">
+            </div>
+            <div class="error-msg" id="keyError">Invalid Access Key! Please enter a valid key.</div>
+
+            <button class="btn-red-full" onclick="validateAndSubmit()">Create Account</button>
+        </div>
+    </div>
+
+    <!-- Pro Subscription / Pricing Modal (Triggers on 'Pro' Click) -->
+    <div class="modal" id="proModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('proModal')">&times;</span>
+            <div class="modal-title"><i class="fa-solid fa-crown" style="color:var(--accent-red)"></i> FLAXXI GPT PRO</div>
+            
+            <div class="price-box">
+                <h3>₹499 / Month</h3>
+                <p>Full Access to Uncensored Models, Code Master & Unlimited Queries.</p>
             </div>
 
-            <div class="account-item-row">
-                <span style="color: var(--text-sub);">AI Model Status</span>
-                <span style="color: #25d366; font-weight: 700;">Uncensored Enabled</span>
+            <div style="font-size: 12px; color: var(--text-sub); text-align: center;">
+                Need an Access Key or Subscription? Contact us on WhatsApp to activate immediately.
             </div>
 
-            <!-- Link to open Admin Control Panel directly -->
-            <button class="btn-outline-admin" onclick="window.location.href='admin.html'">
-                <i class="fa-solid fa-lock"></i> Go to Admin Portal
-            </button>
-
-            <button class="btn-red-full" onclick="closeModal('accountModal')">Done</button>
+            <!-- Replace XXXXXXXXXX with your official WhatsApp Number -->
+            <a href="https://wa.me/919999999999?text=Hello%20FLAXXI%20GPT,%20I%20want%20to%20buy%20Pro%20Access%20Key" target="_blank" class="whatsapp-btn">
+                <i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i> Buy via WhatsApp (+91 9999999999)
+            </a>
         </div>
     </div>
 
     <script>
+        // Drawer toggle controls
         function toggleDrawer() {
             const drawer = document.getElementById('drawer');
             const overlay = document.getElementById('overlay');
@@ -458,8 +532,67 @@
             overlay.style.display = drawer.classList.contains('open') ? 'block' : 'none';
         }
 
+        // Modal Display Controls
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function closeModal(id) { 
+            document.getElementById(id).style.display = 'none'; 
+            if(id === 'accountModal') document.getElementById('keyError').style.display = 'none';
+        }
+
+        // Key Validation Functionality
+        function validateAndSubmit() {
+            const keyInput = document.getElementById('accessKeyInput').value.trim();
+            const validKeys = ["FLAXXI-8921-X", "FLAXXI-PRO-2026", "ADMIN123"]; // Authorized Keys List
+            const errorElement = document.getElementById('keyError');
+
+            if (validKeys.includes(keyInput)) {
+                alert("Account created successfully!");
+                closeModal('accountModal');
+            } else {
+                errorElement.style.display = 'block'; // Displays "Invalid Access Key!"
+            }
+        }
+
+        // Send Chat Message Functionality
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const messageText = input.value.trim();
+            const chatMessages = document.getElementById('chatMessages');
+            const heroBanner = document.getElementById('heroBanner');
+
+            if (!messageText) return;
+
+            // Hide main hero banner when chat starts
+            if (heroBanner) heroBanner.style.display = 'none';
+
+            // User Message append
+            const userBubble = document.createElement('div');
+            userBubble.className = 'msg-bubble msg-user';
+            userBubble.innerText = messageText;
+            chatMessages.appendChild(userBubble);
+
+            input.value = '';
+
+            // Scroll down
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // AI Simulated Dynamic Response
+            setTimeout(() => {
+                const botBubble = document.createElement('div');
+                botBubble.className = 'msg-bubble msg-bot';
+                botBubble.innerText = "Hello! I am FLAXXI GPT. How can I assist you today?";
+                chatMessages.appendChild(botBubble);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 600);
+        }
+
+        // Enter Key listener to send chat messages
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
     </script>
 </body>
 </html>
