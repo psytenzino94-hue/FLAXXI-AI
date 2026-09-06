@@ -67,6 +67,41 @@
             outline: none;
         }
 
+        /* Toggle Switch Styling */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1d0f18;
+            border: 1px solid var(--border-color);
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+        }
+        .toggle-label { font-size: 13px; font-weight: 700; color: #fff; }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #3b1d2e;
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent-red); box-shadow: 0 0 10px var(--accent-glow); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
         .btn-action {
             background: var(--accent-red);
             color: white;
@@ -137,7 +172,24 @@
             <p>Admin Management Panel</p>
         </div>
 
-        <!-- 1. Admin Credentials Setting -->
+        <!-- 1. App Control & Ban Settings -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-power-off"></i> App Status & Control</div>
+            <div class="toggle-container">
+                <span class="toggle-label" id="statusText">App Status: Active</span>
+                <label class="switch">
+                    <input type="checkbox" id="appStatusToggle" onchange="updateToggleText()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="input-group">
+                <label>App Ban / Maintenance Message</label>
+                <input type="text" id="banMessage" class="form-input" placeholder="e.g. App is under maintenance. Come back later!">
+            </div>
+            <button class="btn-action" onclick="saveAppControl()">Save App Status</button>
+        </div>
+
+        <!-- 2. Admin Credentials Setting -->
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-user-gear"></i> Admin Account Settings</div>
             <div class="input-group">
@@ -151,7 +203,7 @@
             <button class="btn-action" onclick="saveAdminSettings()">Save Admin Credentials</button>
         </div>
 
-        <!-- 2. AI Configurations -->
+        <!-- 3. AI Configurations -->
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-key"></i> AI API Configurations</div>
             <div class="input-group">
@@ -173,7 +225,7 @@
             <button class="btn-action" onclick="saveAIConfigs()">Save AI Configurations</button>
         </div>
 
-        <!-- 3. Daily Question Limit -->
+        <!-- 4. Daily Question Limit -->
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-sliders"></i> Daily Question Limit Settings</div>
             <div class="input-group">
@@ -183,7 +235,7 @@
             <button class="btn-action" onclick="saveQuestionLimit()">Save Question Limit</button>
         </div>
 
-        <!-- 4. Generate Access Key -->
+        <!-- 5. Generate Access Key -->
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-ticket"></i> Generate Access Key</div>
             <div class="input-group">
@@ -226,6 +278,18 @@
             }
         }
 
+        function updateToggleText() {
+            const isChecked = document.getElementById('appStatusToggle').checked;
+            const statusText = document.getElementById('statusText');
+            if (isChecked) {
+                statusText.innerText = "App Status: Active (Running)";
+                statusText.style.color = "#4ade80";
+            } else {
+                statusText.innerText = "App Status: Banned / Maintenance";
+                statusText.style.color = "#ff2a55";
+            }
+        }
+
         function loadStoredData() {
             document.getElementById('adminUser').value = localStorage.getItem('flaxxi_admin_user') || DEFAULT_USER;
             document.getElementById('adminPass').value = localStorage.getItem('flaxxi_admin_pass') || DEFAULT_PASS;
@@ -236,6 +300,20 @@
             document.getElementById('darkGptKey').value = localStorage.getItem('flaxxi_darkgpt_key') || '';
 
             document.getElementById('dailyLimit').value = localStorage.getItem('flaxxi_daily_limit') || '7';
+
+            const appActive = localStorage.getItem('flaxxi_app_active') !== 'false';
+            document.getElementById('appStatusToggle').checked = appActive;
+            document.getElementById('banMessage').value = localStorage.getItem('flaxxi_ban_message') || 'App is currently under maintenance.';
+            updateToggleText();
+        }
+
+        function saveAppControl() {
+            const isActive = document.getElementById('appStatusToggle').checked;
+            const banMsg = document.getElementById('banMessage').value.trim();
+
+            localStorage.setItem('flaxxi_app_active', isActive);
+            localStorage.setItem('flaxxi_ban_message', banMsg);
+            alert('App Control Settings successfully save ho gayi hain!');
         }
 
         function saveAdminSettings() {
