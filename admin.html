@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLAXXI GPT - Admin Panel</title>
-    <!-- Font Awesome Icons -->
+    <title>FLAXXI ADMIN - Control Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -28,96 +27,42 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
-            background-image: radial-gradient(circle at 50% 20%, rgba(255, 42, 85, 0.12) 0%, transparent 60%);
-            background-attachment: fixed;
+            background-image: radial-gradient(circle at 50% 30%, rgba(255, 42, 85, 0.15) 0%, transparent 60%);
             display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             padding: 20px;
         }
 
-        /* Login Container */
-        .login-card {
+        /* Admin Card Container */
+        .admin-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 35px 25px;
             width: 100%;
             max-width: 380px;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            text-align: center;
         }
 
-        .login-card h2 {
-            text-align: center;
+        .admin-title {
             font-size: 24px;
             font-weight: 900;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
-        .login-card h2 span { color: var(--accent-red); }
+        .admin-title span { color: var(--accent-red); }
 
-        /* Dashboard Container */
-        .dashboard-container {
-            display: none;
-            width: 100%;
-            max-width: 900px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .dash-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 25px;
-        }
-
-        .dash-header h1 {
-            font-size: 22px;
-            font-weight: 900;
-        }
-
-        .dash-header h1 span { color: var(--accent-red); }
-
-        /* Tabs Navigation */
-        .tab-menu {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            overflow-x: auto;
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: none;
+        .admin-subtitle {
+            font-size: 12px;
             color: var(--text-sub);
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
+            margin-bottom: 25px;
         }
 
-        .tab-btn.active {
-            background: rgba(255, 42, 85, 0.15);
-            color: var(--accent-red);
-            border: 1px solid rgba(255, 42, 85, 0.3);
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* Form Inputs & Buttons */
         .input-group {
-            margin-bottom: 15px;
+            text-align: left;
+            margin-bottom: 16px;
         }
 
         .input-group label {
@@ -125,115 +70,84 @@
             font-size: 12px;
             color: var(--text-sub);
             margin-bottom: 6px;
+            font-weight: 600;
         }
 
         .form-input {
             width: 100%;
-            padding: 12px;
-            background: #0a0407;
+            background: #ffffff;
             border: 1px solid var(--border-color);
-            color: white;
+            padding: 12px;
             border-radius: 10px;
+            color: #000000;
             outline: none;
-            font-size: 13px;
+            font-size: 14px;
+            font-weight: 600;
         }
 
-        .form-input:focus {
-            border-color: var(--accent-red);
-        }
-
-        .btn-red {
+        .btn-signin {
             background: var(--accent-red);
             color: white;
             border: none;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 14px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             cursor: pointer;
             width: 100%;
+            margin-top: 10px;
             box-shadow: 0 4px 15px var(--accent-glow);
         }
 
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: white;
-            padding: 10px;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-        }
-
-        .btn-logout {
-            background: rgba(255, 77, 77, 0.1);
+        .error-msg {
             color: #ff4d4d;
-            border: 1px solid rgba(255, 77, 77, 0.3);
-            padding: 8px 14px;
-            border-radius: 8px;
             font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* Grid Layouts */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 650px) {
-            .grid-2 { grid-template-columns: 1fr; }
-        }
-
-        /* Key Table System */
-        .key-table-box {
-            background: #0a0407;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            max-height: 250px;
-            overflow-y: auto;
             margin-top: 15px;
-        }
-
-        .key-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 12px;
-        }
-
-        .key-row:last-child { border-bottom: none; }
-
-        .key-tag {
-            background: rgba(255, 42, 85, 0.1);
-            color: var(--accent-red);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        .error-text {
-            color: #ff4d4d;
-            font-size: 12px;
-            margin-top: 10px;
             display: none;
-            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Dashboard Screen */
+        .dashboard {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .dash-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .dash-card h3 {
+            font-size: 16px;
+            color: var(--accent-red);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .key-box {
+            background: #0d060a;
+            border: 1px dashed var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            margin-top: 12px;
+            word-break: break-all;
+            color: #25d366;
         }
     </style>
 </head>
 <body>
 
-    <!-- Admin Login Card -->
-    <div class="login-card" id="loginCard">
-        <h2>FLAXXI <span>ADMIN</span></h2>
-        <p style="text-align: center; color: var(--text-sub); font-size: 12px; margin-bottom: 20px;">Control Panel Management</p>
+    <!-- Admin Login Form -->
+    <div class="admin-card" id="loginCard">
+        <div class="admin-title">FLAXXI <span>ADMIN</span></div>
+        <div class="admin-subtitle">Control Panel Management</div>
 
         <div class="input-group">
             <label>Admin Username</label>
@@ -245,213 +159,51 @@
             <input type="password" id="adminPass" class="form-input" placeholder="Enter password">
         </div>
 
-        <button class="btn-red" onclick="loginAdmin()">Sign In</button>
-        <div class="error-text" id="loginError">Invalid credentials! Try again.</div>
+        <button class="btn-signin" onclick="handleLogin()">Sign In</button>
+
+        <div class="error-msg" id="loginError">Invalid credentials! Try again.</div>
     </div>
 
-    <!-- Admin Dashboard Main Container -->
-    <div class="dashboard-container" id="dashboardContainer">
-        <div class="dash-header">
-            <h1>FLAXXI <span>GPT</span> Admin Panel</h1>
-            <button class="btn-logout" onclick="logoutAdmin()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <div class="tab-menu">
-            <button class="tab-btn active" onclick="switchTab('keysTab', this)"><i class="fa-solid fa-key"></i> Access Keys</button>
-            <button class="tab-btn" onclick="switchTab('pricingTab', this)"><i class="fa-solid fa-tags"></i> Pricing Editor</button>
-            <button class="tab-btn" onclick="switchTab('settingsTab', this)"><i class="fa-solid fa-user-shield"></i> Security Settings</button>
-        </div>
-
-        <!-- TAB 1: Key Generator & Manager -->
-        <div id="keysTab" class="tab-content active">
-            <div class="grid-2">
-                <div>
-                    <h3 style="font-size: 16px; margin-bottom: 15px;">Generate New Access Key</h3>
-                    
-                    <div class="input-group">
-                        <label>Select Plan Type</label>
-                        <select id="keyPlanType" class="form-input">
-                            <option value="STARTER">Starter Plan Key</option>
-                            <option value="UNLIMITED">Unlimited Plan Key</option>
-                            <option value="LIFETIME">Lifetime Plan Key</option>
-                        </select>
-                    </div>
-
-                    <div class="input-group">
-                        <label>Custom Prefix (Optional)</label>
-                        <input type="text" id="keyPrefix" class="form-input" value="FLAXXI">
-                    </div>
-
-                    <button class="btn-red" onclick="generateNewKey()"><i class="fa-solid fa-bolt"></i> Generate Key</button>
-                </div>
-
-                <div>
-                    <h3 style="font-size: 16px; margin-bottom: 15px;">Generated Output</h3>
-                    <div class="input-group">
-                        <label>Latest Generated Key</label>
-                        <input type="text" id="generatedOutput" class="form-input" readonly placeholder="Key will appear here...">
-                    </div>
-                    <button class="btn-outline" style="width: 100%;" onclick="copyToClipboard()"><i class="fa-solid fa-copy"></i> Copy Key</button>
-                </div>
-            </div>
-
-            <h3 style="font-size: 15px; margin-top: 30px;">Active Access Keys Database</h3>
-            <div class="key-table-box" id="keysListContainer"></div>
-        </div>
-
-        <!-- TAB 2: Pricing Editor -->
-        <div id="pricingTab" class="tab-content">
-            <h3 style="font-size: 16px; margin-bottom: 15px;">Edit Live Plan Prices</h3>
+    <!-- Admin Panel Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <div class="dash-card">
+            <h3>Admin Management Dashboard</h3>
+            <p style="font-size: 13px; color: var(--text-sub);">Welcome, Tenzino! Generate new access keys for Pro users below.</p>
             
-            <div class="grid-2">
-                <div class="input-group">
-                    <label>Starter Plan Price</label>
-                    <input type="text" id="editStarterPrice" class="form-input" value="9,99 € /mo">
-                </div>
-
-                <div class="input-group">
-                    <label>Unlimited Plan Price</label>
-                    <input type="text" id="editUnlimitedPrice" class="form-input" value="19,99 € /mo">
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>Lifetime Plan Price</label>
-                <input type="text" id="editLifetimePrice" class="form-input" value="69,99 € once">
-            </div>
-
-            <button class="btn-red" style="margin-top: 10px;" onclick="savePrices()"><i class="fa-solid fa-floppy-disk"></i> Save Pricing Updates</button>
-        </div>
-
-        <!-- TAB 3: Security & Admin Settings -->
-        <div id="settingsTab" class="tab-content">
-            <h3 style="font-size: 16px; margin-bottom: 15px;">Change Admin Credentials</h3>
-            
-            <div class="input-group">
-                <label>New Username</label>
-                <input type="text" id="newAdminUser" class="form-input" placeholder="Enter new username">
-            </div>
-
-            <div class="input-group">
-                <label>New Password</label>
-                <input type="password" id="newAdminPass" class="form-input" placeholder="Enter new password">
-            </div>
-
-            <button class="btn-red" onclick="updateCredentials()"><i class="fa-solid fa-shield-check"></i> Save Credentials</button>
+            <button class="btn-signin" onclick="generateNewKey()">Generate New Pro Key</button>
+            <div class="key-box" id="keyOutput">Click button to generate key...</div>
         </div>
     </div>
 
-    <!-- JavaScript Logic -->
     <script>
-        // Default Local Account & Keys Database
-        let adminCreds = {
-            username: "admin",
-            password: "admin123"
-        };
+        // Updated Credentials
+        const ADMIN_USERNAME = "Tenzino";
+        const ADMIN_PASSWORD = "Tenzino@766";
 
-        let keysDatabase = [
-            { key: "FLAXXI-STARTER-99A1", plan: "STARTER" },
-            { key: "FLAXXI-UNLIMITED-77B2", plan: "UNLIMITED" },
-            { key: "FLAXXI-LIFETIME-88C3", plan: "LIFETIME" }
-        ];
+        function handleLogin() {
+            const userIn = document.getElementById('adminUser').value.trim();
+            const passIn = document.getElementById('adminPass').value.trim();
+            const errorElement = document.getElementById('loginError');
 
-        // Login Logic
-        function loginAdmin() {
-            const user = document.getElementById('adminUser').value.trim();
-            const pass = document.getElementById('adminPass').value.trim();
-            const err = document.getElementById('loginError');
-
-            if (user === adminCreds.username && pass === adminCreds.password) {
+            if (userIn === ADMIN_USERNAME && passIn === ADMIN_PASSWORD) {
                 document.getElementById('loginCard').style.display = 'none';
-                document.getElementById('dashboardContainer').style.display = 'block';
-                renderKeysList();
+                document.getElementById('dashboard').style.display = 'block';
             } else {
-                err.style.display = 'block';
+                errorElement.style.display = 'block';
             }
         }
 
-        function logoutAdmin() {
-            document.getElementById('dashboardContainer').style.display = 'none';
-            document.getElementById('loginCard').style.display = 'block';
-            document.getElementById('adminUser').value = '';
-            document.getElementById('adminPass').value = '';
-        }
-
-        // Tab Switching
-        function switchTab(tabId, btnElement) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-
-            document.getElementById(tabId).classList.add('active');
-            btnElement.classList.add('active');
-        }
-
-        // Generate Key System
         function generateNewKey() {
-            const plan = document.getElementById('keyPlanType').value;
-            let prefix = document.getElementById('keyPrefix').value.trim().toUpperCase() || 'FLAXXI';
-            const randomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-
-            const fullKey = `${prefix}-${plan}-${randomCode}`;
-            
-            keysDatabase.push({ key: fullKey, plan: plan });
-            document.getElementById('generatedOutput').value = fullKey;
-            
-            renderKeysList();
+            const randomKey = "FLAXXI-" + Math.random().toString(36).substring(2, 8).toUpperCase() + "-2026";
+            document.getElementById('keyOutput').innerText = "Generated Key: " + randomKey;
         }
 
-        function copyToClipboard() {
-            const keyInput = document.getElementById('generatedOutput');
-            if(keyInput.value) {
-                keyInput.select();
-                document.execCommand("copy");
-                alert("Key copied to clipboard!");
+        // Enter key shortcut for login
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
             }
-        }
-
-        function renderKeysList() {
-            const container = document.getElementById('keysListContainer');
-            container.innerHTML = '';
-
-            keysDatabase.forEach((item, index) => {
-                container.innerHTML += `
-                    <div class="key-row">
-                        <div>
-                            <strong>${item.key}</strong>
-                            <span class="key-tag">${item.plan}</span>
-                        </div>
-                        <i class="fa-solid fa-trash" style="color:#ff4d4d; cursor:pointer;" onclick="deleteKey(${index})"></i>
-                    </div>
-                `;
-            });
-        }
-
-        function deleteKey(index) {
-            keysDatabase.splice(index, 1);
-            renderKeysList();
-        }
-
-        // Save Prices
-        function savePrices() {
-            alert('Prices saved successfully!');
-        }
-
-        // Update Credentials
-        function updateCredentials() {
-            const newUser = document.getElementById('newAdminUser').value.trim();
-            const newPass = document.getElementById('newAdminPass').value.trim();
-
-            if (newUser && newPass) {
-                adminCreds.username = newUser;
-                adminCreds.password = newPass;
-                alert('Admin credentials updated successfully!');
-                document.getElementById('newAdminUser').value = '';
-                document.getElementById('newAdminPass').value = '';
-            } else {
-                alert('Please fill out both fields.');
-            }
-        }
+        });
     </script>
 </body>
 </html>
