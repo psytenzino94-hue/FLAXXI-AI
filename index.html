@@ -51,7 +51,7 @@
         .chat-hero h2 { font-size: 16px; color: white; margin-top: 6px; font-weight: 700; }
         .chat-hero .sub-tags { font-size: 11px; color: var(--accent-red); font-weight: 800; letter-spacing: 1.5px; margin-top: 12px; }
 
-        .msg-bubble { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.4; }
+        .msg-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
         .msg-user { background: var(--accent-red); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         .msg-bot { background: #1d1018; color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); }
 
@@ -90,13 +90,13 @@
             <div class="chat-hero" id="heroBanner">
                 <h1>FLAXXI <span>GPT</span></h1>
                 <h2>AI without limits.</h2>
-                <div class="sub-tags">CODE · RESEARCH · ANALYSIS · CREATION</div>
+                <div class="sub-tags">GEMINI AI · CODE · RESEARCH · ALL LANGUAGES</div>
             </div>
         </div>
 
         <div class="chat-input-card">
             <div class="input-row">
-                <textarea class="chat-textarea" id="chatInput" placeholder="What can I do for you?"></textarea>
+                <textarea class="chat-textarea" id="chatInput" placeholder="Ask Gemini AI anything..."></textarea>
                 <button class="btn-send-round" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
             </div>
         </div>
@@ -154,12 +154,9 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Dynamic Validation Logic
         function validateAndSubmit() {
             const keyInput = document.getElementById('accessKeyInput').value.trim();
             const storedKeys = JSON.parse(localStorage.getItem('flaxxi_active_keys')) || [];
-            
-            // Hardcoded back-up keys + dynamically generated keys validation
             const defaultValidKeys = ["FLAXXI-7ILJHH-2026", "FLAXXI-PRO-2026"];
 
             if (storedKeys.includes(keyInput) || defaultValidKeys.includes(keyInput)) {
@@ -170,7 +167,7 @@
             }
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('chatInput');
             const messageText = input.value.trim();
             const chatMessages = document.getElementById('chatMessages');
@@ -179,6 +176,7 @@
             if (!messageText) return;
             if (heroBanner) heroBanner.style.display = 'none';
 
+            // User Message
             const userBubble = document.createElement('div');
             userBubble.className = 'msg-bubble msg-user';
             userBubble.innerText = messageText;
@@ -186,7 +184,55 @@
 
             input.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Bot Thinking Bubble
+            const botBubble = document.createElement('div');
+            botBubble.className = 'msg-bubble msg-bot';
+            botBubble.innerText = "Thinking with Gemini AI...";
+            chatMessages.appendChild(botBubble);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            const apiKey = localStorage.getItem('flaxxi_gemini_key');
+
+            if (!apiKey) {
+                botBubble.innerText = "Error: Admin Panel mein Gemini API Key set karein.";
+                return;
+            }
+
+            // Direct Google Gemini 1.5 Flash Endpoint
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: messageText }]
+                        }]
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    botBubble.innerText = data.candidates[0].content.parts[0].text;
+                } else {
+                    botBubble.innerText = "Error: Invalid response from Gemini API. Key check karein.";
+                }
+            } catch (err) {
+                botBubble.innerText = "API Request Failed! Check internet or API key in Admin Panel.";
+            }
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
+
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
     </script>
 </body>
 </html>
