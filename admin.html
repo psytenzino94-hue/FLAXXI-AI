@@ -4,110 +4,303 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FLAXXI AI - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background: radial-gradient(circle at top, #2d0b13 0%, #08070a 70%); color: #fff; min-height: 100vh; padding: 20px; display: flex; justify-content: center; align-items: center; }
-        .admin-card { background: #0f0e13; border: 1px solid #251217; border-radius: 20px; padding: 25px; width: 100%; max-width: 480px; box-shadow: 0 10px 40px rgba(255, 42, 75, 0.15); }
-        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        h2 { color: #ff2a4b; font-size: 1.4rem; font-weight: 800; }
-        .nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid #22202c; padding-bottom: 10px; }
-        .tab-btn { background: #121118; border: 1px solid #251217; color: #aaa; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; flex: 1; }
-        .tab-btn.active { background: #ff2a4b; border-color: #ff2a4b; color: #fff; }
-        .input-group { margin-bottom: 12px; }
-        label { display: block; font-size: 0.75rem; color: #aaa; margin-bottom: 5px; text-transform: uppercase; font-weight: 600; }
-        input, select { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #22202c; background: #121118; color: white; outline: none; }
-        input:focus, select:focus { border-color: #ff2a4b; }
-        .btn-primary { width: 100%; padding: 12px; background: linear-gradient(90deg, #ff2a4b, #e0002b); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-        .list-box { margin-top: 15px; max-height: 250px; overflow-y: auto; }
-        .item-card { background: #121118; border: 1px solid #251217; border-left: 3px solid #ff2a4b; padding: 12px; border-radius: 8px; margin-bottom: 8px; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
-        .del-btn { color: #ff2a4b; background: none; border: none; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        :root {
+            --bg-color: #0b0b0e;
+            --card-bg: #141419;
+            --accent-red: #ff2a4b;
+            --text-main: #ffffff;
+            --text-sub: #a0a0aa;
+            --border-color: #26262e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--accent-red);
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .panel-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent-red);
+        }
+
+        .icon-btn {
+            background: #1f1f26;
+            border: 1px solid var(--border-color);
+            color: var(--text-sub);
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            background: #0b0b0e;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        .btn-red {
+            width: 100%;
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-red:hover {
+            opacity: 0.9;
+        }
+
+        .btn-dark {
+            width: 100%;
+            background: #1f1f26;
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .divider {
+            text-align: center;
+            color: var(--text-sub);
+            font-size: 12px;
+            margin: 15px 0;
+        }
+
+        /* User Accounts Table */
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
 
-<div class="admin-card">
-    <div class="header-bar">
-        <h2>FLAXXI AI Dashboard</h2>
+    <div class="header">
+        <div class="logo">FLAXXI AI - Admin Dashboard</div>
+        <div style="font-size: 14px; color: var(--text-sub);"><i class="fa-solid fa-user-shield"></i> System Admin</div>
     </div>
 
-    <div class="nav-tabs">
-        <button class="tab-btn active" id="tabKeysBtn" onclick="switchTab('keys')">Key Manager</button>
-        <button class="tab-btn" id="tabUsersBtn" onclick="switchTab('users')">Registered Users</button>
-    </div>
+    <div class="admin-grid">
 
-    <!-- Key Manager Section -->
-    <div id="keysSection">
-        <div class="input-group">
+        <!-- Key Manager Panel (Matching Image Design) -->
+        <div class="panel-card">
+            <div class="card-header">
+                <div class="card-title">Key Manager</div>
+                <button class="icon-btn"><i class="fa-solid fa-gear"></i></button>
+            </div>
+
             <label>Select Plan</label>
-            <select id="planType">
-                <option value="starter">Starter Plan</option>
-                <option value="unlimited">Unlimited Plan</option>
-                <option value="lifetime">Lifetime Access</option>
+            <select id="planSelect">
+                <option value="Starter">Starter Access</option>
+                <option value="Unlimited">Unlimited Access</option>
+                <option value="Lifetime">Lifetime Access</option>
             </select>
+
+            <button class="btn-red" onclick="generateKey()">Auto Generate Key</button>
+
+            <div class="divider">— OR ADD CUSTOM KEY —</div>
+
+            <input type="text" id="customKey" placeholder="Enter custom key (e.g. MYKEY123)">
+            <button class="btn-dark" onclick="addCustomKey()">Add Custom Key</button>
         </div>
-        <button class="btn-primary" onclick="genKey()">Auto Generate Key</button>
-        <div class="list-box" id="keyList"></div>
-    </div>
 
-    <!-- Users Section -->
-    <div id="usersSection" style="display:none;">
-        <label>User Accounts</label>
-        <div class="list-box" id="userList"></div>
-    </div>
-</div>
-
-<script>
-    function switchTab(tab) {
-        document.getElementById('keysSection').style.display = tab === 'keys' ? 'block' : 'none';
-        document.getElementById('usersSection').style.display = tab === 'users' ? 'block' : 'none';
-        document.getElementById('tabKeysBtn').classList.toggle('active', tab === 'keys');
-        document.getElementById('tabUsersBtn').classList.toggle('active', tab === 'users');
-        if(tab === 'users') loadUsers();
-    }
-
-    function genKey() {
-        const plan = document.getElementById('planType').value;
-        const key = `FLAXXI-${plan.toUpperCase()}-${Math.random().toString(36).substring(2,7).toUpperCase()}`;
-        let keys = JSON.parse(localStorage.getItem('flaxxi_keys') || "[]");
-        keys.push({ key, plan });
-        localStorage.setItem('flaxxi_keys', JSON.stringify(keys));
-        loadKeys();
-    }
-
-    function loadKeys() {
-        let keys = JSON.parse(localStorage.getItem('flaxxi_keys') || "[]");
-        document.getElementById('keyList').innerHTML = keys.map((k, i) => `
-            <div class="item-card">
-                <div><strong>${k.key}</strong><br><small style="color:#aaa;">Plan: ${k.plan.toUpperCase()}</small></div>
-                <button class="del-btn" onclick="delKey(${i})">✕</button>
+        <!-- Plan Price Editor Panel -->
+        <div class="panel-card">
+            <div class="card-header">
+                <div class="card-title">Plan Price Manager</div>
+                <button class="icon-btn"><i class="fa-solid fa-tags"></i></button>
             </div>
-        `).join('') || '<div style="color:#666; font-size:0.8rem; text-align:center;">No keys generated</div>';
-    }
 
-    function delKey(i) {
-        let keys = JSON.parse(localStorage.getItem('flaxxi_keys') || "[]");
-        keys.splice(i, 1);
-        localStorage.setItem('flaxxi_keys', JSON.stringify(keys));
-        loadKeys();
-    }
+            <label>Select Plan To Edit</label>
+            <select id="editPlanSelect" onchange="loadCurrentPrice()">
+                <option value="Starter">Starter Plan</option>
+                <option value="Unlimited">Unlimited Plan</option>
+                <option value="Lifetime">Lifetime Plan</option>
+            </select>
 
-    function loadUsers() {
-        let users = JSON.parse(localStorage.getItem('flaxxi_users') || "[]");
-        if(!users.length) {
-            document.getElementById('userList').innerHTML = '<div style="color:#666; font-size:0.8rem; text-align:center; padding:10px;">No registered users yet.</div>';
-            return;
+            <label>Set New Price (€ or ₹)</label>
+            <input type="text" id="planPriceInput" value="9.99 €">
+
+            <button class="btn-red" onclick="updatePrice()">Update Plan Price</button>
+        </div>
+
+        <!-- User Accounts & Remaining Time Panel -->
+        <div class="panel-card full-width">
+            <div class="card-header">
+                <div class="card-title">LoggedIn User Accounts & Time Manager</div>
+                <button class="icon-btn" onclick="renderUsers()"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID / Email / Phone</th>
+                        <th>Login Type</th>
+                        <th>Active Plan</th>
+                        <th>Time Remaining</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- Dynamic Rows -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        // Sample Users Data
+        const users = [
+            { id: "user_9819833267", type: "Phone OTP", plan: "Unlimited", timeLeft: "28 Days 14 Hours", status: "Active" },
+            { id: "alex@gmail.com", type: "Google", plan: "Starter", timeLeft: "12 Days 05 Hours", status: "Active" },
+            { id: "john_doe@gmail.com", type: "Email OTP", plan: "Lifetime", timeLeft: "Unlimited (Forever)", status: "Active" }
+        ];
+
+        // Key Generator
+        function generateKey() {
+            const plan = document.getElementById('planSelect').value;
+            const key = 'FLAXXI-' + Math.random().toString(36).substring(2, 10).toUpperCase();
+            alert(`Generated ${plan} Key: ${key}`);
         }
-        document.getElementById('userList').innerHTML = users.map(u => `
-            <div class="item-card">
-                <div>
-                    <strong>${u.name || u.contact}</strong><br>
-                    <small style="color:#888;">Method: ${u.type} | Date: ${u.date}</small>
-                </div>
-            </div>
-        `).join('');
-    }
 
-    loadKeys();
-</script>
+        function addCustomKey() {
+            const key = document.getElementById('customKey').value;
+            if (key) {
+                alert(`Custom Key Added: ${key}`);
+                document.getElementById('customKey').value = '';
+            } else {
+                alert('Please enter a valid key.');
+            }
+        }
+
+        // Price Manager
+        function loadCurrentPrice() {
+            const plan = document.getElementById('editPlanSelect').value;
+            const input = document.getElementById('planPriceInput');
+            if (plan === 'Starter') input.value = "9.99 €";
+            if (plan === 'Unlimited') input.value = "19.99 €";
+            if (plan === 'Lifetime') input.value = "69.99 €";
+        }
+
+        function updatePrice() {
+            const plan = document.getElementById('editPlanSelect').value;
+            const price = document.getElementById('planPriceInput').value;
+            alert(`${plan} price updated to ${price} successfully!`);
+        }
+
+        // Render User Accounts Table
+        function renderUsers() {
+            const tbody = document.getElementById('userTableBody');
+            tbody.innerHTML = '';
+            users.forEach(user => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${user.id}</td>
+                        <td>${user.type}</td>
+                        <td><b style="color: var(--accent-red);">${user.plan}</b></td>
+                        <td>${user.timeLeft}</td>
+                        <td><span class="badge-active">${user.status}</span></td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Initial Load
+        renderUsers();
+    </script>
 </body>
 </html>
