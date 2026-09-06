@@ -172,7 +172,7 @@
             <p>Admin Management Panel</p>
         </div>
 
-        <!-- 1. App Control & Ban Settings -->
+        <!-- 1. App Status & Control -->
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-power-off"></i> App Status & Control</div>
             <div class="toggle-container">
@@ -189,7 +189,24 @@
             <button class="btn-action" onclick="saveAppControl()">Save App Status</button>
         </div>
 
-        <!-- 2. Admin Credentials Setting -->
+        <!-- 2. Website Free / Paid Switch Settings -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-crown"></i> Access Mode (Free / Paid)</div>
+            <div class="input-group">
+                <label>Select Website Mode</label>
+                <select id="accessModeSelect" class="form-select" onchange="togglePaidNoticeInput()">
+                    <option value="FREE">Free Mode (Open for Everyone)</option>
+                    <option value="PAID">Paid Mode (Requires Premium Access Key)</option>
+                </select>
+            </div>
+            <div class="input-group" id="paidNoticeGroup" style="display: none;">
+                <label>Paid Mode Alert Message for Unpaid Users</label>
+                <input type="text" id="paidNoticeMsg" class="form-input" placeholder="e.g. Purchase a subscription key to unlock full AI access!">
+            </div>
+            <button class="btn-action" onclick="saveAccessMode()">Save Access Mode</button>
+        </div>
+
+        <!-- 3. Admin Credentials Setting -->
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-user-gear"></i> Admin Account Settings</div>
             <div class="input-group">
@@ -203,7 +220,7 @@
             <button class="btn-action" onclick="saveAdminSettings()">Save Admin Credentials</button>
         </div>
 
-        <!-- 3. AI Configurations -->
+        <!-- 4. AI Configurations -->
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-key"></i> AI API Configurations</div>
             <div class="input-group">
@@ -225,7 +242,7 @@
             <button class="btn-action" onclick="saveAIConfigs()">Save AI Configurations</button>
         </div>
 
-        <!-- 4. Daily Question Limit -->
+        <!-- 5. Daily Question Limit -->
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-sliders"></i> Daily Question Limit Settings</div>
             <div class="input-group">
@@ -235,7 +252,7 @@
             <button class="btn-action" onclick="saveQuestionLimit()">Save Question Limit</button>
         </div>
 
-        <!-- 5. Generate Access Key -->
+        <!-- 6. Generate Access Key -->
         <div class="card">
             <div class="card-title"><i class="fa-solid fa-ticket"></i> Generate Access Key</div>
             <div class="input-group">
@@ -290,6 +307,16 @@
             }
         }
 
+        function togglePaidNoticeInput() {
+            const mode = document.getElementById('accessModeSelect').value;
+            const noticeGroup = document.getElementById('paidNoticeGroup');
+            if (mode === 'PAID') {
+                noticeGroup.style.display = 'block';
+            } else {
+                noticeGroup.style.display = 'none';
+            }
+        }
+
         function loadStoredData() {
             document.getElementById('adminUser').value = localStorage.getItem('flaxxi_admin_user') || DEFAULT_USER;
             document.getElementById('adminPass').value = localStorage.getItem('flaxxi_admin_pass') || DEFAULT_PASS;
@@ -305,6 +332,11 @@
             document.getElementById('appStatusToggle').checked = appActive;
             document.getElementById('banMessage').value = localStorage.getItem('flaxxi_ban_message') || 'App is currently under maintenance.';
             updateToggleText();
+
+            const accessMode = localStorage.getItem('flaxxi_access_mode') || 'FREE';
+            document.getElementById('accessModeSelect').value = accessMode;
+            document.getElementById('paidNoticeMsg').value = localStorage.getItem('flaxxi_paid_notice') || 'Please enter a valid key or upgrade to continue using.';
+            togglePaidNoticeInput();
         }
 
         function saveAppControl() {
@@ -314,6 +346,15 @@
             localStorage.setItem('flaxxi_app_active', isActive);
             localStorage.setItem('flaxxi_ban_message', banMsg);
             alert('App Control Settings successfully save ho gayi hain!');
+        }
+
+        function saveAccessMode() {
+            const mode = document.getElementById('accessModeSelect').value;
+            const msg = document.getElementById('paidNoticeMsg').value.trim();
+
+            localStorage.setItem('flaxxi_access_mode', mode);
+            localStorage.setItem('flaxxi_paid_notice', msg);
+            alert(`Website mode set to ${mode} mode!`);
         }
 
         function saveAdminSettings() {
