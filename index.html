@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLAXXI GPT - AI Without Limits</title>
+    <title>DarkGPT - AI without limits</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -25,233 +25,310 @@
             background-image: radial-gradient(circle at 50% 20%, rgba(255, 42, 85, 0.15) 0%, transparent 60%);
             display: flex;
             flex-direction: column;
+            overflow-x: hidden;
         }
 
+        /* Top Header */
         header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 14px 20px; background: rgba(10, 4, 7, 0.9);
             backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color);
-            position: sticky; top: 0; z-index: 100;
+            position: sticky; top: 0; z-index: 90;
         }
 
-        .header-left { display: flex; align-items: center; gap: 12px; }
+        .header-left { display: flex; align-items: center; gap: 14px; }
         .logo { font-size: 20px; font-weight: 900; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .logo span { color: var(--accent-red); }
 
         .header-right { display: flex; align-items: center; gap: 10px; }
-        .icon-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-main); width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
-        .icon-btn:hover { background: var(--accent-red); color: white; }
+        .badge-pro { background: var(--accent-red); color: white; padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 800; cursor: pointer; box-shadow: 0 0 10px var(--accent-glow); }
+        .avatar-account { width: 34px; height: 34px; background: var(--accent-red); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; cursor: pointer; }
+        .icon-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); color: var(--text-main); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
 
-        .badge-pro { background: var(--accent-red); color: white; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; box-shadow: 0 0 10px var(--accent-glow); }
-        .avatar-account { width: 34px; height: 34px; background: var(--accent-red); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); }
+        /* Left Sidebar Drawer */
+        .sidebar-drawer {
+            position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
+            background: #11070e; border-right: 1px solid var(--border-color);
+            z-index: 200; transition: left 0.3s ease; padding: 20px; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .sidebar-drawer.active { left: 0; }
+        .drawer-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); z-index: 150; display: none;
+        }
+        .drawer-overlay.active { display: block; }
 
-        .chat-container { max-width: 550px; margin: 0 auto; width: 100%; height: calc(100vh - 70px); display: flex; flex-direction: column; justify-content: space-between; padding: 20px 15px; }
+        .btn-new-chat {
+            background: var(--accent-red); color: white; border: none; padding: 12px; border-radius: 12px;
+            font-weight: 700; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; margin-bottom: 15px;
+        }
+
+        .search-box {
+            background: #1c0e17; border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 12px;
+            display: flex; align-items: center; gap: 8px; color: var(--text-sub); margin-bottom: 20px;
+        }
+        .search-box input { background: transparent; border: none; outline: none; color: white; font-size: 13px; width: 100%; }
+
+        .history-section { flex-grow: 1; overflow-y: auto; }
+        .history-title { font-size: 11px; color: var(--text-sub); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
+        .history-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); margin-bottom: 8px; font-size: 13px; cursor: pointer; }
+
+        .sidebar-footer { border-top: 1px solid var(--border-color); pt: 15px; margin-top: 15px; }
+        .user-plan-card { background: #1c0e17; border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .sidebar-menu-btn { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--text-main); padding: 10px 0; cursor: pointer; border: none; background: transparent; width: 100%; text-align: left; }
+
+        /* Main Chat Container */
+        .chat-container { max-width: 600px; margin: 0 auto; width: 100%; height: calc(100vh - 70px); display: flex; flex-direction: column; justify-content: space-between; padding: 20px 15px; }
         .chat-messages { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
         
         .chat-hero { text-align: center; margin-top: auto; margin-bottom: auto; }
-        .chat-hero h1 { font-size: 38px; font-weight: 900; }
+        .chat-hero h1 { font-size: 42px; font-weight: 900; }
         .chat-hero h1 span { color: var(--accent-red); }
-        .chat-hero h2 { font-size: 16px; color: white; margin-top: 6px; font-weight: 700; }
-        .chat-hero .sub-tags { font-size: 11px; color: var(--accent-red); font-weight: 800; letter-spacing: 1.5px; margin-top: 12px; }
+        .chat-hero h2 { font-size: 18px; color: var(--text-main); margin-top: 8px; font-weight: 700; }
+        .chat-hero .sub-tags { font-size: 11px; color: var(--accent-red); font-weight: 800; letter-spacing: 2px; margin-top: 14px; }
 
         .msg-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
         .msg-user { background: var(--accent-red); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         .msg-bot { background: #1d1018; color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); }
 
-        .chat-input-card { background: #120a0f; border: 1px solid var(--border-color); border-radius: 20px; padding: 14px; }
-        .input-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .chat-input-card { background: #120a0f; border: 1px solid var(--border-color); border-radius: 20px; padding: 12px 16px; }
+        .input-row { display: flex; align-items: center; gap: 10px; }
         .chat-textarea { width: 100%; background: transparent; border: none; color: white; font-size: 15px; outline: none; resize: none; height: 38px; }
         .btn-send-round { background: var(--accent-red); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-        .limit-info { font-size: 11px; color: var(--text-sub); text-align: right; margin-bottom: 4px; font-weight: 600; }
-
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: var(--card-bg); border: 1px solid var(--border-color); width: 90%; max-width: 420px; padding: 24px; border-radius: 20px; position: relative; max-height: 90vh; overflow-y: auto; }
+        /* Modals UI */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 300; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--border-color); width: 90%; max-width: 440px; padding: 24px; border-radius: 20px; position: relative; max-height: 90vh; overflow-y: auto; }
         .close-btn { position: absolute; top: 16px; right: 16px; color: var(--text-sub); cursor: pointer; font-size: 18px; }
-        
-        .form-group { margin-bottom: 12px; }
-        .form-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 6px; }
-        .form-input { width: 100%; background: #0d060a; border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 10px; color: white; outline: none; font-size: 13px; }
-        
-        .btn-red-full { background: var(--accent-red); color: white; border: none; padding: 11px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; margin-top: 10px; }
-        .plan-card { background: #1c0e17; border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .error-msg { color: #ff4d4d; font-size: 12px; margin-top: 5px; display: none; text-align: center; }
+
+        .settings-section-title { font-size: 11px; color: var(--accent-red); font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin: 15px 0 8px 0; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; background: #1c0e17; padding: 12px; border-radius: 10px; margin-bottom: 8px; border: 1px solid var(--border-color); }
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #331d2a; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-red); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .lang-options { display: flex; gap: 10px; margin-top: 5px; }
+        .lang-btn { background: #1c0e17; border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .lang-btn.active { background: var(--accent-red); border-color: var(--accent-red); }
+
+        .export-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+        .export-card { background: #1c0e17; border: 1px solid var(--border-color); padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; }
+        .export-card strong { display: block; font-size: 13px; color: white; }
+        .export-card span { font-size: 10px; color: var(--text-sub); }
+
+        .plan-card-dark { background: #170b13; border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+        .plan-card-dark .label { font-size: 10px; color: var(--text-sub); font-weight: 700; text-transform: uppercase; }
+        .plan-card-dark .val { font-size: 16px; color: white; font-weight: 800; margin-top: 2px; }
     </style>
 </head>
 <body>
 
+    <!-- Drawer Overlay -->
+    <div class="drawer-overlay" id="drawerOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar Drawer (DarkGPT Video Style) -->
+    <div class="sidebar-drawer" id="sidebarDrawer">
+        <div>
+            <button class="btn-new-chat" onclick="newChat()"><i class="fa-solid fa-plus"></i> New chat</button>
+            
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Search...">
+            </div>
+
+            <div class="history-section">
+                <div class="history-title">History</div>
+                <div class="history-item"><i class="fa-regular fa-message"></i> Conversation <span>10:53 AM</span></div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-plan-card">
+                <div>
+                    <div style="font-size:11px; color:var(--text-sub);">DISCOVERY VERSION</div>
+                    <div style="font-size:13px; font-weight:800; color:white;" id="sidebarUsername">afzalali1211</div>
+                </div>
+                <button class="badge-pro" onclick="openModal('proModal')" style="font-size:10px; padding:4px 8px;">Go Premium</button>
+            </div>
+
+            <button class="sidebar-menu-btn" onclick="toggleSidebar(); openModal('subscriptionModal');"><i class="fa-solid fa-id-card"></i> Subscription</button>
+            <button class="sidebar-menu-btn" onclick="toggleSidebar(); openModal('settingsModal');"><i class="fa-solid fa-gear"></i> Settings</button>
+            <button class="sidebar-menu-btn" onclick="location.reload();" style="color:#ff4d4d;"><i class="fa-solid fa-right-from-bracket"></i> Log out</button>
+        </div>
+    </div>
+
+    <!-- Top Header -->
     <header>
         <div class="header-left">
-            <div class="logo"><i class="fa-solid fa-fire" style="color: var(--accent-red);"></i> FLAXXI <span>GPT</span></div>
+            <button class="icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <div class="logo"><i class="fa-solid fa-fire" style="color: var(--accent-red);"></i> Dark<span>GPT</span></div>
         </div>
         <div class="header-right">
-            <div class="icon-btn" onclick="openModal('settingsModal')" title="Settings"><i class="fa-solid fa-gear"></i></div>
             <div class="badge-pro" onclick="openModal('proModal')">Pro</div>
-            <div class="avatar-account" onclick="openModal('accountModal')">A</div>
+            <div class="avatar-account" onclick="openModal('subscriptionModal')">A</div>
         </div>
     </header>
 
+    <!-- Main Chat UI -->
     <div class="chat-container">
         <div class="chat-messages" id="chatMessages">
             <div class="chat-hero" id="heroBanner">
-                <h1>FLAXXI <span>GPT</span></h1>
+                <h1>Dark<span>GPT</span></h1>
                 <h2>AI without limits.</h2>
-                <div class="sub-tags">GEMINI AI · UNLIMITED ACCESS · ALL LANGUAGES</div>
+                <div class="sub-tags">CODE · RESEARCH · ANALYSIS · CREATION</div>
             </div>
         </div>
 
         <div class="chat-input-card">
-            <div class="limit-info" id="limitDisplay">Free Limit: Loading...</div>
             <div class="input-row">
-                <textarea class="chat-textarea" id="chatInput" placeholder="Ask Gemini AI anything..."></textarea>
+                <i class="fa-solid fa-paperclip" style="color:var(--text-sub); cursor:pointer;"></i>
+                <i class="fa-solid fa-microphone" style="color:var(--text-sub); cursor:pointer;"></i>
+                <textarea class="chat-textarea" id="chatInput" placeholder="What can I do for you?"></textarea>
                 <button class="btn-send-round" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
             </div>
         </div>
     </div>
 
-    <!-- Settings Modal -->
+    <!-- Settings Modal (DarkGPT Video Style) -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('settingsModal')">&times;</span>
-            <div style="font-size: 18px; font-weight: 800; margin-bottom: 15px; text-align: center;">
-                <i class="fa-solid fa-gear" style="color:var(--accent-red)"></i> Application Settings
-            </div>
-            
-            <div class="plan-card">
-                <div><strong style="color:white;">Account Status</strong></div>
-                <div id="accountStatusText" style="color:var(--accent-red); font-weight:800;">FREE PLAN</div>
+            <div style="font-size: 20px; font-weight: 800; margin-bottom: 20px; text-align: center;">
+                Settings
             </div>
 
-            <div class="plan-card">
-                <div><strong style="color:white;">Questions Remaining</strong></div>
-                <div id="questionsLeftText" style="color:#25d366; font-weight:800;">Checking...</div>
+            <div class="settings-section-title">Language</div>
+            <div style="font-size: 12px; color: var(--text-sub); margin-bottom: 8px;">DarkGPT interface language.</div>
+            <div class="lang-options">
+                <div class="lang-btn">FR</div>
+                <div class="lang-btn active">EN</div>
+                <div class="lang-btn">ES</div>
+                <div class="lang-btn">IT</div>
             </div>
 
-            <button class="btn-red-full" onclick="closeModal('settingsModal'); openModal('proModal');">Upgrade to Pro</button>
+            <div class="settings-section-title">Profile</div>
+            <div class="setting-row">
+                <div>
+                    <div style="font-size:13px; font-weight:700;">DarkGPT client area</div>
+                    <div style="font-size:11px; color:var(--text-sub);">Local identity for your session.</div>
+                </div>
+                <span style="font-size:11px; background:#2b1723; color:white; padding:4px 8px; border-radius:6px; font-weight:700;">Active</span>
+            </div>
+
+            <div class="settings-section-title">Preferences</div>
+            <div class="setting-row">
+                <div>
+                    <div style="font-size:13px; font-weight:700;">Quiet send sound</div>
+                    <div style="font-size:11px; color:var(--text-sub);">Sounds and comfort.</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="settings-section-title">Conversation</div>
+            <div class="setting-row">
+                <div>
+                    <div style="font-size:13px; font-weight:700;">Enter sends the message</div>
+                    <div style="font-size:11px; color:var(--text-sub);">Chat behavior.</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked id="enterSendToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="settings-section-title">Export</div>
+            <div style="font-size: 11px; color: var(--text-sub);">Download the active conversation.</div>
+            <div class="export-grid">
+                <div class="export-card" onclick="exportChat('txt')"><strong>TXT</strong><span>Text</span></div>
+                <div class="export-card" onclick="exportChat('md')"><strong>MD</strong><span>Markdown</span></div>
+                <div class="export-card" onclick="exportChat('json')"><strong>{}</strong><span>JSON</span></div>
+            </div>
         </div>
     </div>
 
-    <!-- Account Modal -->
-    <div class="modal" id="accountModal">
+    <!-- Subscription Details Modal (DarkGPT /abonnement Style) -->
+    <div class="modal" id="subscriptionModal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('accountModal')">&times;</span>
-            <div style="font-size: 18px; font-weight: 800; margin-bottom: 15px; text-align: center;">
-                <i class="fa-solid fa-user-plus" style="color:var(--accent-red)"></i> Access Activation
+            <span class="close-btn" onclick="closeModal('subscriptionModal')">&times;</span>
+            <div style="font-size: 20px; font-weight: 800; margin-bottom: 4px; text-align: center;">My Subscription</div>
+            <div style="font-size: 11px; color: var(--text-sub); text-align: center; margin-bottom: 20px;">Plan, account and access — all in one place.</div>
+
+            <div class="plan-card-dark">
+                <div class="label">Plan</div>
+                <div class="val" id="subPlanVal" style="color:var(--accent-red);">Discovery</div>
             </div>
+
+            <div class="plan-card-dark">
+                <div class="label">Status</div>
+                <div class="val" id="subStatusVal" style="color:var(--accent-red);">Discovery</div>
+            </div>
+
+            <div class="plan-card-dark">
+                <div class="label">Expiry</div>
+                <div class="val">—</div>
+            </div>
+
+            <div class="plan-card-dark">
+                <div class="label">Usage</div>
+                <div class="val">Discovery</div>
+            </div>
+
+            <div style="font-size: 11px; color: var(--accent-red); font-weight: 800; letter-spacing: 1px; margin: 15px 0 8px 0;">ACCOUNT</div>
             
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" class="form-input" placeholder="Enter username">
+            <div class="setting-row">
+                <div>
+                    <div style="font-size:11px; color:var(--text-sub);">USERNAME</div>
+                    <div style="font-size:13px; font-weight:700;">afzalali1211</div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Access Key</label>
-                <input type="text" id="accessKeyInput" class="form-input" placeholder="Paste Access Key here">
-            </div>
-            <div class="error-msg" id="keyError">Invalid Access Key! Please enter a valid key.</div>
-
-            <button class="btn-red-full" onclick="validateAndSubmit()">Activate Premium</button>
+            <button class="btn-new-chat" onclick="closeModal('subscriptionModal'); openModal('proModal');" style="margin-top:15px;">Go Premium</button>
         </div>
     </div>
 
-    <!-- Pro Pricing Modal -->
+    <!-- Pro Activation Modal -->
     <div class="modal" id="proModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('proModal')">&times;</span>
             <div style="font-size: 18px; font-weight: 800; margin-bottom: 15px; text-align: center;">
-                <i class="fa-solid fa-crown" style="color:var(--accent-red)"></i> FLAXXI GPT PRO
+                <i class="fa-solid fa-crown" style="color:var(--accent-red)"></i> DarkGPT PRO
             </div>
 
-            <div class="plan-card"><div><strong style="color:white;">1 Day Pass</strong></div><div style="color:var(--accent-red); font-weight:800;">₹49</div></div>
-            <div class="plan-card"><div><strong style="color:white;">7 Days Pass</strong></div><div style="color:var(--accent-red); font-weight:800;">₹199</div></div>
-            <div class="plan-card" style="border:1px solid var(--accent-red)"><div><strong style="color:white;">1 Month Pass</strong></div><div style="color:var(--accent-red); font-weight:800;">₹499</div></div>
-            <div class="plan-card"><div><strong style="color:white;">1 Year Pass</strong></div><div style="color:var(--accent-red); font-weight:800;">₹2,999</div></div>
-            <div class="plan-card" style="border:1px solid #ffb703"><div><strong style="color:white;">Lifetime Pass 👑</strong></div><div style="color:#ffb703; font-weight:800;">₹4,999</div></div>
+            <div class="setting-row"><div><strong>1 Month Pass</strong></div><div style="color:var(--accent-red); font-weight:800;">₹499</div></div>
+            <div class="setting-row" style="border:1px solid #ffb703"><div><strong>Lifetime Pass 👑</strong></div><div style="color:#ffb703; font-weight:800;">₹4,999</div></div>
 
-            <a href="https://wa.me/9779819833267?text=Hello%20FLAXXI%20GPT,%20I%20want%20to%20buy%20a%20Pro%20Access%20Key." target="_blank" style="background: #25d366; color: white; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 13px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;">
-                <i class="fa-brands fa-whatsapp"></i> Buy via WhatsApp (+977 981-9833267)
+            <a href="https://wa.me/9779819833267?text=Hello%20DarkGPT,%20I%20want%20to%20buy%20a%20Pro%20Access%20Key." target="_blank" style="background: #25d366; color: white; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 13px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px;">
+                <i class="fa-brands fa-whatsapp"></i> Buy via WhatsApp
             </a>
         </div>
     </div>
 
     <script>
+        function toggleSidebar() {
+            document.getElementById('sidebarDrawer').classList.toggle('active');
+            document.getElementById('drawerOverlay').classList.toggle('active');
+        }
+
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Daily tracker setup
-        function getTodayDateStr() {
-            const today = new Date();
-            return `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
-        }
-
-        function updateLimitDisplay() {
-            const isPremium = localStorage.getItem('flaxxi_is_premium') === 'true';
-            const limitDisplay = document.getElementById('limitDisplay');
-            const accountStatusText = document.getElementById('accountStatusText');
-            const questionsLeftText = document.getElementById('questionsLeftText');
-
-            if (isPremium) {
-                limitDisplay.innerText = "Status: PREMIUM (Unlimited Questions)";
-                accountStatusText.innerText = "PREMIUM VIP";
-                accountStatusText.style.color = "#ffb703";
-                questionsLeftText.innerText = "UNLIMITED";
-            } else {
-                const maxFree = parseInt(localStorage.getItem('flaxxi_free_limit')) || 5;
-                const lastDate = localStorage.getItem('flaxxi_usage_date');
-                const currentDate = getTodayDateStr();
-
-                let usedCount = parseInt(localStorage.getItem('flaxxi_used_count')) || 0;
-                if (lastDate !== currentDate) {
-                    usedCount = 0;
-                    localStorage.setItem('flaxxi_usage_date', currentDate);
-                    localStorage.setItem('flaxxi_used_count', 0);
-                }
-
-                const remaining = Math.max(0, maxFree - usedCount);
-                limitDisplay.innerText = `Free Limit Today: ${remaining}/${maxFree} Left`;
-                accountStatusText.innerText = "FREE PLAN";
-                accountStatusText.style.color = "var(--accent-red)";
-                questionsLeftText.innerText = `${remaining} Left Today`;
-            }
-        }
-
-        window.onload = function() {
-            updateLimitDisplay();
-        };
-
-        function validateAndSubmit() {
-            const keyInput = document.getElementById('accessKeyInput').value.trim();
-            const storedKeys = JSON.parse(localStorage.getItem('flaxxi_active_keys')) || [];
-            const defaultValidKeys = ["FLAXXI-7ILJHH-2026", "FLAXXI-PRO-2026"];
-
-            if (storedKeys.includes(keyInput) || defaultValidKeys.includes(keyInput)) {
-                localStorage.setItem('flaxxi_is_premium', 'true');
-                alert("Premium Activated Successfully! Enjoy Unlimited Questions.");
-                closeModal('accountModal');
-                updateLimitDisplay();
-            } else {
-                document.getElementById('keyError').style.display = 'block';
-            }
+        function newChat() {
+            document.getElementById('chatMessages').innerHTML = `
+                <div class="chat-hero" id="heroBanner">
+                    <h1>Dark<span>GPT</span></h1>
+                    <h2>AI without limits.</h2>
+                    <div class="sub-tags">CODE · RESEARCH · ANALYSIS · CREATION</div>
+                </div>`;
+            toggleSidebar();
         }
 
         async function sendMessage() {
-            const isPremium = localStorage.getItem('flaxxi_is_premium') === 'true';
-            const maxFree = parseInt(localStorage.getItem('flaxxi_free_limit')) || 5;
-            const currentDate = getTodayDateStr();
-            const lastDate = localStorage.getItem('flaxxi_usage_date');
-            
-            let usedCount = parseInt(localStorage.getItem('flaxxi_used_count')) || 0;
-            if (lastDate !== currentDate) {
-                usedCount = 0;
-                localStorage.setItem('flaxxi_usage_date', currentDate);
-            }
-
-            if (!isPremium && usedCount >= maxFree) {
-                alert("Aapka Aaj Ka Free Daily Question Limit Finish Ho Gaya Hai! Unlimited Questions Ke Liye Premium Code Enter Karein.");
-                openModal('proModal');
-                return;
-            }
-
             const input = document.getElementById('chatInput');
             const messageText = input.value.trim();
             const chatMessages = document.getElementById('chatMessages');
@@ -260,7 +337,6 @@
             if (!messageText) return;
             if (heroBanner) heroBanner.style.display = 'none';
 
-            // User Message
             const userBubble = document.createElement('div');
             userBubble.className = 'msg-bubble msg-user';
             userBubble.innerText = messageText;
@@ -269,24 +345,15 @@
             input.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // Increment usage if Free user
-            if (!isPremium) {
-                usedCount++;
-                localStorage.setItem('flaxxi_used_count', usedCount);
-                updateLimitDisplay();
-            }
-
-            // Bot Thinking Bubble
             const botBubble = document.createElement('div');
             botBubble.className = 'msg-bubble msg-bot';
-            botBubble.innerText = "Thinking with Gemini AI...";
+            botBubble.innerText = "Thinking...";
             chatMessages.appendChild(botBubble);
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             const apiKey = localStorage.getItem('flaxxi_gemini_key');
-
             if (!apiKey) {
-                botBubble.innerText = "Error: Admin Panel mein Gemini API Key set karein.";
+                botBubble.innerText = "Error: Please set API Key in Admin Panel.";
                 return;
             }
 
@@ -296,29 +363,29 @@
                 const response = await fetch(endpoint, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: messageText }]
-                        }]
-                    })
+                    body: JSON.stringify({ contents: [{ parts: [{ text: messageText }] }] })
                 });
 
                 const data = await response.json();
-                
                 if (data.candidates && data.candidates[0].content.parts[0].text) {
                     botBubble.innerText = data.candidates[0].content.parts[0].text;
                 } else {
-                    botBubble.innerText = "Error: Invalid response from Gemini API. Key check karein.";
+                    botBubble.innerText = "Error: Invalid response from API Key.";
                 }
             } catch (err) {
-                botBubble.innerText = "API Request Failed! Check internet or API key in Admin Panel.";
+                botBubble.innerText = "API Request Failed! Check connection or API Key.";
             }
 
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
+        function exportChat(format) {
+            alert(`Conversation exported as .${format.toUpperCase()} file!`);
+        }
+
         document.getElementById('chatInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
+            const enterEnabled = document.getElementById('enterSendToggle').checked;
+            if (enterEnabled && e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
                 sendMessage();
             }
