@@ -127,18 +127,19 @@
         .chat-container { flex: 1; max-width: 650px; width: 100%; margin: 0 auto; padding: 20px 15px 120px; display: none; flex-direction: column; gap: 15px; overflow-y: auto; }
         .msg-bubble { position: relative; max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
         .msg-user { align-self: flex-end; background: var(--accent-red); color: #fff; border-bottom-right-radius: 4px; }
-        .msg-ai { align-self: flex-start; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); border-bottom-left-radius: 4px; padding-bottom: 30px; }
+        .msg-ai { align-self: flex-start; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); border-bottom-left-radius: 4px; padding-bottom: 32px; }
         .msg-error { align-self: flex-start; background: rgba(255, 42, 85, 0.15); border: 1px solid var(--accent-red); color: #ff6b8b; }
 
-        /* Audio Play Icon Button inside AI message */
+        /* Audio Play Icon Button */
         .msg-play-btn {
             position: absolute; bottom: 6px; right: 10px;
-            background: transparent; border: none; color: var(--text-sub);
-            cursor: pointer; font-size: 13px; transition: color 0.2s;
-            display: flex; align-items: center; gap: 4px;
+            background: transparent; border: none; color: var(--accent-red);
+            cursor: pointer; font-size: 12px; font-weight: 600;
+            display: flex; align-items: center; gap: 4px; padding: 2px 6px;
+            border-radius: 6px; transition: background 0.2s;
         }
-        .msg-play-btn:hover { color: var(--accent-red); }
-        .msg-play-btn.playing { color: var(--accent-red); animation: pulse 1s infinite; }
+        .msg-play-btn:hover { background: rgba(255, 42, 85, 0.1); }
+        .msg-play-btn.playing { animation: pulse 1s infinite; }
 
         /* Input Controls Bar */
         .input-bar-container {
@@ -179,6 +180,7 @@
             100% { opacity: 1; }
         }
 
+        /* Red Send Button */
         .btn-send {
             background: var(--accent-red); color: white; border: none; width: 34px; height: 34px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
@@ -318,6 +320,7 @@
             <input type="file" id="fileInput" style="display:none;" onchange="handleFileSelected(event)">
             <i class="fa-solid fa-paperclip btn-icon" title="Attach File" onclick="document.getElementById('fileInput').click()"></i>
             
+            <!-- Language Select Dropdown -->
             <select id="langSelect" class="language-select">
                 <option value="Hindi">HI (Hindi)</option>
                 <option value="English" selected>EN (English)</option>
@@ -347,11 +350,12 @@
             
             <input type="text" id="userInput" class="chat-input" placeholder="What can I do for you?" onkeypress="handleKeyPress(event)">
             
+            <!-- Send Button -->
             <button class="btn-send" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
         </div>
     </div>
 
-    <!-- Account Login/Signup Modal -->
+    <!-- Account Modal -->
     <div class="modal" id="authModal">
         <div class="modal-content">
             <i class="fa-solid fa-xmark modal-close" onclick="closeModal('authModal')"></i>
@@ -403,7 +407,7 @@
         </div>
     </div>
 
-    <!-- My Subscription Modal -->
+    <!-- Subscription Modal -->
     <div class="modal" id="subModal">
         <div class="modal-content">
             <i class="fa-solid fa-xmark modal-close" onclick="closeModal('subModal')"></i>
@@ -440,8 +444,8 @@
         let attachedFileData = null;
         let recognition = null;
         let isRecording = false;
-        let currentSpeech = null;
         let activePlayBtn = null;
+        let availableVoices = [];
 
         const FREE_DAILY_LIMIT = 9;
 
@@ -453,9 +457,20 @@
                 updateUIForUser(savedUser);
             }
             initSpeechRecognition();
+            loadVoices();
             checkAndResetDailyLimit();
             updateLimitTag();
         };
+
+        // All Languages Voice Dynamic Engine
+        function loadVoices() {
+            if ('speechSynthesis' in window) {
+                availableVoices = window.speechSynthesis.getVoices();
+                window.speechSynthesis.onvoiceschanged = () => {
+                    availableVoices = window.speechSynthesis.getVoices();
+                };
+            }
+        }
 
         function isPaidUser() {
             return localStorage.getItem('flaxxi_is_paid') === 'true';
@@ -530,7 +545,17 @@
                 recognition.stop();
             } else {
                 const selectedLang = document.getElementById('langSelect').value;
-                recognition.lang = selectedLang === 'Hindi' ? 'hi-IN' : 'en-US';
+                const langMap = {
+                    'Hindi': 'hi-IN', 'English': 'en-US', 'Nepali': 'ne-NP',
+                    'Hinglish': 'hi-IN', 'Marathi': 'mr-IN', 'Bengali': 'bn-IN',
+                    'Punjabi': 'pa-IN', 'Gujarati': 'gu-IN', 'Tamil': 'ta-IN',
+                    'Telugu': 'te-IN', 'Kannada': 'kn-IN', 'Malayalam': 'ml-IN',
+                    'Urdu': 'ur-PK', 'Spanish': 'es-ES', 'French': 'fr-FR',
+                    'German': 'de-DE', 'Arabic': 'ar-SA', 'Russian': 'ru-RU',
+                    'Chinese': 'zh-CN', 'Japanese': 'ja-JP', 'Korean': 'ko-KR',
+                    'Portuguese': 'pt-PT'
+                };
+                recognition.lang = langMap[selectedLang] || 'en-US';
                 recognition.start();
             }
         }
@@ -540,7 +565,7 @@
             document.getElementById('micBtn').classList.remove('active');
         }
 
-        // Text-to-Speech Play Functionality
+        // Text-to-Speech Play Functionality with All Languages Support
         function playTextToSpeech(text, btnElement) {
             if (!('speechSynthesis' in window)) {
                 alert("Audio playback is not supported on your browser.");
@@ -559,21 +584,33 @@
                 }
             }
 
-            const utterance = new SpeechSynthesisUtterance(text);
+            const cleanText = text.replace(/[*_#`~]/g, '');
+            const utterance = new SpeechSynthesisUtterance(cleanText);
             const selectedLang = document.getElementById('langSelect').value;
             
-            const langMap = {
-                'Hindi': 'hi-IN', 'English': 'en-US', 'Nepali': 'ne-NP',
-                'Hinglish': 'hi-IN', 'Marathi': 'mr-IN', 'Bengali': 'bn-IN',
-                'Punjabi': 'pa-IN', 'Gujarati': 'gu-IN', 'Tamil': 'ta-IN',
-                'Telugu': 'te-IN', 'Kannada': 'kn-IN', 'Malayalam': 'ml-IN',
-                'Urdu': 'ur-PK', 'Spanish': 'es-ES', 'French': 'fr-FR',
-                'German': 'de-DE', 'Arabic': 'ar-SA', 'Russian': 'ru-RU',
-                'Chinese': 'zh-CN', 'Japanese': 'ja-JP', 'Korean': 'ko-KR',
-                'Portuguese': 'pt-PT'
+            const langCodeMap = {
+                'Hindi': 'hi', 'English': 'en', 'Nepali': 'ne',
+                'Hinglish': 'hi', 'Marathi': 'mr', 'Bengali': 'bn',
+                'Punjabi': 'pa', 'Gujarati': 'gu', 'Tamil': 'ta',
+                'Telugu': 'te', 'Kannada': 'kn', 'Malayalam': 'ml',
+                'Urdu': 'ur', 'Spanish': 'es', 'French': 'fr',
+                'German': 'de', 'Arabic': 'ar', 'Russian': 'ru',
+                'Chinese': 'zh', 'Japanese': 'ja', 'Korean': 'ko',
+                'Portuguese': 'pt'
             };
 
-            utterance.lang = langMap[selectedLang] || 'en-US';
+            const targetLang = langCodeMap[selectedLang] || 'en';
+            utterance.lang = targetLang;
+
+            if (availableVoices.length === 0) {
+                availableVoices = window.speechSynthesis.getVoices();
+            }
+
+            const matchingVoice = availableVoices.find(v => v.lang.startsWith(targetLang));
+            if (matchingVoice) {
+                utterance.voice = matchingVoice;
+            }
+
             btnElement.classList.add('playing');
             btnElement.innerHTML = '<i class="fa-solid fa-stop"></i> Stop';
             activePlayBtn = btnElement;
@@ -778,7 +815,6 @@
             
             msgDiv.innerText = text;
 
-            // Adding Speech Play Icon Button for AI responses
             if (addPlayBtn) {
                 const playBtn = document.createElement('button');
                 playBtn.className = 'msg-play-btn';
