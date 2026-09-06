@@ -23,16 +23,8 @@
             background-color: #1a1a1a;
             border-bottom: 1px solid #333;
         }
-        .logo {
-            color: #ff2a2a;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        .header-btns {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
+        .logo { color: #ff2a2a; font-weight: bold; font-size: 1.2rem; }
+        .header-btns { display: flex; gap: 10px; align-items: center; }
         .redeem-btn {
             background-color: #e60000;
             color: white;
@@ -42,16 +34,13 @@
             font-weight: bold;
             cursor: pointer;
         }
-        .avatar {
-            background-color: #e60000;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
+        .plan-badge {
+            background-color: #333;
+            color: #ff2a2a;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 10px;
+            border: 1px solid #ff2a2a;
         }
         .chat-container {
             flex: 1;
@@ -61,38 +50,18 @@
             flex-direction: column;
             gap: 15px;
         }
-        .message-container {
-            display: flex;
-            flex-direction: column;
-            max-width: 80%;
-        }
-        .user-container {
-            align-self: flex-end;
-        }
-        .ai-container {
-            align-self: flex-start;
-        }
+        .message-container { display: flex; flex-direction: column; max-width: 80%; }
+        .user-container { align-self: flex-end; }
+        .ai-container { align-self: flex-start; }
         .message-bubble {
             padding: 12px 16px;
             border-radius: 12px;
             font-size: 0.95rem;
             line-height: 1.4;
         }
-        .user-container .message-bubble {
-            background-color: #5a0000;
-            color: #ffffff;
-            border-bottom-right-radius: 2px;
-        }
-        .ai-container .message-bubble {
-            background-color: #1f1f1f;
-            color: #ffffff;
-            border-bottom-left-radius: 2px;
-        }
-        .timestamp {
-            font-size: 0.75rem;
-            color: #888;
-            margin-bottom: 4px;
-        }
+        .user-container .message-bubble { background-color: #5a0000; color: #ffffff; }
+        .ai-container .message-bubble { background-color: #1f1f1f; color: #ffffff; }
+        .timestamp { font-size: 0.75rem; color: #888; margin-bottom: 4px; }
         .input-container {
             padding: 15px;
             background-color: #141414;
@@ -129,8 +98,8 @@
     <header>
         <div class="logo">FLAXXI AI</div>
         <div class="header-btns">
-            <button class="redeem-btn">Redeem Key</button>
-            <div class="avatar">A</div>
+            <span class="plan-badge" id="userPlan">Plan: Free</span>
+            <button class="redeem-btn" onclick="promptRedeem()">Redeem Key</button>
         </div>
     </header>
 
@@ -144,54 +113,56 @@
     <script>
         const chatBox = document.getElementById('chatBox');
         const userInput = document.getElementById('userInput');
+        let freeMsgCount = parseInt(localStorage.getItem('flaxxi_msg_count') || '0');
+        let activePlan = localStorage.getItem('flaxxi_active_plan') || 'free';
 
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
+        document.getElementById('userPlan').innerText = `Plan: ${activePlan.toUpperCase()}`;
 
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;")
-                      .replace(/</g, "&lt;")
-                      .replace(/>/g, "&gt;")
-                      .replace(/"/g, "&quot;")
-                      .replace(/'/g, "&#039;");
-        }
+        function promptRedeem() {
+            const key = prompt("Enter your License Key:");
+            if (!key) return;
 
-        function generateMultilingualResponse(query) {
-            const lower = query.toLowerCase();
-            if (lower.includes('kaise') || lower.includes('kya') || lower.includes('namaste') || lower.includes('batao')) {
-                return `Main FLAXXI AI hoon. Aapke sawal "${escapeHtml(query)}" ka jawab dene ke liye taiyar hoon.`;
+            let keys = JSON.parse(localStorage.getItem('flaxxi_valid_keys') || "{}");
+            if (keys[key]) {
+                const planName = keys[key];
+                localStorage.setItem('flaxxi_active_plan', planName);
+                delete keys[key]; // Consume key
+                localStorage.setItem('flaxxi_valid_keys', JSON.stringify(keys));
+                alert(`Success! ${planName.toUpperCase()} Plan Activated!`);
+                location.reload();
             } else {
-                return `I am FLAXXI AI. Here is the response for: "${escapeHtml(query)}".`;
+                alert("Invalid Key!");
             }
         }
 
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+
         function sendMessage() {
+            if (activePlan === 'free' && freeMsgCount >= 5) {
+                alert("Free limit reached (5 messages)! Please Redeem a Key for 1 Month, 1 Year, or Lifetime access.");
+                return;
+            }
+
             const text = userInput.value.trim();
             if (text === "") return;
 
-            // Add User Message
+            if (activePlan === 'free') {
+                freeMsgCount++;
+                localStorage.setItem('flaxxi_msg_count', freeMsgCount.toString());
+            }
+
             const userContainer = document.createElement('div');
             userContainer.className = 'message-container user-container';
-            userContainer.innerHTML = `
-                <div class="timestamp">Just now</div>
-                <div class="message-bubble">${escapeHtml(text)}</div>
-            `;
+            userContainer.innerHTML = `<div class="timestamp">Just now</div><div class="message-bubble">${text}</div>`;
             chatBox.appendChild(userContainer);
 
             userInput.value = '';
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // FLAXXI AI Response
             setTimeout(() => {
                 const aiContainer = document.createElement('div');
                 aiContainer.className = 'message-container ai-container';
-                const replyText = generateMultilingualResponse(text);
-
-                aiContainer.innerHTML = `
-                    <div class="timestamp">Just now</div>
-                    <div class="message-bubble">${replyText}</div>
-                `;
+                aiContainer.innerHTML = `<div class="timestamp">Just now</div><div class="message-bubble">Main FLAXXI AI hoon. Aapka message mil gaya!</div>`;
                 chatBox.appendChild(aiContainer);
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 600);
