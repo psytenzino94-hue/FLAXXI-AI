@@ -35,7 +35,7 @@
             border-radius: 20px;
             padding: 35px 25px;
             width: 100%;
-            max-width: 380px;
+            max-width: 420px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
             text-align: center;
         }
@@ -116,6 +116,18 @@
 
     <!-- Admin Dashboard -->
     <div class="dashboard" id="dashboard">
+        
+        <!-- Gemini API Key Configuration Section -->
+        <div class="dash-card">
+            <h3>Google Gemini API Settings</h3>
+            <div class="input-group">
+                <label>Gemini API Key</label>
+                <input type="password" id="apiKeyInput" class="form-input" placeholder="Paste Gemini Key (AIzaSy...)">
+            </div>
+            <button class="btn-signin" onclick="saveApiKey()">Save Gemini API Key</button>
+        </div>
+
+        <!-- Key Generation Section -->
         <div class="dash-card">
             <h3>Generate Access Key</h3>
             
@@ -139,6 +151,13 @@
         const ADMIN_USERNAME = "Tenzino";
         const ADMIN_PASSWORD = "Tenzino@766";
 
+        window.onload = function() {
+            const savedKey = localStorage.getItem('flaxxi_gemini_key');
+            if (savedKey) {
+                document.getElementById('apiKeyInput').value = savedKey;
+            }
+        };
+
         function handleLogin() {
             const userIn = document.getElementById('adminUser').value.trim();
             const passIn = document.getElementById('adminPass').value.trim();
@@ -151,12 +170,21 @@
             }
         }
 
+        function saveApiKey() {
+            const keyVal = document.getElementById('apiKeyInput').value.trim();
+            if (keyVal) {
+                localStorage.setItem('flaxxi_gemini_key', keyVal);
+                alert('Gemini API Key Saved Successfully!');
+            } else {
+                alert('Please enter a valid Gemini API Key.');
+            }
+        }
+
         function generateKeyByDuration() {
             const duration = document.getElementById('planDuration').value;
             const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
             const newKey = `FLAXXI-${duration}-${randomCode}`;
 
-            // Save key dynamically into shared browser database
             let existingKeys = JSON.parse(localStorage.getItem('flaxxi_active_keys')) || [];
             existingKeys.push(newKey);
             localStorage.setItem('flaxxi_active_keys', JSON.stringify(existingKeys));
