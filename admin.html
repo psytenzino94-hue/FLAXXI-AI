@@ -101,6 +101,15 @@
             background: rgba(10, 4, 7, 0.96); backdrop-filter: blur(10px);
             z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px;
         }
+
+        .modal-header {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        .modal-header span { color: var(--accent-red); }
     </style>
 </head>
 <body>
@@ -108,7 +117,8 @@
     <!-- Admin Login Modal -->
     <div class="admin-login-overlay" id="adminLoginModal">
         <div class="card" style="width: 100%; max-width: 360px;">
-            <div class="card-title"><i class="fa-solid fa-lock"></i> Admin Access</div>
+            <div class="modal-header">FLAXXI <span>AI</span></div>
+            <div class="card-title"><i class="fa-solid fa-lock"></i> ADMIN ACCESS</div>
             <div class="input-group">
                 <label>Username</label>
                 <input type="text" id="loginAdminUser" class="form-input" placeholder="Admin Username">
@@ -196,18 +206,22 @@
     </div>
 
     <script>
-        // Init Admin Credentials with Tenzino & Tenzino@766
-        if (!localStorage.getItem('flaxxi_admin_user')) {
-            localStorage.setItem('flaxxi_admin_user', 'Tenzino');
-            localStorage.setItem('flaxxi_admin_pass', 'Tenzino@766');
+        function initCredentials() {
+            if (!localStorage.getItem('flaxxi_admin_user')) {
+                localStorage.setItem('flaxxi_admin_user', 'Tenzino');
+            }
+            if (!localStorage.getItem('flaxxi_admin_pass')) {
+                localStorage.setItem('flaxxi_admin_pass', 'Tenzino@766');
+            }
         }
 
         function verifyAdminLogin() {
+            initCredentials();
             const u = document.getElementById('loginAdminUser').value.trim();
             const p = document.getElementById('loginAdminPass').value.trim();
 
-            const storedU = localStorage.getItem('flaxxi_admin_user');
-            const storedP = localStorage.getItem('flaxxi_admin_pass');
+            const storedU = localStorage.getItem('flaxxi_admin_user') || 'Tenzino';
+            const storedP = localStorage.getItem('flaxxi_admin_pass') || 'Tenzino@766';
 
             if (u === storedU && p === storedP) {
                 document.getElementById('adminLoginModal').style.display = 'none';
@@ -275,6 +289,10 @@
             navigator.clipboard.writeText(keyText);
             alert('Access Key copied to clipboard: ' + keyText);
         }
+
+        window.onload = function() {
+            initCredentials();
+        };
     </script>
 </body>
 </html>
