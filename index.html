@@ -590,16 +590,16 @@
             toggleSidebar();
         }
 
-        // FIXED SEND MESSAGE FUNCTION
+        // PERFECT CHECK: PEHLI MESSAGE PAR NAHI AAYEGA, 7 COMPLETE HONE PAR 8th PAR PLAN MODAL KHULEGA
         async function sendMessage() {
             const currentUser = localStorage.getItem('flaxxi_current_user');
             if (!currentUser) { openModal('authOverlay'); return; }
 
             const userObj = JSON.parse(localStorage.getItem('flaxxi_user_' + currentUser)) || { plan: 'Discovery' };
 
-            // AGAR ALREADY 7 MESSAGES BHEJ CHUKA HAI TOH 8th MESSAGE PAR PLAN MODAL KHULEGA
             if (userObj.plan === 'Discovery') {
                 const currentUsed = getUserDailyChatCount(currentUser);
+                // Agar count 7 ya usse zyada ho chuka hai, tabhi Plan Modal aayega
                 if (currentUsed >= DAILY_FREE_LIMIT) {
                     openModal('planModal');
                     return;
@@ -617,7 +617,7 @@
                 messageText = `[Attached File: ${selectedFile.name}]\n` + messageText;
             }
 
-            // Message send hone se pehle count badhaya gaya (1/7, 2/7 ... 7/7 tak bhej sake)
+            // Message bhejne ke baad hi count increment hoga
             if (userObj.plan === 'Discovery') {
                 incrementUserDailyChatCount(currentUser);
                 updateLimitUI(userObj);
