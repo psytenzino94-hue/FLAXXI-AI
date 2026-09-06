@@ -70,6 +70,7 @@
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
+            text-transform: uppercase;
         }
 
         /* Sidebar Drawer */
@@ -112,7 +113,7 @@
 
         .menu-item { display: flex; align-items: center; gap: 10px; color: white; padding: 10px 0; cursor: pointer; font-size: 14px; }
 
-        /* Main Welcome Hero */
+        /* Main Hero Welcome */
         .hero-container {
             flex: 1; display: flex; flex-direction: column; align-items: center;
             justify-content: center; text-align: center; padding: 20px;
@@ -162,6 +163,18 @@
             width: 100%; max-width: 400px; padding: 20px; position: relative;
         }
         .modal-close { position: absolute; top: 15px; right: 15px; color: var(--text-sub); cursor: pointer; }
+
+        /* Auth Form Inputs */
+        .auth-input {
+            width: 100%; background: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 12px; border-radius: 8px; color: #fff; outline: none; margin-bottom: 12px; font-size: 14px;
+        }
+        .btn-auth {
+            width: 100%; background: var(--accent-red); color: white; border: none;
+            padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px;
+        }
+        .auth-switch { text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-sub); }
+        .auth-switch span { color: var(--accent-red); cursor: pointer; font-weight: bold; }
         
         /* Plan Modal Specific */
         .plan-header { text-align: center; margin-bottom: 15px; }
@@ -206,7 +219,7 @@
         </div>
         <div class="nav-actions">
             <button class="btn-badge" onclick="openModal('planModal')">Plan</button>
-            <div class="user-avatar" onclick="openModal('subModal')">A</div>
+            <div class="user-avatar" id="avatarIcon" onclick="openModal('authModal')">A</div>
         </div>
     </div>
 
@@ -229,12 +242,12 @@
             <div class="version-card">
                 <div class="version-info">
                     <span>DISCOVERY VERSION</span>
-                    <strong>admin</strong>
+                    <strong id="sidebarUsername">admin</strong>
                 </div>
                 <button class="btn-upgrade-sm" onclick="openModal('planModal')">Upgrade</button>
             </div>
             <div class="menu-item" onclick="openModal('subModal')"><i class="fa-regular fa-id-card"></i> Subscription</div>
-            <div class="menu-item" style="color: var(--accent-red);"><i class="fa-solid fa-right-from-bracket"></i> Log out</div>
+            <div class="menu-item" style="color: var(--accent-red);" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Log out</div>
         </div>
     </div>
 
@@ -260,6 +273,24 @@
             <i class="fa-solid fa-microphone" style="color: var(--text-sub); font-size: 14px; cursor: pointer;"></i>
             <input type="text" id="userInput" class="chat-input" placeholder="What can I do for you?" onkeypress="handleKeyPress(event)">
             <button class="btn-send" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
+        </div>
+    </div>
+
+    <!-- Account Create / Login Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <i class="fa-solid fa-xmark modal-close" onclick="closeModal('authModal')"></i>
+            <div class="plan-header">
+                <h3 id="authTitle">Create Account</h3>
+                <p id="authSubtitle">Sign up to access FLAXXI AI features</p>
+            </div>
+            <input type="text" id="authUsername" class="auth-input" placeholder="Enter Username">
+            <input type="password" id="authPassword" class="auth-input" placeholder="Enter Password">
+            <button class="btn-auth" id="authBtn" onclick="handleAuth()">Create Account</button>
+            <div class="auth-switch">
+                <span id="authToggleText">Already have an account?</span> 
+                <span id="authToggleBtn" onclick="toggleAuthMode()">Login</span>
+            </div>
         </div>
     </div>
 
@@ -319,7 +350,7 @@
             </div>
             <div class="sub-field">
                 <label>Account Username</label>
-                <div>admin</div>
+                <div id="subAccountUser">admin</div>
             </div>
             <div class="redeem-box">
                 <label><i class="fa-solid fa-key" style="color: var(--accent-red);"></i> Redeem Access Key</label>
@@ -330,6 +361,52 @@
     </div>
 
     <script>
+        let isSignUpMode = true;
+
+        window.onload = function() {
+            const savedUser = localStorage.getItem('flaxxi_logged_user');
+            if(!savedUser) {
+                openModal('authModal');
+            } else {
+                updateUIForUser(savedUser);
+            }
+        };
+
+        function toggleAuthMode() {
+            isSignUpMode = !isSignUpMode;
+            document.getElementById('authTitle').innerText = isSignUpMode ? "Create Account" : "Login";
+            document.getElementById('authSubtitle').innerText = isSignUpMode ? "Sign up to access FLAXXI AI features" : "Enter your credentials to continue";
+            document.getElementById('authBtn').innerText = isSignUpMode ? "Create Account" : "Login";
+            document.getElementById('authToggleText').innerText = isSignUpMode ? "Already have an account?" : "Don't have an account?";
+            document.getElementById('authToggleBtn').innerText = isSignUpMode ? "Login" : "Create Account";
+        }
+
+        function handleAuth() {
+            const user = document.getElementById('authUsername').value.trim();
+            const pass = document.getElementById('authPassword').value.trim();
+
+            if(!user || !pass) {
+                alert("Please enter username and password!");
+                return;
+            }
+
+            localStorage.setItem('flaxxi_logged_user', user);
+            updateUIForUser(user);
+            closeModal('authModal');
+            alert(isSignUpMode ? "Account Created Successfully!" : "Logged In Successfully!");
+        }
+
+        function updateUIForUser(username) {
+            document.getElementById('sidebarUsername').innerText = username;
+            document.getElementById('subAccountUser').innerText = username;
+            document.getElementById('avatarIcon').innerText = username.charAt(0).toUpperCase();
+        }
+
+        function logout() {
+            localStorage.removeItem('flaxxi_logged_user');
+            location.reload();
+        }
+
         function toggleSidebar() {
             const sb = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -394,7 +471,8 @@
             appendMessage("Thinking...", 'msg-ai', 'temp-loading');
 
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+                // FIXED ENDPOINT: gemini-3.6-flash
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
