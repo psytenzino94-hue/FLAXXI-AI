@@ -16,12 +16,7 @@
             --border-color: #2b1723;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 
         body {
             background-color: var(--bg-dark);
@@ -34,7 +29,6 @@
             padding: 20px;
         }
 
-        /* Admin Card Container */
         .admin-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -46,34 +40,14 @@
             text-align: center;
         }
 
-        .admin-title {
-            font-size: 24px;
-            font-weight: 900;
-            margin-bottom: 4px;
-        }
-
+        .admin-title { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
         .admin-title span { color: var(--accent-red); }
+        .admin-subtitle { font-size: 12px; color: var(--text-sub); margin-bottom: 25px; }
 
-        .admin-subtitle {
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-bottom: 25px;
-        }
+        .input-group { text-align: left; margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 6px; font-weight: 600; }
 
-        .input-group {
-            text-align: left;
-            margin-bottom: 16px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .form-input {
+        .form-input, .form-select {
             width: 100%;
             background: #ffffff;
             border: 1px solid var(--border-color);
@@ -99,52 +73,29 @@
             box-shadow: 0 4px 15px var(--accent-glow);
         }
 
-        .error-msg {
-            color: #ff4d4d;
-            font-size: 12px;
-            margin-top: 15px;
-            display: none;
-            font-weight: 600;
-        }
+        .error-msg { color: #ff4d4d; font-size: 12px; margin-top: 15px; display: none; font-weight: 600; }
 
-        /* Dashboard Screen */
-        .dashboard {
-            display: none;
-            width: 100%;
-            max-width: 500px;
-        }
-
-        .dash-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
-        }
-
-        .dash-card h3 {
-            font-size: 16px;
-            color: var(--accent-red);
-            margin-bottom: 15px;
-            text-transform: uppercase;
-        }
+        .dashboard { display: none; width: 100%; max-width: 480px; }
+        .dash-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
+        .dash-card h3 { font-size: 16px; color: var(--accent-red); margin-bottom: 15px; text-transform: uppercase; }
 
         .key-box {
             background: #0d060a;
-            border: 1px dashed var(--border-color);
+            border: 1px dashed #25d366;
             padding: 12px;
             border-radius: 8px;
             font-family: monospace;
             font-size: 13px;
-            margin-top: 12px;
+            margin-top: 15px;
             word-break: break-all;
             color: #25d366;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <!-- Admin Login Form -->
+    <!-- Admin Login -->
     <div class="admin-card" id="loginCard">
         <div class="admin-title">FLAXXI <span>ADMIN</span></div>
         <div class="admin-subtitle">Control Panel Management</div>
@@ -160,50 +111,58 @@
         </div>
 
         <button class="btn-signin" onclick="handleLogin()">Sign In</button>
-
         <div class="error-msg" id="loginError">Invalid credentials! Try again.</div>
     </div>
 
-    <!-- Admin Panel Dashboard -->
+    <!-- Admin Dashboard -->
     <div class="dashboard" id="dashboard">
         <div class="dash-card">
-            <h3>Admin Management Dashboard</h3>
-            <p style="font-size: 13px; color: var(--text-sub);">Welcome, Tenzino! Generate new access keys for Pro users below.</p>
+            <h3>Generate Access Key</h3>
             
-            <button class="btn-signin" onclick="generateNewKey()">Generate New Pro Key</button>
-            <div class="key-box" id="keyOutput">Click button to generate key...</div>
+            <div class="input-group">
+                <label>Select Plan Validity</label>
+                <select id="planDuration" class="form-select">
+                    <option value="1DAY">1 Day Pass (24 Hours)</option>
+                    <option value="7DAYS">7 Days Pass (1 Week)</option>
+                    <option value="1MONTH" selected>1 Month Pass (30 Days)</option>
+                    <option value="1YEAR">1 Year Pass (365 Days)</option>
+                    <option value="LIFETIME">Lifetime Pass (Permanent)</option>
+                </select>
+            </div>
+
+            <button class="btn-signin" onclick="generateKeyByDuration()">Generate Access Key</button>
+            <div class="key-box" id="keyOutput">Generated key will appear here...</div>
         </div>
     </div>
 
     <script>
-        // Updated Credentials
         const ADMIN_USERNAME = "Tenzino";
         const ADMIN_PASSWORD = "Tenzino@766";
 
         function handleLogin() {
             const userIn = document.getElementById('adminUser').value.trim();
             const passIn = document.getElementById('adminPass').value.trim();
-            const errorElement = document.getElementById('loginError');
-
+            
             if (userIn === ADMIN_USERNAME && passIn === ADMIN_PASSWORD) {
                 document.getElementById('loginCard').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
             } else {
-                errorElement.style.display = 'block';
+                document.getElementById('loginError').style.display = 'block';
             }
         }
 
-        function generateNewKey() {
-            const randomKey = "FLAXXI-" + Math.random().toString(36).substring(2, 8).toUpperCase() + "-2026";
-            document.getElementById('keyOutput').innerText = "Generated Key: " + randomKey;
-        }
+        function generateKeyByDuration() {
+            const duration = document.getElementById('planDuration').value;
+            const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
+            const newKey = `FLAXXI-${duration}-${randomCode}`;
 
-        // Enter key shortcut for login
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                handleLogin();
-            }
-        });
+            // Save key dynamically into shared browser database
+            let existingKeys = JSON.parse(localStorage.getItem('flaxxi_active_keys')) || [];
+            existingKeys.push(newKey);
+            localStorage.setItem('flaxxi_active_keys', JSON.stringify(existingKeys));
+
+            document.getElementById('keyOutput').innerText = "Generated Key: " + newKey;
+        }
     </script>
 </body>
 </html>
