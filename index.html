@@ -125,10 +125,20 @@
 
         /* Chat Container */
         .chat-container { flex: 1; max-width: 650px; width: 100%; margin: 0 auto; padding: 20px 15px 120px; display: none; flex-direction: column; gap: 15px; overflow-y: auto; }
-        .msg-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
+        .msg-bubble { position: relative; max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
         .msg-user { align-self: flex-end; background: var(--accent-red); color: #fff; border-bottom-right-radius: 4px; }
-        .msg-ai { align-self: flex-start; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); border-bottom-left-radius: 4px; }
+        .msg-ai { align-self: flex-start; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); border-bottom-left-radius: 4px; padding-bottom: 30px; }
         .msg-error { align-self: flex-start; background: rgba(255, 42, 85, 0.15); border: 1px solid var(--accent-red); color: #ff6b8b; }
+
+        /* Audio Play Icon Button inside AI message */
+        .msg-play-btn {
+            position: absolute; bottom: 6px; right: 10px;
+            background: transparent; border: none; color: var(--text-sub);
+            cursor: pointer; font-size: 13px; transition: color 0.2s;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .msg-play-btn:hover { color: var(--accent-red); }
+        .msg-play-btn.playing { color: var(--accent-red); animation: pulse 1s infinite; }
 
         /* Input Controls Bar */
         .input-bar-container {
@@ -146,26 +156,20 @@
 
         .input-box-wrapper {
             max-width: 650px; margin: 0 auto; background: var(--card-bg);
-            border: 1px solid var(--border-color); border-radius: 25px; padding: 6px 12px;
+            border: 1px solid var(--border-color); border-radius: 25px; padding: 6px 10px;
             display: flex; align-items: center; gap: 8px;
         }
         
         .language-select {
-            background: #1d0f17;
-            color: #fff;
-            border: 1px solid var(--border-color);
-            font-size: 12px;
-            outline: none;
-            cursor: pointer;
-            border-radius: 12px;
-            padding: 4px 6px;
-            max-width: 110px;
+            background: #1d0f17; color: #fff; border: 1px solid var(--border-color);
+            font-size: 12px; outline: none; cursor: pointer; border-radius: 12px;
+            padding: 4px 6px; max-width: 105px;
         }
         .language-select option { background: #140b10; color: #fff; }
 
-        .chat-input { flex: 1; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; padding: 8px 5px; }
+        .chat-input { flex: 1; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; padding: 8px 4px; }
         
-        .btn-icon { color: var(--text-sub); font-size: 14px; cursor: pointer; transition: color 0.2s; }
+        .btn-icon { color: var(--text-sub); font-size: 15px; cursor: pointer; transition: color 0.2s; padding: 4px; }
         .btn-icon:hover { color: var(--accent-red); }
         .btn-icon.active { color: var(--accent-red); animation: pulse 1s infinite; }
 
@@ -176,10 +180,11 @@
         }
 
         .btn-send {
-            background: var(--accent-red); color: white; border: none; width: 36px; height: 36px;
+            background: var(--accent-red); color: white; border: none; width: 34px; height: 34px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 0 10px var(--accent-glow); flex-shrink: 0;
+            box-shadow: 0 0 10px var(--accent-glow); flex-shrink: 0; outline: none; transition: transform 0.1s;
         }
+        .btn-send:active { transform: scale(0.92); }
 
         /* Modals */
         .modal {
@@ -193,7 +198,6 @@
         }
         .modal-close { position: absolute; top: 15px; right: 15px; color: var(--text-sub); cursor: pointer; }
 
-        /* Auth Form Inputs */
         .auth-input {
             width: 100%; background: var(--card-bg); border: 1px solid var(--border-color);
             padding: 12px; border-radius: 8px; color: #fff; outline: none; margin-bottom: 12px; font-size: 14px;
@@ -205,7 +209,6 @@
         .auth-switch { text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-sub); }
         .auth-switch span { color: var(--accent-red); cursor: pointer; font-weight: bold; }
         
-        /* Plan Modal */
         .plan-header { text-align: center; margin-bottom: 15px; }
         .plan-header h3 { color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 18px; }
         .plan-header p { font-size: 11px; color: var(--text-sub); margin-top: 4px; }
@@ -224,47 +227,26 @@
             text-decoration: none; margin-top: 10px; font-size: 14px;
         }
 
-        /* Subscription Modal Styling */
         .sub-field { 
-            background: var(--card-bg); 
-            padding: 12px 14px; 
-            border-radius: 10px; 
-            margin-bottom: 12px; 
-            border: 1px solid var(--border-color);
+            background: var(--card-bg); padding: 12px 14px; border-radius: 10px; 
+            margin-bottom: 12px; border: 1px solid var(--border-color);
         }
         .sub-field label { font-size: 10px; color: var(--text-sub); text-transform: uppercase; display: block; letter-spacing: 0.5px; }
         .sub-field div { font-size: 15px; font-weight: bold; color: white; margin-top: 3px; }
         .sub-field div.red-text { color: var(--accent-red); }
         
         .redeem-box { 
-            border: 1px dashed var(--accent-red); 
-            border-radius: 12px; 
-            padding: 14px; 
-            margin-top: 15px; 
-            background: rgba(255, 42, 85, 0.03);
+            border: 1px dashed var(--accent-red); border-radius: 12px; padding: 14px; 
+            margin-top: 15px; background: rgba(255, 42, 85, 0.03);
         }
         .redeem-box label { font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #fff; }
         .redeem-box input { 
-            width: 100%; 
-            padding: 12px; 
-            border-radius: 8px; 
-            border: 1px solid var(--border-color); 
-            background: #1a0d15;
-            color: #fff;
-            outline: none; 
-            margin-bottom: 12px; 
-            font-size: 13px;
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); 
+            background: #1a0d15; color: #fff; outline: none; margin-bottom: 12px; font-size: 13px;
         }
         .btn-activate { 
-            width: 100%; 
-            background: var(--accent-red); 
-            color: white; 
-            border: none; 
-            padding: 12px; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            font-size: 14px;
+            width: 100%; background: var(--accent-red); color: white; border: none; 
+            padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px;
         }
     </style>
 </head>
@@ -281,7 +263,6 @@
         </div>
         <div class="nav-actions">
             <button class="btn-badge" onclick="openModal('planModal')">Plan</button>
-            <!-- A Icon Click now opens Subscription Modal -->
             <div class="user-avatar" id="avatarIcon" onclick="openModal('subModal')">A</div>
         </div>
     </div>
@@ -326,20 +307,17 @@
 
     <!-- Bottom Action Input Bar -->
     <div class="input-bar-container">
-        <div class="input-status-tag">Unlimited Access ⚡</div>
+        <div class="input-status-tag" id="statusTag">Daily Limit: Free (9 Messages/Day) ⚡</div>
         
-        <!-- File Attachment Preview -->
         <div class="file-preview" id="filePreview">
             <span id="fileName"><i class="fa-solid fa-file"></i> Attached File</span>
             <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="clearAttachedFile()"></i>
         </div>
 
         <div class="input-box-wrapper">
-            <!-- File Upload Hidden Input -->
             <input type="file" id="fileInput" style="display:none;" onchange="handleFileSelected(event)">
             <i class="fa-solid fa-paperclip btn-icon" title="Attach File" onclick="document.getElementById('fileInput').click()"></i>
             
-            <!-- Language Select Menu -->
             <select id="langSelect" class="language-select">
                 <option value="Hindi">HI (Hindi)</option>
                 <option value="English" selected>EN (English)</option>
@@ -365,10 +343,10 @@
                 <option value="Portuguese">PT (Portuguese)</option>
             </select>
 
-            <!-- Voice Mic Input -->
             <i class="fa-solid fa-microphone btn-icon" id="micBtn" title="Voice Input" onclick="toggleVoiceInput()"></i>
             
             <input type="text" id="userInput" class="chat-input" placeholder="What can I do for you?" onkeypress="handleKeyPress(event)">
+            
             <button class="btn-send" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
         </div>
     </div>
@@ -425,7 +403,7 @@
         </div>
     </div>
 
-    <!-- My Subscription Modal (Triggered by 'A' Icon) -->
+    <!-- My Subscription Modal -->
     <div class="modal" id="subModal">
         <div class="modal-content">
             <i class="fa-solid fa-xmark modal-close" onclick="closeModal('subModal')"></i>
@@ -462,6 +440,10 @@
         let attachedFileData = null;
         let recognition = null;
         let isRecording = false;
+        let currentSpeech = null;
+        let activePlayBtn = null;
+
+        const FREE_DAILY_LIMIT = 9;
 
         window.onload = function() {
             const savedUser = localStorage.getItem('flaxxi_logged_user');
@@ -471,7 +453,44 @@
                 updateUIForUser(savedUser);
             }
             initSpeechRecognition();
+            checkAndResetDailyLimit();
+            updateLimitTag();
         };
+
+        function isPaidUser() {
+            return localStorage.getItem('flaxxi_is_paid') === 'true';
+        }
+
+        function checkAndResetDailyLimit() {
+            const today = new Date().toDateString();
+            const lastDate = localStorage.getItem('flaxxi_usage_date');
+            
+            if (lastDate !== today) {
+                localStorage.setItem('flaxxi_usage_date', today);
+                localStorage.setItem('flaxxi_daily_count', '0');
+            }
+        }
+
+        function getDailyCount() {
+            return parseInt(localStorage.getItem('flaxxi_daily_count') || '0', 10);
+        }
+
+        function incrementDailyCount() {
+            const count = getDailyCount() + 1;
+            localStorage.setItem('flaxxi_daily_count', count.toString());
+            updateLimitTag();
+        }
+
+        function updateLimitTag() {
+            const tag = document.getElementById('statusTag');
+            if (isPaidUser()) {
+                tag.innerText = "Unlimited Premium Access ⚡";
+            } else {
+                const used = getDailyCount();
+                const remaining = Math.max(0, FREE_DAILY_LIMIT - used);
+                tag.innerText = `Free Plan: ${remaining}/${FREE_DAILY_LIMIT} Messages Left Today ⚡`;
+            }
+        }
 
         // Voice Input Functionality
         function initSpeechRecognition() {
@@ -519,6 +538,59 @@
         function stopVoiceInput() {
             isRecording = false;
             document.getElementById('micBtn').classList.remove('active');
+        }
+
+        // Text-to-Speech Play Functionality
+        function playTextToSpeech(text, btnElement) {
+            if (!('speechSynthesis' in window)) {
+                alert("Audio playback is not supported on your browser.");
+                return;
+            }
+
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                if (activePlayBtn) {
+                    activePlayBtn.classList.remove('playing');
+                    activePlayBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play';
+                }
+                if (activePlayBtn === btnElement) {
+                    activePlayBtn = null;
+                    return;
+                }
+            }
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            const selectedLang = document.getElementById('langSelect').value;
+            
+            const langMap = {
+                'Hindi': 'hi-IN', 'English': 'en-US', 'Nepali': 'ne-NP',
+                'Hinglish': 'hi-IN', 'Marathi': 'mr-IN', 'Bengali': 'bn-IN',
+                'Punjabi': 'pa-IN', 'Gujarati': 'gu-IN', 'Tamil': 'ta-IN',
+                'Telugu': 'te-IN', 'Kannada': 'kn-IN', 'Malayalam': 'ml-IN',
+                'Urdu': 'ur-PK', 'Spanish': 'es-ES', 'French': 'fr-FR',
+                'German': 'de-DE', 'Arabic': 'ar-SA', 'Russian': 'ru-RU',
+                'Chinese': 'zh-CN', 'Japanese': 'ja-JP', 'Korean': 'ko-KR',
+                'Portuguese': 'pt-PT'
+            };
+
+            utterance.lang = langMap[selectedLang] || 'en-US';
+            btnElement.classList.add('playing');
+            btnElement.innerHTML = '<i class="fa-solid fa-stop"></i> Stop';
+            activePlayBtn = btnElement;
+
+            utterance.onend = function() {
+                btnElement.classList.remove('playing');
+                btnElement.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play';
+                activePlayBtn = null;
+            };
+
+            utterance.onerror = function() {
+                btnElement.classList.remove('playing');
+                btnElement.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play';
+                activePlayBtn = null;
+            };
+
+            window.speechSynthesis.speak(utterance);
         }
 
         // File Attachment Handling
@@ -573,6 +645,11 @@
             document.getElementById('sidebarUsername').innerText = username;
             document.getElementById('subAccountUser').innerText = username;
             document.getElementById('avatarIcon').innerText = username.charAt(0).toUpperCase();
+
+            if (isPaidUser()) {
+                document.getElementById('subPlanTitle').innerText = 'PRO Plan';
+                document.getElementById('subStatusTitle').innerText = 'Active Premium (Unlimited)';
+            }
         }
 
         function logout() {
@@ -592,6 +669,7 @@
         function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
         function newChat() {
+            if (window.speechSynthesis) window.speechSynthesis.cancel();
             document.getElementById('chatContainer').innerHTML = '';
             document.getElementById('chatContainer').style.display = 'none';
             document.getElementById('heroArea').style.display = 'flex';
@@ -603,21 +681,26 @@
             const key = document.getElementById('accessKeyInput').value.trim();
             if(!key) return alert('Please enter a valid Key!');
             
-            if(key.includes('1DAY')) {
-                document.getElementById('subPlanTitle').innerText = '1 Day Pass';
-                document.getElementById('subStatusTitle').innerText = 'Active Premium';
-                document.getElementById('subExpiryTitle').innerText = '24 Hours';
-            } else {
-                document.getElementById('subPlanTitle').innerText = 'Pro Access';
-                document.getElementById('subStatusTitle').innerText = 'Active Premium';
-                document.getElementById('subExpiryTitle').innerText = 'Active';
-            }
-            alert('Plan Activated Successfully!');
+            localStorage.setItem('flaxxi_is_paid', 'true');
+            
+            document.getElementById('subPlanTitle').innerText = 'Pro Access';
+            document.getElementById('subStatusTitle').innerText = 'Active Premium (Unlimited)';
+            document.getElementById('subExpiryTitle').innerText = 'Active Unlimited';
+
+            alert('Congratulations! Unlimited Plan Activated.');
+            updateLimitTag();
             closeModal('subModal');
         }
 
-        // Fast & Optimized API Call
         async function sendMessage() {
+            checkAndResetDailyLimit();
+
+            if (!isPaidUser() && getDailyCount() >= FREE_DAILY_LIMIT) {
+                alert("Aaj ki 9 free messages ki daily limit khatam ho chuki hai. Unlimited access ke liye Plan upgrade karein!");
+                openModal('planModal');
+                return;
+            }
+
             const inputField = document.getElementById('userInput');
             const message = inputField.value.trim();
             const selectedLang = document.getElementById('langSelect').value;
@@ -636,6 +719,10 @@
             appendMessage(displayUserMsg, 'msg-user');
             inputField.value = '';
 
+            if (!isPaidUser()) {
+                incrementDailyCount();
+            }
+
             const apiKey = localStorage.getItem('flaxxi_gemini_key');
             if (!apiKey) {
                 appendMessage("Error: API Key is missing in Local Storage. Please set 'flaxxi_gemini_key' from Admin Panel.", 'msg-error');
@@ -646,7 +733,6 @@
             appendMessage("⚡ Thinking...", 'msg-ai', 'temp-loading');
 
             let parts = [];
-            
             if (attachedFileData) {
                 parts.push({
                     inlineData: {
@@ -673,7 +759,7 @@
 
                 if (response.ok && data.candidates && data.candidates[0].content) {
                     const aiReply = data.candidates[0].content.parts[0].text;
-                    appendMessage(aiReply, 'msg-ai');
+                    appendMessage(aiReply, 'msg-ai', '', true);
                 } else {
                     const errDetail = data.error ? data.error.message : "Unknown API Error";
                     appendMessage(`API Error: ${errDetail}`, 'msg-error');
@@ -684,12 +770,25 @@
             }
         }
 
-        function appendMessage(text, className, id = '') {
+        function appendMessage(text, className, id = '', addPlayBtn = false) {
             const container = document.getElementById('chatContainer');
             const msgDiv = document.createElement('div');
             msgDiv.className = `msg-bubble ${className}`;
             if (id) msgDiv.id = id;
+            
             msgDiv.innerText = text;
+
+            // Adding Speech Play Icon Button for AI responses
+            if (addPlayBtn) {
+                const playBtn = document.createElement('button');
+                playBtn.className = 'msg-play-btn';
+                playBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play';
+                playBtn.onclick = function() {
+                    playTextToSpeech(text, playBtn);
+                };
+                msgDiv.appendChild(playBtn);
+            }
+
             container.appendChild(msgDiv);
             container.scrollTop = container.scrollHeight;
         }
