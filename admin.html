@@ -5,118 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FLAXXI AI - Admin Panel</title>
     <style>
-        :root {
-            --bg-color: #0b0203;
-            --card-bg: #180507;
-            --accent-red: #ea1d2c;
-            --border-color: rgba(234, 29, 44, 0.3);
-            --text-main: #f0f0f0;
-            --text-sub: #aaa;
+        body {
+            background-color: #0d0d0d;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: sans-serif; background-color: var(--bg-color); color: var(--text-main); padding: 20px; }
-
-        .login-overlay { position: fixed; inset: 0; background: var(--bg-color); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-        .login-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: 12px; width: 320px; text-align: center; }
-        .login-card h2 { color: var(--accent-red); margin-bottom: 15px; font-size: 18px; }
-
-        .admin-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; }
-        
-        label { display: block; font-size: 12px; color: var(--text-sub); margin: 8px 0 4px; }
-        input, select { width: 100%; background: #000; border: 1px solid var(--border-color); color: #fff; padding: 10px; border-radius: 6px; outline: none; font-size: 13px; margin-bottom: 10px; }
-        
-        .btn-action { background: var(--accent-red); color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 5px; }
-        .hidden { display: none !important; }
-        .generated-key { background: #000; padding: 8px; border: 1px dashed var(--accent-red); color: #00ff66; text-align: center; font-family: monospace; font-size: 14px; margin-top: 8px; }
+        .card {
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+        }
+        h2 { color: #ff2a2a; text-align: center; margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #ccc; }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: #000;
+            color: white;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #e60000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .key-display {
+            margin-top: 15px;
+            padding: 10px;
+            background: #222;
+            border-left: 4px solid #ff2a2a;
+            word-break: break-all;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN SCREEN (HIDDEN DEFAULTS) -->
-    <div class="login-overlay" id="loginModal">
-        <div class="login-card">
-            <h2>Admin Login</h2>
-            <input type="text" id="adminUser" placeholder="Username">
-            <input type="password" id="adminPass" placeholder="Password">
-            <button class="btn-action" onclick="handleLogin()">Login</button>
-            <p id="errorMsg" style="color: #ff4444; font-size: 11px; margin-top: 8px;"></p>
+    <!-- Login Box -->
+    <div class="card" id="loginBox">
+        <h2>Admin Login</h2>
+        <div class="input-group">
+            <label>Username</label>
+            <input type="text" id="adminUser" placeholder="Enter username">
         </div>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="adminPass" placeholder="Enter password">
+        </div>
+        <button onclick="loginAdmin()">Login</button>
+        <p id="loginErr" style="color:red; font-size:0.85rem; text-align:center;"></p>
     </div>
 
-    <!-- MAIN ADMIN DASHBOARD -->
-    <div id="adminContent" class="hidden">
-        <div class="admin-header">
-            <h2 style="color: var(--accent-red);">FLAXXI Control Center</h2>
-            <button onclick="logout()" style="background: none; border: 1px solid var(--accent-red); color: white; padding: 4px 10px; border-radius: 4px; cursor: pointer;">Logout</button>
+    <!-- Key Generator Dashboard -->
+    <div class="card" id="dashboardBox" style="display:none;">
+        <h2>Key Generator</h2>
+        <div class="input-group">
+            <label>Select Plan Validity</label>
+            <select id="planType">
+                <option value="1month">1 Month (30 Days)</option>
+                <option value="1year">1 Year (365 Days)</option>
+                <option value="lifetime">Lifetime Plan</option>
+            </select>
         </div>
+        <button onclick="generateKey()">Generate Plan Key</button>
 
-        <div class="dashboard-grid">
-            <!-- Plan Price Control -->
-            <div class="card">
-                <h3 style="color: var(--accent-red); font-size: 14px;">Plan Price Settings</h3>
-                <label>Pro Plan Price (Rs)</label>
-                <input type="number" id="planPrice" value="299">
-                <button class="btn-action" onclick="updatePlan()">Update Price</button>
-            </div>
-
-            <!-- Key Generator System -->
-            <div class="card">
-                <h3 style="color: var(--accent-red); font-size: 14px;">Generate Activation Key</h3>
-                <label>Create Single-Use Key</label>
-                <button class="btn-action" onclick="generateKey()">Generate New Key</button>
-                <div class="generated-key" id="keyDisplay">KEY WILL APPEAR HERE</div>
-            </div>
-        </div>
+        <div id="generatedKey" class="key-display" style="display:none;"></div>
     </div>
 
     <script>
-        function handleLogin() {
-            const user = document.getElementById('adminUser').value;
-            const pass = document.getElementById('adminPass').value;
+        function loginAdmin() {
+            const user = document.getElementById('adminUser').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
 
-            fetch('/api/admin/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username: user, password: pass })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success) {
-                    document.getElementById('loginModal').classList.add('hidden');
-                    document.getElementById('adminContent').classList.remove('hidden');
-                } else {
-                    document.getElementById('errorMsg').innerText = data.message;
-                }
-            });
+            if (user === "tenzino" && pass === "123456") {
+                document.getElementById('loginBox').style.display = 'none';
+                document.getElementById('dashboardBox').style.display = 'block';
+            } else {
+                document.getElementById('loginErr').innerText = "Invalid Admin Credentials!";
+            }
         }
 
         function generateKey() {
-            fetch('/api/admin/generate-key', { method: 'POST' })
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('keyDisplay').innerText = data.key;
-            });
-        }
+            const plan = document.getElementById('planType').value;
+            const randomCode = Math.random().toString(36).substring(2, 10).toUpperCase();
+            const fullKey = `FLAXXI-${plan.toUpperCase()}-${randomCode}`;
 
-        function updatePlan() {
-            const price = document.getElementById('planPrice').value;
-            fetch('/api/admin/update-plan', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ price: price })
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert('Price updated to Rs ' + data.price);
-            });
-        }
+            // Save key in local storage array
+            let keys = JSON.parse(localStorage.getItem('flaxxi_valid_keys') || "{}");
+            keys[fullKey] = plan;
+            localStorage.setItem('flaxxi_valid_keys', JSON.stringify(keys));
 
-        function logout() {
-            document.getElementById('loginModal').classList.remove('hidden');
-            document.getElementById('adminContent').classList.add('hidden');
+            const keyBox = document.getElementById('generatedKey');
+            keyBox.style.display = 'block';
+            keyBox.innerHTML = `<strong>Generated Key:</strong><br>${fullKey}`;
         }
     </script>
 </body>
