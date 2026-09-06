@@ -106,7 +106,7 @@
             color: var(--text-main);
         }
 
-        /* Drawer Overlay */
+        /* Side Drawer Navigation */
         .drawer-overlay {
             display: none;
             position: fixed;
@@ -227,7 +227,7 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Chat Input Area */
+        /* Chat Input Card */
         .chat-input-card {
             background: #120a0f;
             border: 1px solid var(--border-color);
@@ -314,11 +314,13 @@
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             width: 90%;
-            max-width: 380px;
+            max-width: 420px;
             padding: 24px;
             border-radius: 20px;
             position: relative;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .close-btn {
@@ -375,35 +377,15 @@
             display: block;
         }
 
-        .whatsapp-btn {
-            background: #25d366;
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-
-        .price-box {
+        .plan-card {
             background: #1c0e17;
-            border: 1px solid var(--accent-red);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            margin: 15px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        .price-box h3 { font-size: 22px; color: white; }
-        .price-box p { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
 
         .error-msg {
             color: #ff4d4d;
@@ -425,14 +407,14 @@
             </div>
         </div>
         <div class="header-right">
-            <!-- Pro Badge to Open Pricing -->
+            <!-- Pro Badge to Open Pricing Modal -->
             <div class="badge-pro" onclick="openModal('proModal')">Pro</div>
-            <!-- 'A' Avatar to Open Create Account -->
+            <!-- 'A' Avatar to Open Create Account Modal -->
             <div class="avatar-account" onclick="openModal('accountModal')" title="Create Account">A</div>
         </div>
     </header>
 
-    <!-- Side Drawer Navigation -->
+    <!-- Drawer Navigation -->
     <div class="drawer-overlay" id="overlay" onclick="toggleDrawer()"></div>
     <div class="drawer" id="drawer">
         <div class="close-drawer" onclick="toggleDrawer()"><i class="fa-solid fa-xmark"></i></div>
@@ -443,7 +425,7 @@
         </div>
     </div>
 
-    <!-- Main Chat Screen Layout -->
+    <!-- Main Chat Screen Area -->
     <div class="chat-container">
         
         <div class="chat-messages" id="chatMessages">
@@ -454,7 +436,7 @@
             </div>
         </div>
 
-        <!-- Chat Input Field -->
+        <!-- Input Area -->
         <div class="chat-input-card">
             <div class="chat-controls-top">
                 <div class="chat-controls-left">
@@ -475,7 +457,7 @@
         </div>
     </div>
 
-    <!-- Account / Sign-Up Modal (Triggers on 'A' Click) -->
+    <!-- Account / Sign-Up Modal (Triggers on 'A' Icon Click) -->
     <div class="modal" id="accountModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('accountModal')">&times;</span>
@@ -483,7 +465,7 @@
             
             <div class="form-group">
                 <label>Username</label>
-                <input type="text" class="form-input" placeholder="Enter full name">
+                <input type="text" class="form-input" placeholder="Enter username">
             </div>
 
             <div class="form-group">
@@ -493,7 +475,7 @@
 
             <div class="form-group">
                 <label>Access Key</label>
-                <input type="text" id="accessKeyInput" class="form-input" placeholder="Enter key (e.g. FLAXXI-PRO)">
+                <input type="text" id="accessKeyInput" class="form-input" placeholder="Enter Key (e.g. FLAXXI-PRO)">
             </div>
             <div class="error-msg" id="keyError">Invalid Access Key! Please enter a valid key.</div>
 
@@ -501,24 +483,71 @@
         </div>
     </div>
 
-    <!-- Pro Subscription / Pricing Modal (Triggers on 'Pro' Click) -->
+    <!-- Pro Pricing Modal (Triggers on 'Pro' Button Click) -->
     <div class="modal" id="proModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('proModal')">&times;</span>
             <div class="modal-title"><i class="fa-solid fa-crown" style="color:var(--accent-red)"></i> FLAXXI GPT PRO</div>
             
-            <div class="price-box">
-                <h3>₹499 / Month</h3>
-                <p>Full Access to Uncensored Models, Code Master & Unlimited Queries.</p>
+            <p style="font-size: 12px; color: var(--text-sub); text-align: center; margin-bottom: 15px;">
+                Choose your plan & get access to Uncensored Models, Code Master & Unlimited Queries.
+            </p>
+
+            <!-- All Subscription Plans Tiers -->
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
+                <!-- 1 Day Plan -->
+                <div class="plan-card">
+                    <div>
+                        <div style="font-weight: 800; font-size: 14px; color: white;">1 Day Pass</div>
+                        <div style="font-size: 11px; color: var(--text-sub);">Trial Access</div>
+                    </div>
+                    <div style="font-size: 16px; font-weight: 800; color: var(--accent-red);">₹49</div>
+                </div>
+
+                <!-- 7 Days Plan -->
+                <div class="plan-card">
+                    <div>
+                        <div style="font-weight: 800; font-size: 14px; color: white;">7 Days Pass</div>
+                        <div style="font-size: 11px; color: var(--text-sub);">Weekly Access</div>
+                    </div>
+                    <div style="font-size: 16px; font-weight: 800; color: var(--accent-red);">₹199</div>
+                </div>
+
+                <!-- 1 Month Plan -->
+                <div class="plan-card" style="border: 1px solid var(--accent-red); box-shadow: 0 0 10px var(--accent-glow);">
+                    <div>
+                        <div style="font-weight: 800; font-size: 14px; color: white;">1 Month Pass <span style="font-size: 9px; background: var(--accent-red); padding: 2px 6px; border-radius: 6px; margin-left: 4px;">POPULAR</span></div>
+                        <div style="font-size: 11px; color: var(--text-sub);">Standard Monthly</div>
+                    </div>
+                    <div style="font-size: 16px; font-weight: 800; color: var(--accent-red);">₹499</div>
+                </div>
+
+                <!-- 1 Year Plan -->
+                <div class="plan-card">
+                    <div>
+                        <div style="font-weight: 800; font-size: 14px; color: white;">1 Year Pass</div>
+                        <div style="font-size: 11px; color: var(--text-sub);">Annual Unlimited</div>
+                    </div>
+                    <div style="font-size: 16px; font-weight: 800; color: var(--accent-red);">₹2,999</div>
+                </div>
+
+                <!-- Lifetime Plan -->
+                <div class="plan-card" style="border: 1px solid #ffb703;">
+                    <div>
+                        <div style="font-weight: 800; font-size: 14px; color: white;">Lifetime Pass 👑</div>
+                        <div style="font-size: 11px; color: var(--text-sub);">VIP Permanent Access</div>
+                    </div>
+                    <div style="font-size: 16px; font-weight: 800; color: #ffb703;">₹4,999</div>
+                </div>
             </div>
 
-            <div style="font-size: 12px; color: var(--text-sub); text-align: center;">
-                Need an Access Key or Subscription? Contact us on WhatsApp to activate immediately.
+            <div style="font-size: 11px; color: var(--text-sub); text-align: center;">
+                Contact us on WhatsApp to select your plan and get an instant Access Key.
             </div>
 
-            <!-- Replace XXXXXXXXXX with your official WhatsApp Number -->
-            <a href="https://wa.me/919999999999?text=Hello%20FLAXXI%20GPT,%20I%20want%20to%20buy%20Pro%20Access%20Key" target="_blank" class="whatsapp-btn">
-                <i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i> Buy via WhatsApp (+91 9999999999)
+            <!-- Direct WhatsApp Link Button -->
+            <a href="https://wa.me/9779819833267?text=Hello%20FLAXXI%20GPT,%20I%20want%20to%20buy%20a%20Pro%20Access%20Key." target="_blank" style="background: #25d366; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; width: 100%; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
+                <i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i> Buy via WhatsApp (+977 981-9833267)
             </a>
         </div>
     </div>
@@ -539,21 +568,21 @@
             if(id === 'accountModal') document.getElementById('keyError').style.display = 'none';
         }
 
-        // Key Validation Functionality
+        // Key Validation Logic
         function validateAndSubmit() {
             const keyInput = document.getElementById('accessKeyInput').value.trim();
-            const validKeys = ["FLAXXI-8921-X", "FLAXXI-PRO-2026", "ADMIN123"]; // Authorized Keys List
+            const validKeys = ["FLAXXI-8921-X", "FLAXXI-PRO-2026", "TENZINO-PRO"]; // Registered Keys
             const errorElement = document.getElementById('keyError');
 
             if (validKeys.includes(keyInput)) {
                 alert("Account created successfully!");
                 closeModal('accountModal');
             } else {
-                errorElement.style.display = 'block'; // Displays "Invalid Access Key!"
+                errorElement.style.display = 'block'; // Shows "Invalid Access Key!"
             }
         }
 
-        // Send Chat Message Functionality
+        // Send Chat Message Function
         function sendMessage() {
             const input = document.getElementById('chatInput');
             const messageText = input.value.trim();
@@ -562,21 +591,19 @@
 
             if (!messageText) return;
 
-            // Hide main hero banner when chat starts
+            // Hide hero banner when chat starts
             if (heroBanner) heroBanner.style.display = 'none';
 
-            // User Message append
+            // User Message Bubble
             const userBubble = document.createElement('div');
             userBubble.className = 'msg-bubble msg-user';
             userBubble.innerText = messageText;
             chatMessages.appendChild(userBubble);
 
             input.value = '';
-
-            // Scroll down
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            // AI Simulated Dynamic Response
+            // Bot Response Simulation
             setTimeout(() => {
                 const botBubble = document.createElement('div');
                 botBubble.className = 'msg-bubble msg-bot';
@@ -586,7 +613,7 @@
             }, 600);
         }
 
-        // Enter Key listener to send chat messages
+        // Enter key press listener for chat input
         document.getElementById('chatInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
