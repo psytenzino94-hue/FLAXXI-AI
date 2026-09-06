@@ -196,10 +196,10 @@
     </div>
 
     <script>
-        // Init Admin Credentials
+        // Init Admin Credentials with Tenzino & Tenzino@766
         if (!localStorage.getItem('flaxxi_admin_user')) {
-            localStorage.setItem('flaxxi_admin_user', 'admin');
-            localStorage.setItem('flaxxi_admin_pass', 'admin123');
+            localStorage.setItem('flaxxi_admin_user', 'Tenzino');
+            localStorage.setItem('flaxxi_admin_pass', 'Tenzino@766');
         }
 
         function verifyAdminLogin() {
@@ -218,8 +218,8 @@
         }
 
         function loadStoredData() {
-            document.getElementById('adminUser').value = localStorage.getItem('flaxxi_admin_user') || 'admin';
-            document.getElementById('adminPass').value = localStorage.getItem('flaxxi_admin_pass') || 'admin123';
+            document.getElementById('adminUser').value = localStorage.getItem('flaxxi_admin_user') || 'Tenzino';
+            document.getElementById('adminPass').value = localStorage.getItem('flaxxi_admin_pass') || 'Tenzino@766';
 
             document.getElementById('geminiKey').value = localStorage.getItem('flaxxi_gemini_key') || '';
             document.getElementById('openaiKey').value = localStorage.getItem('flaxxi_openai_key') || '';
