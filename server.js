@@ -1,5 +1,4 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 
@@ -7,33 +6,18 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
 
-// Updated Credentials
-const ADMIN_CREDENTIALS = {
-    username: "tenzino",
-    password: "tenzino@766"
-};
+// Public files (index.html, admin.html) serve karne ke liye:
+app.use(express.static(path.join(__dirname)));
 
-// Global Store
-let validKeys = new Set(["FLAXXI-PRO-VIP99"]);
-let planSettings = {
-    proPriceRs: 299,
-    planDurationDays: 30
-};
-
-// Admin Login Route
-app.post('/api/admin/login', (req, res) => {
-    const { username, password } = req.body;
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-        return res.json({ success: true, message: "Login Successful" });
-    }
-    return res.status(401).json({ success: false, message: "Invalid Username or Password" });
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Admin: Generate Key
-app.post('/api/admin/generate-key', (req, res) => {
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
     const newKey = "FLAXXI-" + Math.random().toString(36).substring(2, 8).toUpperCase();
     validKeys.add(newKey);
     res.json({ success: true, key: newKey });
