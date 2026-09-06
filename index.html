@@ -16,418 +16,76 @@
             --border-color: #2b1723;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
             background-image: radial-gradient(circle at 50% 20%, rgba(255, 42, 85, 0.15) 0%, transparent 60%);
-            background-attachment: fixed;
-            overflow-x: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        /* Top Header Navigation */
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 20px;
-            background: rgba(10, 4, 7, 0.9);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 20px; background: rgba(10, 4, 7, 0.9);
+            backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color);
+            position: sticky; top: 0; z-index: 100;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo {
-            font-size: 20px;
-            font-weight: 900;
-            color: var(--text-main);
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .logo { font-size: 20px; font-weight: 900; color: var(--text-main); display: flex; align-items: center; gap: 8px; }
         .logo span { color: var(--accent-red); }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .badge-pro { background: var(--accent-red); color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; box-shadow: 0 0 10px var(--accent-glow); }
+        .avatar-account { width: 32px; height: 32px; background: var(--accent-red); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; cursor: pointer; box-shadow: 0 0 12px var(--accent-glow); }
 
-        .badge-pro {
-            background: var(--accent-red);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            cursor: pointer;
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .avatar-account {
-            width: 32px;
-            height: 32px;
-            background: var(--accent-red);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 900;
-            cursor: pointer;
-            box-shadow: 0 0 12px var(--accent-glow);
-            transition: transform 0.2s;
-        }
-        .avatar-account:hover { transform: scale(1.08); }
-
-        .menu-toggle {
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-main);
-        }
-
-        /* Side Drawer Navigation */
-        .drawer-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 200;
-            backdrop-filter: blur(5px);
-        }
-
-        .drawer {
-            position: fixed;
-            top: 0; left: -280px; width: 280px; height: 100%;
-            background: var(--card-bg);
-            border-right: 1px solid var(--border-color);
-            z-index: 300;
-            transition: left 0.3s ease;
-            padding: 25px 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .drawer.open { left: 0; }
-
-        .close-drawer {
-            align-self: flex-end;
-            font-size: 20px;
-            cursor: pointer;
-            margin-bottom: 30px;
-            color: var(--text-sub);
-        }
-
-        .drawer-links {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .drawer-links a {
-            color: var(--text-main);
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        /* Chat Layout */
-        .chat-container {
-            max-width: 550px;
-            margin: 0 auto;
-            width: 100%;
-            height: calc(100vh - 70px);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px 15px;
-        }
-
-        .chat-messages {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .chat-hero {
-            text-align: center;
-            margin-top: auto;
-            margin-bottom: auto;
-        }
-
-        .chat-hero h1 {
-            font-size: 38px;
-            font-weight: 900;
-            letter-spacing: -1px;
-        }
-
+        .chat-container { max-width: 550px; margin: 0 auto; width: 100%; height: calc(100vh - 70px); display: flex; flex-direction: column; justify-content: space-between; padding: 20px 15px; }
+        .chat-messages { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px; }
+        
+        .chat-hero { text-align: center; margin-top: auto; margin-bottom: auto; }
+        .chat-hero h1 { font-size: 38px; font-weight: 900; }
         .chat-hero h1 span { color: var(--accent-red); }
+        .chat-hero h2 { font-size: 16px; color: white; margin-top: 6px; font-weight: 700; }
+        .chat-hero .sub-tags { font-size: 11px; color: var(--accent-red); font-weight: 800; letter-spacing: 1.5px; margin-top: 12px; }
 
-        .chat-hero h2 {
-            font-size: 16px;
-            color: white;
-            margin-top: 6px;
-            font-weight: 700;
-        }
+        .msg-bubble { max-width: 80%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.4; }
+        .msg-user { background: var(--accent-red); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg-bot { background: #1d1018; color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid var(--border-color); }
 
-        .chat-hero .sub-tags {
-            font-size: 11px;
-            color: var(--accent-red);
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            margin-top: 12px;
-            text-transform: uppercase;
-        }
+        .chat-input-card { background: #120a0f; border: 1px solid var(--border-color); border-radius: 20px; padding: 14px; }
+        .input-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+        .chat-textarea { width: 100%; background: transparent; border: none; color: white; font-size: 15px; outline: none; resize: none; height: 38px; }
+        .btn-send-round { background: var(--accent-red); color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
-        /* Message Bullets */
-        .msg-bubble {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 14px;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .msg-user {
-            background: var(--accent-red);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-
-        .msg-bot {
-            background: #1d1018;
-            color: var(--text-main);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            border: 1px solid var(--border-color);
-        }
-
-        /* Chat Input Card */
-        .chat-input-card {
-            background: #120a0f;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 14px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        }
-
-        .chat-controls-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .chat-controls-left {
-            display: flex;
-            gap: 16px;
-            color: var(--text-sub);
-            font-size: 16px;
-        }
-
-        .chat-controls-left i { cursor: pointer; transition: color 0.2s; }
-        .chat-controls-left i:hover { color: white; }
-
-        .model-select {
-            background: #1a0e16;
-            border: 1px solid var(--border-color);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            outline: none;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .input-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .chat-textarea {
-            width: 100%;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 15px;
-            outline: none;
-            resize: none;
-            height: 38px;
-        }
-
-        .btn-send-round {
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 15px;
-            box-shadow: 0 0 12px var(--accent-glow);
-            flex-shrink: 0;
-        }
-
-        /* Modals Generic Styling */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            width: 90%;
-            max-width: 420px;
-            padding: 24px;
-            border-radius: 20px;
-            position: relative;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 16px; right: 16px;
-            color: var(--text-sub);
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .modal-title {
-            font-size: 18px;
-            font-weight: 800;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-bottom: 6px;
-        }
-
-        .form-input {
-            width: 100%;
-            background: #0d060a;
-            border: 1px solid var(--border-color);
-            padding: 10px 14px;
-            border-radius: 10px;
-            color: white;
-            outline: none;
-            font-size: 13px;
-        }
-
-        .btn-red-full {
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            padding: 11px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 14px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px var(--accent-glow);
-            text-align: center;
-            text-decoration: none;
-            display: block;
-        }
-
-        .plan-card {
-            background: #1c0e17;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .error-msg {
-            color: #ff4d4d;
-            font-size: 12px;
-            margin-top: 5px;
-            display: none;
-            text-align: center;
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--border-color); width: 90%; max-width: 420px; padding: 24px; border-radius: 20px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-btn { position: absolute; top: 16px; right: 16px; color: var(--text-sub); cursor: pointer; font-size: 18px; }
+        
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 6px; }
+        .form-input { width: 100%; background: #0d060a; border: 1px solid var(--border-color); padding: 10px 14px; border-radius: 10px; color: white; outline: none; font-size: 13px; }
+        
+        .btn-red-full { background: var(--accent-red); color: white; border: none; padding: 11px; border-radius: 10px; font-weight: 700; font-size: 14px; cursor: pointer; width: 100%; margin-top: 10px; }
+        .plan-card { background: #1c0e17; border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .error-msg { color: #ff4d4d; font-size: 12px; margin-top: 5px; display: none; text-align: center; }
     </style>
 </head>
 <body>
 
-    <!-- Header Navigation -->
     <header>
         <div class="header-left">
-            <div class="menu-toggle" onclick="toggleDrawer()"><i class="fa-solid fa-bars"></i></div>
-            <div class="logo">
-                <i class="fa-solid fa-fire" style="color: var(--accent-red);"></i> FLAXXI <span>GPT</span>
-            </div>
+            <div class="logo"><i class="fa-solid fa-fire" style="color: var(--accent-red);"></i> FLAXXI <span>GPT</span></div>
         </div>
         <div class="header-right">
-            <!-- Pro Badge to Open Pricing Modal -->
             <div class="badge-pro" onclick="openModal('proModal')">Pro</div>
-            <!-- 'A' Avatar to Open Create Account Modal -->
-            <div class="avatar-account" onclick="openModal('accountModal')" title="Create Account">A</div>
+            <div class="avatar-account" onclick="openModal('accountModal')">A</div>
         </div>
     </header>
 
-    <!-- Drawer Navigation -->
-    <div class="drawer-overlay" id="overlay" onclick="toggleDrawer()"></div>
-    <div class="drawer" id="drawer">
-        <div class="close-drawer" onclick="toggleDrawer()"><i class="fa-solid fa-xmark"></i></div>
-        <div class="drawer-links">
-            <a href="#" onclick="location.reload()"><i class="fa-solid fa-plus"></i> New Chat</a>
-            <a href="#" onclick="openModal('accountModal'); toggleDrawer();"><i class="fa-solid fa-user"></i> Create Account</a>
-            <a href="#" onclick="openModal('proModal'); toggleDrawer();"><i class="fa-solid fa-crown" style="color: var(--accent-red);"></i> Upgrade to Pro</a>
-        </div>
-    </div>
-
-    <!-- Main Chat Screen Area -->
     <div class="chat-container">
-        
         <div class="chat-messages" id="chatMessages">
             <div class="chat-hero" id="heroBanner">
                 <h1>FLAXXI <span>GPT</span></h1>
@@ -436,32 +94,21 @@
             </div>
         </div>
 
-        <!-- Input Area -->
         <div class="chat-input-card">
-            <div class="chat-controls-top">
-                <div class="chat-controls-left">
-                    <i class="fa-solid fa-paperclip" title="Attach Document"></i>
-                    <i class="fa-solid fa-microphone" title="Voice Input"></i>
-                </div>
-                <select class="model-select">
-                    <option>Code Master</option>
-                    <option>No Limit v1</option>
-                    <option>OSINT Mode</option>
-                </select>
-            </div>
-            
             <div class="input-row">
                 <textarea class="chat-textarea" id="chatInput" placeholder="What can I do for you?"></textarea>
-                <button class="btn-send-round" id="sendBtn" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
+                <button class="btn-send-round" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
             </div>
         </div>
     </div>
 
-    <!-- Account / Sign-Up Modal (Triggers on 'A' Icon Click) -->
+    <!-- Account Modal -->
     <div class="modal" id="accountModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('accountModal')">&times;</span>
-            <div class="modal-title"><i class="fa-solid fa-user-plus" style="color:var(--accent-red)"></i> Create Account</div>
+            <div style="font-size: 18px; font-weight: 800; margin-bottom: 15px; text-align: center;">
+                <i class="fa-solid fa-user-plus" style="color:var(--accent-red)"></i> Create Account
+            </div>
             
             <div class="form-group">
                 <label>Username</label>
@@ -475,7 +122,7 @@
 
             <div class="form-group">
                 <label>Access Key</label>
-                <input type="text" id="accessKeyInput" class="form-input" placeholder="Enter Key (e.g. FLAXXI-PRO)">
+                <input type="text" id="accessKeyInput" class="form-input" placeholder="Paste generated key here">
             </div>
             <div class="error-msg" id="keyError">Invalid Access Key! Please enter a valid key.</div>
 
@@ -483,106 +130,46 @@
         </div>
     </div>
 
-    <!-- Pro Pricing Modal (Triggers on 'Pro' Button Click) -->
+    <!-- Pro Pricing Modal -->
     <div class="modal" id="proModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal('proModal')">&times;</span>
-            <div class="modal-title"><i class="fa-solid fa-crown" style="color:var(--accent-red)"></i> FLAXXI GPT PRO</div>
-            
-            <p style="font-size: 12px; color: var(--text-sub); text-align: center; margin-bottom: 15px;">
-                Choose your plan & get access to Uncensored Models, Code Master & Unlimited Queries.
-            </p>
-
-            <!-- All Subscription Plans Tiers -->
-            <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;">
-                <!-- 1 Day Plan -->
-                <div class="plan-card">
-                    <div>
-                        <div style="font-weight: 800; font-size: 14px; color: white;">1 Day Pass</div>
-                        <div style="font-size: 11px; color: var(--text-sub);">Trial Access</div>
-                    </div>
-                    <div style="font-size: 16px; font-weight: 800; color: var(--accent-red);">₹49</div>
-                </div>
-
-                <!-- 7 Days Plan -->
-                <div class="plan-card">
-                    <div>
-                        <div style="font-weight: 800; font-size: 14px; color: white;">7 Days Pass</div>
-                        <div style="font-size: 11px; color: var(--text-sub);">Weekly Access</div>
-                    </div>
-                    <div style="font-size: 16px; font-weight: 800; color: var(--accent-red);">₹199</div>
-                </div>
-
-                <!-- 1 Month Plan -->
-                <div class="plan-card" style="border: 1px solid var(--accent-red); box-shadow: 0 0 10px var(--accent-glow);">
-                    <div>
-                        <div style="font-weight: 800; font-size: 14px; color: white;">1 Month Pass <span style="font-size: 9px; background: var(--accent-red); padding: 2px 6px; border-radius: 6px; margin-left: 4px;">POPULAR</span></div>
-                        <div style="font-size: 11px; color: var(--text-sub);">Standard Monthly</div>
-                    </div>
-                    <div style="font-size: 16px; font-weight: 800; color: var(--accent-red);">₹499</div>
-                </div>
-
-                <!-- 1 Year Plan -->
-                <div class="plan-card">
-                    <div>
-                        <div style="font-weight: 800; font-size: 14px; color: white;">1 Year Pass</div>
-                        <div style="font-size: 11px; color: var(--text-sub);">Annual Unlimited</div>
-                    </div>
-                    <div style="font-size: 16px; font-weight: 800; color: var(--accent-red);">₹2,999</div>
-                </div>
-
-                <!-- Lifetime Plan -->
-                <div class="plan-card" style="border: 1px solid #ffb703;">
-                    <div>
-                        <div style="font-weight: 800; font-size: 14px; color: white;">Lifetime Pass 👑</div>
-                        <div style="font-size: 11px; color: var(--text-sub);">VIP Permanent Access</div>
-                    </div>
-                    <div style="font-size: 16px; font-weight: 800; color: #ffb703;">₹4,999</div>
-                </div>
+            <div style="font-size: 18px; font-weight: 800; margin-bottom: 15px; text-align: center;">
+                <i class="fa-solid fa-crown" style="color:var(--accent-red)"></i> FLAXXI GPT PRO
             </div>
 
-            <div style="font-size: 11px; color: var(--text-sub); text-align: center;">
-                Contact us on WhatsApp to select your plan and get an instant Access Key.
-            </div>
+            <div class="plan-card"><div><strong style="color:white;">1 Day Pass</strong></div><div style="color:var(--accent-red); font-weight:800;">₹49</div></div>
+            <div class="plan-card"><div><strong style="color:white;">7 Days Pass</strong></div><div style="color:var(--accent-red); font-weight:800;">₹199</div></div>
+            <div class="plan-card" style="border:1px solid var(--accent-red)"><div><strong style="color:white;">1 Month Pass</strong></div><div style="color:var(--accent-red); font-weight:800;">₹499</div></div>
+            <div class="plan-card"><div><strong style="color:white;">1 Year Pass</strong></div><div style="color:var(--accent-red); font-weight:800;">₹2,999</div></div>
+            <div class="plan-card" style="border:1px solid #ffb703"><div><strong style="color:white;">Lifetime Pass 👑</strong></div><div style="color:#ffb703; font-weight:800;">₹4,999</div></div>
 
-            <!-- Direct WhatsApp Link Button -->
-            <a href="https://wa.me/9779819833267?text=Hello%20FLAXXI%20GPT,%20I%20want%20to%20buy%20a%20Pro%20Access%20Key." target="_blank" style="background: #25d366; color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; width: 100%; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none;">
-                <i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i> Buy via WhatsApp (+977 981-9833267)
+            <a href="https://wa.me/9779819833267?text=Hello%20FLAXXI%20GPT,%20I%20want%20to%20buy%20a%20Pro%20Access%20Key." target="_blank" style="background: #25d366; color: white; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 13px; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;">
+                <i class="fa-brands fa-whatsapp"></i> Buy via WhatsApp (+977 981-9833267)
             </a>
         </div>
     </div>
 
     <script>
-        // Drawer toggle controls
-        function toggleDrawer() {
-            const drawer = document.getElementById('drawer');
-            const overlay = document.getElementById('overlay');
-            drawer.classList.toggle('open');
-            overlay.style.display = drawer.classList.contains('open') ? 'block' : 'none';
-        }
-
-        // Modal Display Controls
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { 
-            document.getElementById(id).style.display = 'none'; 
-            if(id === 'accountModal') document.getElementById('keyError').style.display = 'none';
-        }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Key Validation Logic
+        // Dynamic Validation Logic
         function validateAndSubmit() {
             const keyInput = document.getElementById('accessKeyInput').value.trim();
-            const validKeys = ["FLAXXI-8921-X", "FLAXXI-PRO-2026", "TENZINO-PRO"]; // Registered Keys
-            const errorElement = document.getElementById('keyError');
+            const storedKeys = JSON.parse(localStorage.getItem('flaxxi_active_keys')) || [];
+            
+            // Hardcoded back-up keys + dynamically generated keys validation
+            const defaultValidKeys = ["FLAXXI-7ILJHH-2026", "FLAXXI-PRO-2026"];
 
-            if (validKeys.includes(keyInput)) {
+            if (storedKeys.includes(keyInput) || defaultValidKeys.includes(keyInput)) {
                 alert("Account created successfully!");
                 closeModal('accountModal');
             } else {
-                errorElement.style.display = 'block'; // Shows "Invalid Access Key!"
+                document.getElementById('keyError').style.display = 'block';
             }
         }
 
-        // Send Chat Message Function
         function sendMessage() {
             const input = document.getElementById('chatInput');
             const messageText = input.value.trim();
@@ -590,11 +177,8 @@
             const heroBanner = document.getElementById('heroBanner');
 
             if (!messageText) return;
-
-            // Hide hero banner when chat starts
             if (heroBanner) heroBanner.style.display = 'none';
 
-            // User Message Bubble
             const userBubble = document.createElement('div');
             userBubble.className = 'msg-bubble msg-user';
             userBubble.innerText = messageText;
@@ -602,24 +186,7 @@
 
             input.value = '';
             chatMessages.scrollTop = chatMessages.scrollHeight;
-
-            // Bot Response Simulation
-            setTimeout(() => {
-                const botBubble = document.createElement('div');
-                botBubble.className = 'msg-bubble msg-bot';
-                botBubble.innerText = "Hello! I am FLAXXI GPT. How can I assist you today?";
-                chatMessages.appendChild(botBubble);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 600);
         }
-
-        // Enter key press listener for chat input
-        document.getElementById('chatInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
     </script>
 </body>
 </html>
