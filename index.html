@@ -125,7 +125,7 @@
 
         /* Chat Container */
         .chat-container { flex: 1; max-width: 650px; width: 100%; margin: 0 auto; padding: 20px 15px 120px; display: none; flex-direction: column; gap: 15px; overflow-y: auto; }
-        .msg-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; word-break: break-word; }
+        .msg-bubble { max-width: 85%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
         .msg-user { align-self: flex-end; background: var(--accent-red); color: #fff; border-bottom-right-radius: 4px; }
         .msg-ai { align-self: flex-start; background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main); border-bottom-left-radius: 4px; }
         .msg-error { align-self: flex-start; background: rgba(255, 42, 85, 0.15); border: 1px solid var(--accent-red); color: #ff6b8b; }
@@ -137,22 +137,51 @@
             padding: 12px 15px 20px; border-top: 1px solid var(--border-color);
         }
         .input-status-tag { text-align: center; font-size: 11px; color: var(--text-sub); margin-bottom: 8px; }
+        
+        .file-preview {
+            max-width: 650px; margin: 0 auto 5px; font-size: 12px; color: var(--accent-red);
+            display: none; align-items: center; justify-content: space-between;
+            background: var(--card-bg); padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border-color);
+        }
+
         .input-box-wrapper {
             max-width: 650px; margin: 0 auto; background: var(--card-bg);
             border: 1px solid var(--border-color); border-radius: 25px; padding: 6px 12px;
             display: flex; align-items: center; gap: 8px;
         }
-        .input-box-wrapper select {
-            background: transparent; color: var(--text-sub); border: none; font-size: 12px; outline: none; cursor: pointer;
+        
+        .language-select {
+            background: #1d0f17;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            font-size: 12px;
+            outline: none;
+            cursor: pointer;
+            border-radius: 12px;
+            padding: 4px 6px;
+            max-width: 110px;
         }
+        .language-select option { background: #140b10; color: #fff; }
+
         .chat-input { flex: 1; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; padding: 8px 5px; }
+        
+        .btn-icon { color: var(--text-sub); font-size: 14px; cursor: pointer; transition: color 0.2s; }
+        .btn-icon:hover { color: var(--accent-red); }
+        .btn-icon.active { color: var(--accent-red); animation: pulse 1s infinite; }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
         .btn-send {
             background: var(--accent-red); color: white; border: none; width: 36px; height: 36px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 0 10px var(--accent-glow);
+            box-shadow: 0 0 10px var(--accent-glow); flex-shrink: 0;
         }
 
-        /* Modals Generic */
+        /* Modals */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); display: none; align-items: center; justify-content: center;
@@ -176,7 +205,7 @@
         .auth-switch { text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-sub); }
         .auth-switch span { color: var(--accent-red); cursor: pointer; font-weight: bold; }
         
-        /* Plan Modal Specific */
+        /* Plan Modal */
         .plan-header { text-align: center; margin-bottom: 15px; }
         .plan-header h3 { color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 18px; }
         .plan-header p { font-size: 11px; color: var(--text-sub); margin-top: 4px; }
@@ -195,15 +224,48 @@
             text-decoration: none; margin-top: 10px; font-size: 14px;
         }
 
-        /* Subscription Modal Specific */
-        .sub-field { background: var(--card-bg); padding: 10px 12px; border-radius: 8px; margin-bottom: 10px; }
-        .sub-field label { font-size: 10px; color: var(--text-sub); text-transform: uppercase; display: block; }
-        .sub-field div { font-size: 14px; font-weight: bold; color: white; margin-top: 2px; }
-        .sub-field div.active { color: var(--accent-red); }
-        .redeem-box { border: 1px dashed var(--accent-red); border-radius: 10px; padding: 12px; margin-top: 15px; }
-        .redeem-box label { font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
-        .redeem-box input { width: 100%; padding: 10px; border-radius: 6px; border: none; outline: none; margin-bottom: 10px; }
-        .btn-activate { width: 100%; background: var(--accent-red); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        /* Subscription Modal Styling */
+        .sub-field { 
+            background: var(--card-bg); 
+            padding: 12px 14px; 
+            border-radius: 10px; 
+            margin-bottom: 12px; 
+            border: 1px solid var(--border-color);
+        }
+        .sub-field label { font-size: 10px; color: var(--text-sub); text-transform: uppercase; display: block; letter-spacing: 0.5px; }
+        .sub-field div { font-size: 15px; font-weight: bold; color: white; margin-top: 3px; }
+        .sub-field div.red-text { color: var(--accent-red); }
+        
+        .redeem-box { 
+            border: 1px dashed var(--accent-red); 
+            border-radius: 12px; 
+            padding: 14px; 
+            margin-top: 15px; 
+            background: rgba(255, 42, 85, 0.03);
+        }
+        .redeem-box label { font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #fff; }
+        .redeem-box input { 
+            width: 100%; 
+            padding: 12px; 
+            border-radius: 8px; 
+            border: 1px solid var(--border-color); 
+            background: #1a0d15;
+            color: #fff;
+            outline: none; 
+            margin-bottom: 12px; 
+            font-size: 13px;
+        }
+        .btn-activate { 
+            width: 100%; 
+            background: var(--accent-red); 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -219,7 +281,8 @@
         </div>
         <div class="nav-actions">
             <button class="btn-badge" onclick="openModal('planModal')">Plan</button>
-            <div class="user-avatar" id="avatarIcon" onclick="openModal('authModal')">A</div>
+            <!-- A Icon Click now opens Subscription Modal -->
+            <div class="user-avatar" id="avatarIcon" onclick="openModal('subModal')">A</div>
         </div>
     </div>
 
@@ -264,19 +327,53 @@
     <!-- Bottom Action Input Bar -->
     <div class="input-bar-container">
         <div class="input-status-tag">Unlimited Access ⚡</div>
+        
+        <!-- File Attachment Preview -->
+        <div class="file-preview" id="filePreview">
+            <span id="fileName"><i class="fa-solid fa-file"></i> Attached File</span>
+            <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="clearAttachedFile()"></i>
+        </div>
+
         <div class="input-box-wrapper">
-            <i class="fa-solid fa-paperclip" style="color: var(--text-sub); font-size: 14px; cursor: pointer;"></i>
-            <select>
-                <option>HI (Hindi)</option>
-                <option>EN (English)</option>
+            <!-- File Upload Hidden Input -->
+            <input type="file" id="fileInput" style="display:none;" onchange="handleFileSelected(event)">
+            <i class="fa-solid fa-paperclip btn-icon" title="Attach File" onclick="document.getElementById('fileInput').click()"></i>
+            
+            <!-- Language Select Menu -->
+            <select id="langSelect" class="language-select">
+                <option value="Hindi">HI (Hindi)</option>
+                <option value="English" selected>EN (English)</option>
+                <option value="Nepali">NE (Nepali)</option>
+                <option value="Hinglish">HI-EN (Hinglish)</option>
+                <option value="Marathi">MR (Marathi)</option>
+                <option value="Bengali">BN (Bengali)</option>
+                <option value="Punjabi">PA (Punjabi)</option>
+                <option value="Gujarati">GU (Gujarati)</option>
+                <option value="Tamil">TA (Tamil)</option>
+                <option value="Telugu">TE (Telugu)</option>
+                <option value="Kannada">KN (Kannada)</option>
+                <option value="Malayalam">ML (Malayalam)</option>
+                <option value="Urdu">UR (Urdu)</option>
+                <option value="Spanish">ES (Spanish)</option>
+                <option value="French">FR (French)</option>
+                <option value="German">DE (German)</option>
+                <option value="Arabic">AR (Arabic)</option>
+                <option value="Russian">RU (Russian)</option>
+                <option value="Chinese">ZH (Chinese)</option>
+                <option value="Japanese">JA (Japanese)</option>
+                <option value="Korean">KO (Korean)</option>
+                <option value="Portuguese">PT (Portuguese)</option>
             </select>
-            <i class="fa-solid fa-microphone" style="color: var(--text-sub); font-size: 14px; cursor: pointer;"></i>
+
+            <!-- Voice Mic Input -->
+            <i class="fa-solid fa-microphone btn-icon" id="micBtn" title="Voice Input" onclick="toggleVoiceInput()"></i>
+            
             <input type="text" id="userInput" class="chat-input" placeholder="What can I do for you?" onkeypress="handleKeyPress(event)">
             <button class="btn-send" onclick="sendMessage()"><i class="fa-solid fa-arrow-up"></i></button>
         </div>
     </div>
 
-    <!-- Account Create / Login Modal -->
+    <!-- Account Login/Signup Modal -->
     <div class="modal" id="authModal">
         <div class="modal-content">
             <i class="fa-solid fa-xmark modal-close" onclick="closeModal('authModal')"></i>
@@ -328,7 +425,7 @@
         </div>
     </div>
 
-    <!-- Subscription Modal -->
+    <!-- My Subscription Modal (Triggered by 'A' Icon) -->
     <div class="modal" id="subModal">
         <div class="modal-content">
             <i class="fa-solid fa-xmark modal-close" onclick="closeModal('subModal')"></i>
@@ -337,19 +434,19 @@
                 <p>Plan, account and access — all in one place.</p>
             </div>
             <div class="sub-field">
-                <label>Plan</label>
-                <div id="subPlanTitle">Discovery</div>
+                <label>PLAN</label>
+                <div id="subPlanTitle" class="red-text">Discovery</div>
             </div>
             <div class="sub-field">
-                <label>Status</label>
-                <div id="subStatusTitle" class="active">Discovery</div>
+                <label>STATUS</label>
+                <div id="subStatusTitle" class="red-text">Discovery</div>
             </div>
             <div class="sub-field">
-                <label>Expiry</label>
+                <label>EXPIRY</label>
                 <div id="subExpiryTitle">—</div>
             </div>
             <div class="sub-field">
-                <label>Account Username</label>
+                <label>ACCOUNT USERNAME</label>
                 <div id="subAccountUser">admin</div>
             </div>
             <div class="redeem-box">
@@ -362,6 +459,9 @@
 
     <script>
         let isSignUpMode = true;
+        let attachedFileData = null;
+        let recognition = null;
+        let isRecording = false;
 
         window.onload = function() {
             const savedUser = localStorage.getItem('flaxxi_logged_user');
@@ -370,7 +470,80 @@
             } else {
                 updateUIForUser(savedUser);
             }
+            initSpeechRecognition();
         };
+
+        // Voice Input Functionality
+        function initSpeechRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onstart = function() {
+                    isRecording = true;
+                    document.getElementById('micBtn').classList.add('active');
+                };
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('userInput').value += (document.getElementById('userInput').value ? ' ' : '') + transcript;
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Speech recognition error', event.error);
+                    stopVoiceInput();
+                };
+
+                recognition.onend = function() {
+                    stopVoiceInput();
+                };
+            }
+        }
+
+        function toggleVoiceInput() {
+            if (!recognition) {
+                alert("Speech recognition is not supported on this browser.");
+                return;
+            }
+            if (isRecording) {
+                recognition.stop();
+            } else {
+                const selectedLang = document.getElementById('langSelect').value;
+                recognition.lang = selectedLang === 'Hindi' ? 'hi-IN' : 'en-US';
+                recognition.start();
+            }
+        }
+
+        function stopVoiceInput() {
+            isRecording = false;
+            document.getElementById('micBtn').classList.remove('active');
+        }
+
+        // File Attachment Handling
+        function handleFileSelected(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                attachedFileData = {
+                    name: file.name,
+                    type: file.type,
+                    base64: evt.target.result.split(',')[1]
+                };
+                document.getElementById('fileName').innerText = `📄 ${file.name}`;
+                document.getElementById('filePreview').style.display = 'flex';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearAttachedFile() {
+            attachedFileData = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('filePreview').style.display = 'none';
+        }
 
         function toggleAuthMode() {
             isSignUpMode = !isSignUpMode;
@@ -414,22 +587,15 @@
             overlay.style.display = sb.classList.contains('active') ? 'block' : 'none';
         }
 
-        function openModal(id) {
-            document.getElementById(id).style.display = 'flex';
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
         function newChat() {
             document.getElementById('chatContainer').innerHTML = '';
             document.getElementById('chatContainer').style.display = 'none';
             document.getElementById('heroArea').style.display = 'flex';
+            clearAttachedFile();
             toggleSidebar();
         }
 
@@ -450,34 +616,56 @@
             closeModal('subModal');
         }
 
+        // Fast & Optimized API Call
         async function sendMessage() {
             const inputField = document.getElementById('userInput');
             const message = inputField.value.trim();
-            if (!message) return;
+            const selectedLang = document.getElementById('langSelect').value;
+
+            if (!message && !attachedFileData) return;
 
             document.getElementById('heroArea').style.display = 'none';
             const chatContainer = document.getElementById('chatContainer');
             chatContainer.style.display = 'flex';
 
-            appendMessage(message, 'msg-user');
+            let displayUserMsg = message;
+            if(attachedFileData) {
+                displayUserMsg += `\n[Attached File: ${attachedFileData.name}]`;
+            }
+
+            appendMessage(displayUserMsg, 'msg-user');
             inputField.value = '';
 
             const apiKey = localStorage.getItem('flaxxi_gemini_key');
             if (!apiKey) {
                 appendMessage("Error: API Key is missing in Local Storage. Please set 'flaxxi_gemini_key' from Admin Panel.", 'msg-error');
+                clearAttachedFile();
                 return;
             }
 
-            appendMessage("Thinking...", 'msg-ai', 'temp-loading');
+            appendMessage("⚡ Thinking...", 'msg-ai', 'temp-loading');
+
+            let parts = [];
+            
+            if (attachedFileData) {
+                parts.push({
+                    inlineData: {
+                        mimeType: attachedFileData.type || "image/png",
+                        data: attachedFileData.base64
+                    }
+                });
+            }
+
+            const promptText = `System Instruction: Respond concisely and directly in ${selectedLang} language.\n\nUser Question: ${message}`;
+            parts.push({ text: promptText });
+
+            clearAttachedFile();
 
             try {
-                // FIXED ENDPOINT: gemini-3.6-flash
                 const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: message }] }]
-                    })
+                    body: JSON.stringify({ contents: [{ parts: parts }] })
                 });
 
                 const data = await response.json();
