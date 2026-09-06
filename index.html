@@ -78,8 +78,18 @@
         .search-box { background: #1c0e17; border: 1px solid var(--border-color); border-radius: 10px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; color: var(--text-sub); margin-bottom: 20px; }
         .search-box input { background: transparent; border: none; outline: none; color: white; font-size: 13px; width: 100%; }
         .history-section { flex-grow: 1; overflow-y: auto; }
-        .history-title { font-size: 11px; color: var(--text-sub); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; }
-        .history-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.03); margin-bottom: 8px; font-size: 13px; cursor: pointer; }
+        .history-title { font-size: 11px; color: var(--text-sub); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        
+        .history-item { 
+            display: flex; align-items: center; justify-content: space-between; padding: 10px; border-radius: 8px; 
+            background: rgba(255,255,255,0.03); margin-bottom: 8px; font-size: 13px; cursor: pointer; 
+            border: 1px solid transparent; transition: all 0.2s;
+        }
+        .history-item:hover, .history-item.active { border-color: var(--accent-red); background: rgba(255, 42, 85, 0.1); }
+        .history-item-left { display: flex; align-items: center; gap: 10px; overflow: hidden; }
+        .history-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+        .delete-hist-btn { color: var(--text-sub); opacity: 0.6; transition: opacity 0.2s; }
+        .delete-hist-btn:hover { opacity: 1; color: var(--accent-red); }
 
         .sidebar-footer { border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 15px; }
         .user-plan-card { background: #1c0e17; border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
@@ -191,14 +201,17 @@
     <!-- Sidebar Drawer -->
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div>
-            <button class="btn-new-chat" onclick="newChat()"><i class="fa-solid fa-plus"></i> New chat</button>
+            <button class="btn-new-chat" onclick="createNewChatSession()"><i class="fa-solid fa-plus"></i> New chat</button>
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Search...">
+                <input type="text" id="historySearchInput" placeholder="Search chats..." oninput="filterHistory()">
             </div>
             <div class="history-section">
-                <div class="history-title">History</div>
-                <div class="history-item"><i class="fa-regular fa-message"></i> Conversation <span>Just now</span></div>
+                <div class="history-title">
+                    <span>History</span>
+                    <i class="fa-solid fa-trash-can" style="cursor:pointer;" title="Clear All History" onclick="clearAllHistory()"></i>
+                </div>
+                <div id="historyListContainer"></div>
             </div>
         </div>
 
@@ -320,10 +333,6 @@
                 </div>
             </div>
 
-            <div style="font-size: 11px; color: var(--text-sub); text-align: center; margin-top: 10px;">
-                Contact us on WhatsApp to select your plan and get an instant Access Key.
-            </div>
-
             <a href="https://wa.me/9779819833267?text=Hello%20FLAXXI%20AI,%20I%20want%20to%20buy%20a%20Plan%20Access%20Key." target="_blank" class="btn-whatsapp">
                 <i class="fa-brands fa-whatsapp" style="font-size: 18px;"></i> Buy via WhatsApp (+977 981-9833267)
             </a>
@@ -366,12 +375,145 @@
     </div>
 
     <script>
-        const DAILY_FREE_LIMIT = 7;
         let selectedFile = null;
         let recognition = null;
         let isRecording = false;
         let lastBotMessageText = "";
+        let currentChatId = null;
 
+        function getDailyLimitSetting() {
+            return parseInt(localStorage.getItem('flaxxi_daily_limit')) || 7;
+        }
+
+        function getWebsiteModeSetting() {
+            return localStorage.getItem('flaxxi_website_mode') || 'PAID';
+        }
+
+        /* --- HISTORY MANAGEMENT SYSTEM --- */
+        function getUserHistoryKey() {
+            const user = localStorage.getItem('flaxxi_current_user') || 'guest';
+            return 'flaxxi_chat_history_' + user;
+        }
+
+        function getAllChats() {
+            return JSON.parse(localStorage.getItem(getUserHistoryKey())) || [];
+        }
+
+        function saveAllChats(chats) {
+            localStorage.setItem(getUserHistoryKey(), JSON.stringify(chats));
+            renderHistoryList();
+        }
+
+        function createNewChatSession() {
+            currentChatId = 'chat_' + Date.now();
+            document.getElementById('chatMessages').innerHTML = `
+                <div class="chat-hero" id="heroBanner">
+                    <h1>FLAXXI <span>AI</span></h1>
+                    <h2>AI without limits.</h2>
+                    <div class="sub-tags">CODE · RESEARCH · ANALYSIS · CREATION</div>
+                </div>`;
+            renderHistoryList();
+            if (document.getElementById('sidebarDrawer').classList.contains('active')) {
+                toggleSidebar();
+            }
+        }
+
+        function renderHistoryList(filterText = '') {
+            const chats = getAllChats();
+            const container = document.getElementById('historyListContainer');
+            container.innerHTML = '';
+
+            const filtered = chats.filter(c => c.title.toLowerCase().includes(filterText.toLowerCase()));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="font-size:12px; color:var(--text-sub); text-align:center; margin-top:20px;">No chats found</div>`;
+                return;
+            }
+
+            filtered.forEach(chat => {
+                const item = document.createElement('div');
+                item.className = `history-item ${chat.id === currentChatId ? 'active' : ''}`;
+                item.innerHTML = `
+                    <div class="history-item-left" onclick="loadChatSession('${chat.id}')">
+                        <i class="fa-regular fa-message"></i>
+                        <span class="history-text">${escapeHtml(chat.title)}</span>
+                    </div>
+                    <i class="fa-solid fa-xmark delete-hist-btn" onclick="deleteChatSession(event, '${chat.id}')"></i>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function saveCurrentMessageToHistory(userText, botText) {
+            let chats = getAllChats();
+            let chat = chats.find(c => c.id === currentChatId);
+
+            if (!chat) {
+                chat = {
+                    id: currentChatId,
+                    title: userText.substring(0, 25) + (userText.length > 25 ? '...' : ''),
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    messages: []
+                };
+                chats.unshift(chat);
+            }
+
+            chat.messages.push({ sender: 'user', text: userText });
+            chat.messages.push({ sender: 'bot', text: botText });
+
+            saveAllChats(chats);
+        }
+
+        function loadChatSession(chatId) {
+            const chats = getAllChats();
+            const chat = chats.find(c => c.id === chatId);
+            if (!chat) return;
+
+            currentChatId = chatId;
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+
+            chat.messages.forEach(msg => {
+                const bubble = document.createElement('div');
+                bubble.className = `msg-bubble ${msg.sender === 'user' ? 'msg-user' : 'msg-bot'}`;
+                bubble.innerText = msg.text;
+                chatMessages.appendChild(bubble);
+            });
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            renderHistoryList();
+            if (document.getElementById('sidebarDrawer').classList.contains('active')) {
+                toggleSidebar();
+            }
+        }
+
+        function deleteChatSession(e, chatId) {
+            e.stopPropagation();
+            let chats = getAllChats().filter(c => c.id !== chatId);
+            saveAllChats(chats);
+
+            if (currentChatId === chatId) {
+                createNewChatSession();
+            }
+        }
+
+        function clearAllHistory() {
+            if (confirm("Are you sure you want to delete all chat history?")) {
+                localStorage.removeItem(getUserHistoryKey());
+                createNewChatSession();
+            }
+        }
+
+        function filterHistory() {
+            const query = document.getElementById('historySearchInput').value;
+            renderHistoryList(query);
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        /* --- UI & CHAT FUNCTIONS --- */
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
@@ -518,17 +660,21 @@
                 document.getElementById('subExpiryVal').innerText = userObj.expiry || '—';
 
                 updateLimitUI(userObj);
+                if (!currentChatId) createNewChatSession();
+                else renderHistoryList();
             }
         }
 
         function updateLimitUI(userObj) {
             const limitIndicator = document.getElementById('limitIndicator');
-            if (userObj.plan !== 'Discovery') {
-                limitIndicator.innerHTML = `Unlimited Premium Access ⚡`;
+            const siteMode = getWebsiteModeSetting();
+            const maxLimit = getDailyLimitSetting();
+
+            if (siteMode === 'FREE' || userObj.plan !== 'Discovery') {
+                limitIndicator.innerHTML = `Unlimited Access ⚡`;
             } else {
                 const used = getUserDailyChatCount(userObj.username);
-                document.getElementById('usedMsgCount').innerText = used;
-                limitIndicator.innerHTML = `Daily Free Messages: <span>${used}</span> / ${DAILY_FREE_LIMIT}`;
+                limitIndicator.innerHTML = `Daily Free Messages: <span>${used}</span> / ${maxLimit}`;
             }
         }
 
@@ -580,27 +726,17 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        function newChat() {
-            document.getElementById('chatMessages').innerHTML = `
-                <div class="chat-hero" id="heroBanner">
-                    <h1>FLAXXI <span>AI</span></h1>
-                    <h2>AI without limits.</h2>
-                    <div class="sub-tags">CODE · RESEARCH · ANALYSIS · CREATION</div>
-                </div>`;
-            toggleSidebar();
-        }
-
-        // PERFECT CHECK: PEHLI MESSAGE PAR NAHI AAYEGA, 7 COMPLETE HONE PAR 8th PAR PLAN MODAL KHULEGA
         async function sendMessage() {
             const currentUser = localStorage.getItem('flaxxi_current_user');
             if (!currentUser) { openModal('authOverlay'); return; }
 
             const userObj = JSON.parse(localStorage.getItem('flaxxi_user_' + currentUser)) || { plan: 'Discovery' };
+            const siteMode = getWebsiteModeSetting();
+            const maxLimit = getDailyLimitSetting();
 
-            if (userObj.plan === 'Discovery') {
+            if (siteMode === 'PAID' && userObj.plan === 'Discovery') {
                 const currentUsed = getUserDailyChatCount(currentUser);
-                // Agar count 7 ya usse zyada ho chuka hai, tabhi Plan Modal aayega
-                if (currentUsed >= DAILY_FREE_LIMIT) {
+                if (currentUsed >= maxLimit) {
                     openModal('planModal');
                     return;
                 }
@@ -617,8 +753,7 @@
                 messageText = `[Attached File: ${selectedFile.name}]\n` + messageText;
             }
 
-            // Message bhejne ke baad hi count increment hoga
-            if (userObj.plan === 'Discovery') {
+            if (siteMode === 'PAID' && userObj.plan === 'Discovery') {
                 incrementUserDailyChatCount(currentUser);
                 updateLimitUI(userObj);
             }
@@ -641,31 +776,36 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
 
             const apiKey = localStorage.getItem('flaxxi_gemini_key');
+            let textResp = "";
+
             if (!apiKey) {
-                botBubble.innerText = "Error: API Key is missing in Local Storage. Please set 'flaxxi_gemini_key'.";
-                return;
-            }
+                textResp = "Error: API Key is missing in Local Storage. Please set 'flaxxi_gemini_key' from Admin Panel.";
+                botBubble.innerText = textResp;
+            } else {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: messageText }] }] })
+                    });
 
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ contents: [{ parts: [{ text: messageText }] }] })
-                });
-
-                const data = await response.json();
-                
-                if (data.error) {
-                    botBubble.innerText = "API Error: " + data.error.message;
-                } else {
-                    const textResp = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        textResp = "API Error: " + data.error.message;
+                    } else {
+                        textResp = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+                    }
                     botBubble.innerText = textResp;
                     lastBotMessageText = textResp;
+                } catch (err) {
+                    textResp = "Network Error: Unable to communicate with AI Server.";
+                    botBubble.innerText = textResp;
                 }
-            } catch (err) {
-                botBubble.innerText = "Network Error: Unable to communicate with AI Server.";
             }
 
+            // Save conversation to History
+            saveCurrentMessageToHistory(messageText, textResp);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
