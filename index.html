@@ -148,7 +148,7 @@
 </head>
 <body>
 
-    <!-- Auth Overlay (Signup/Login) -->
+    <!-- Auth Overlay -->
     <div class="auth-overlay" id="authOverlay">
         <div class="auth-card" id="signupCard">
             <div class="auth-title">FLAXXI <span>AI</span></div>
@@ -245,11 +245,9 @@
                 <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="clearAttachment()"></i>
             </div>
             <div class="input-row">
-                <!-- Working File Attachment Button -->
                 <input type="file" id="fileInput" style="display:none;" onchange="handleFileSelect(event)">
                 <i class="fa-solid fa-paperclip action-icon" title="Attach file" onclick="document.getElementById('fileInput').click()"></i>
                 
-                <!-- Voice Language Selection -->
                 <select class="lang-select" id="voiceLangSelect" title="Select Voice Language">
                     <option value="hi-IN" selected>HI (Hindi)</option>
                     <option value="en-US">EN (English)</option>
@@ -260,10 +258,7 @@
                     <option value="ar-SA">AR (Arabic)</option>
                 </select>
 
-                <!-- Multilingual Speech-to-Text Button -->
                 <i class="fa-solid fa-microphone action-icon" id="micBtn" title="Voice Input" onclick="toggleVoiceInput()"></i>
-                
-                <!-- Play Audio Button -->
                 <i class="fa-solid fa-play action-icon" id="playBtn" title="Play Last AI Speech" onclick="playLastResponse()"></i>
                 
                 <textarea class="chat-textarea" id="chatInput" placeholder="What can I do for you?"></textarea>
@@ -362,7 +357,6 @@
                 <div class="val" id="subUsernameVal">--</div>
             </div>
 
-            <!-- Redeem Key Input Section -->
             <div class="redeem-box">
                 <div style="font-size:12px; font-weight:700; color:white; margin-bottom:6px;"><i class="fa-solid fa-key" style="color:var(--accent-red)"></i> Redeem Access Key</div>
                 <input type="text" id="accessKeyInput" class="form-input" placeholder="Paste key (e.g. FLAXXI-1MONTH-...)" style="margin-bottom:8px; font-size:12px;">
@@ -378,7 +372,6 @@
         let isRecording = false;
         let lastBotMessageText = "";
 
-        // File Attachment Logic
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
@@ -394,7 +387,6 @@
             document.getElementById('filePreview').style.display = 'none';
         }
 
-        // Voice Input (Speech-to-Text)
         function toggleVoiceInput() {
             const micBtn = document.getElementById('micBtn');
             const selectedLang = document.getElementById('voiceLangSelect').value;
@@ -440,7 +432,6 @@
             recognition.start();
         }
 
-        // Text-to-Speech (Play Response)
         function playLastResponse() {
             if (!lastBotMessageText) {
                 alert("No AI message available to play!");
@@ -606,10 +597,10 @@
 
             const userObj = JSON.parse(localStorage.getItem('flaxxi_user_' + currentUser)) || { plan: 'Discovery' };
 
+            // AGAR ALREADY 7 MESSAGES BHEJ CHUKA HAI TOH 8th MESSAGE PAR PLAN MODAL KHULEGA
             if (userObj.plan === 'Discovery') {
                 const currentUsed = getUserDailyChatCount(currentUser);
                 if (currentUsed >= DAILY_FREE_LIMIT) {
-                    alert('Daily free limit reached (7/7 messages)! Upgrade to Premium for unlimited chat.');
                     openModal('planModal');
                     return;
                 }
@@ -626,6 +617,7 @@
                 messageText = `[Attached File: ${selectedFile.name}]\n` + messageText;
             }
 
+            // Message send hone se pehle count badhaya gaya (1/7, 2/7 ... 7/7 tak bhej sake)
             if (userObj.plan === 'Discovery') {
                 incrementUserDailyChatCount(currentUser);
                 updateLimitUI(userObj);
@@ -650,7 +642,7 @@
 
             const apiKey = localStorage.getItem('flaxxi_gemini_key');
             if (!apiKey) {
-                botBubble.innerText = "Error: API Key is missing in Admin Panel/Local Storage. Please set 'flaxxi_gemini_key'.";
+                botBubble.innerText = "Error: API Key is missing in Local Storage. Please set 'flaxxi_gemini_key'.";
                 return;
             }
 
@@ -680,7 +672,6 @@
         window.onload = function() {
             initUserSession();
 
-            // Enter Key Listener to Send Message
             document.getElementById('chatInput').addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
