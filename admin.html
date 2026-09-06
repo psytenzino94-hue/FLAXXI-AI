@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLAXXI ADMIN - Control Panel</title>
+    <title>FLAXXI AI - Admin Panel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -22,30 +22,54 @@
             background-color: var(--bg-dark);
             color: var(--text-main);
             min-height: 100vh;
-            background-image: radial-gradient(circle at 50% 30%, rgba(255, 42, 85, 0.15) 0%, transparent 60%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            padding: 20px 15px;
+            background-image: radial-gradient(circle at 50% 20%, rgba(255, 42, 85, 0.15) 0%, transparent 60%);
         }
 
-        .admin-card {
+        .container { max-width: 500px; margin: 0 auto; }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 900;
+        }
+        .header h1 span { color: var(--accent-red); }
+
+        .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 35px 25px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-            text-align: center;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6);
         }
 
-        .admin-title { font-size: 24px; font-weight: 900; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .admin-title span { color: var(--accent-red); }
-        .admin-subtitle { font-size: 12px; color: var(--text-sub); margin-bottom: 25px; }
+        .card-title {
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-        .input-group { text-align: left; margin-bottom: 16px; }
-        .input-group label { display: block; font-size: 12px; color: var(--text-sub); margin-bottom: 6px; font-weight: 600; }
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
 
         .form-input, .form-select {
             width: 100%;
@@ -53,240 +77,220 @@
             border: 1px solid var(--border-color);
             padding: 12px;
             border-radius: 10px;
-            color: #000000;
-            outline: none;
+            color: #000;
             font-size: 14px;
             font-weight: 600;
+            outline: none;
         }
 
-        .btn-signin {
+        .btn-action {
             background: var(--accent-red);
             color: white;
             border: none;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 15px;
-            cursor: pointer;
+            padding: 13px;
+            border-radius: 10px;
+            font-weight: 800;
             width: 100%;
-            margin-top: 10px;
-            box-shadow: 0 4px 15px var(--accent-glow);
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 0 12px var(--accent-glow);
+            transition: all 0.2s ease;
         }
 
-        .error-msg { color: #ff4d4d; font-size: 12px; margin-top: 15px; display: none; font-weight: 600; }
+        .btn-action:active { transform: scale(0.98); }
 
-        .dashboard { display: none; width: 100%; max-width: 520px; }
-        .dash-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; padding: 25px; margin-bottom: 20px; }
-        .dash-card h3 { font-size: 16px; color: var(--accent-red); margin-bottom: 15px; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
-
-        .key-box {
-            background: #0d060a;
-            border: 1px dashed #25d366;
+        .key-display {
+            background: #1c0e17;
+            border: 1px dashed var(--accent-red);
             padding: 12px;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 13px;
-            margin-top: 15px;
-            word-break: break-all;
-            color: #25d366;
+            border-radius: 10px;
+            margin-top: 14px;
             text-align: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--accent-red);
+            word-break: break-all;
+            display: none;
         }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+        .status-paid { background: rgba(255, 42, 85, 0.2); color: var(--accent-red); border: 1px solid var(--accent-red); }
+        .status-free { background: rgba(37, 211, 102, 0.2); color: #25d366; border: 1px solid #25d366; }
     </style>
 </head>
 <body>
 
-    <!-- Admin Login Card -->
-    <div class="admin-card" id="loginCard">
-        <div class="admin-title"><i class="fa-solid fa-gear" style="color:var(--accent-red)"></i> FLAXXI <span>ADMIN</span></div>
-        <div class="admin-subtitle">Control Panel Management</div>
-
-        <div class="input-group">
-            <label>Admin Username</label>
-            <input type="text" id="adminUser" class="form-input" placeholder="Enter username">
+    <div class="container">
+        <div class="header">
+            <h1>FLAXXI <span>AI ADMIN</span></h1>
+            <p style="font-size: 12px; color: var(--text-sub);">System Control & Access Key Management</p>
         </div>
 
-        <div class="input-group">
-            <label>Admin Password</label>
-            <input type="password" id="adminPass" class="form-input" placeholder="Enter password">
-        </div>
-
-        <button class="btn-signin" onclick="handleLogin()">Sign In</button>
-        <div class="error-msg" id="loginError">Invalid credentials! Try again.</div>
-    </div>
-
-    <!-- Admin Dashboard -->
-    <div class="dashboard" id="dashboard">
-        
-        <!-- Admin Profile / Credentials Setting -->
-        <div class="dash-card">
-            <h3><i class="fa-solid fa-user-gear"></i> Admin Profile Settings</h3>
-            <div class="input-group">
-                <label>New Username</label>
-                <input type="text" id="newAdminUser" class="form-input" placeholder="Enter new username">
-            </div>
-            <div class="input-group">
-                <label>New Password</label>
-                <input type="password" id="newAdminPass" class="form-input" placeholder="Enter new password">
-            </div>
-            <button class="btn-signin" onclick="updateAdminCredentials()">Update Credentials</button>
-        </div>
-
-        <!-- AI API Keys Configuration -->
-        <div class="dash-card">
-            <h3><i class="fa-solid fa-brain"></i> All AI Models & API Keys Settings</h3>
+        <!-- 1. AI API CONFIGURATION -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-robot" style="color:var(--accent-red);"></i> AI Configurations</div>
             
             <div class="input-group">
-                <label>Default Active AI Model</label>
-                <select id="activeAiModel" class="form-select">
-                    <option value="gemini">Google Gemini AI</option>
-                    <option value="chatgpt">ChatGPT (OpenAI)</option>
-                    <option value="claude">Claude AI (Anthropic)</option>
-                    <option value="darkgpt">Dark GPT / Custom Proxy</option>
-                </select>
-            </div>
-
-            <div class="input-group">
                 <label>Google Gemini API Key</label>
-                <input type="password" id="geminiKeyInput" class="form-input" placeholder="AIzaSy...">
+                <input type="text" id="geminiKey" class="form-input" placeholder="AIzaSy...">
             </div>
 
             <div class="input-group">
                 <label>ChatGPT (OpenAI) API Key</label>
-                <input type="password" id="chatgptKeyInput" class="form-input" placeholder="sk-...">
+                <input type="text" id="openaiKey" class="form-input" placeholder="sk-...">
             </div>
 
             <div class="input-group">
                 <label>Claude AI (Anthropic) API Key</label>
-                <input type="password" id="claudeKeyInput" class="form-input" placeholder="sk-ant-...">
+                <input type="text" id="claudeKey" class="form-input" placeholder="sk-ant-...">
             </div>
 
             <div class="input-group">
                 <label>Dark GPT API Key / Endpoint URL</label>
-                <input type="password" id="darkgptKeyInput" class="form-input" placeholder="Dark GPT API Key or Endpoint">
+                <input type="text" id="darkGptKey" class="form-input" placeholder="Dark GPT API Key or Endpoint">
             </div>
 
-            <button class="btn-signin" onclick="saveAllAiKeys()">Save AI Configurations</button>
+            <button class="btn-action" onclick="saveAiKeys()">Save AI Configurations</button>
         </div>
 
-        <!-- Daily Question Limit Settings -->
-        <div class="dash-card">
-            <h3><i class="fa-solid fa-sliders"></i> Daily Question Limit Settings</h3>
-            <div class="input-group">
-                <label>Free User Daily Questions Limit</label>
-                <input type="number" id="freeLimitInput" class="form-input" value="5" placeholder="Default is 5">
-            </div>
-            <button class="btn-signin" onclick="saveLimit()">Save Question Limit</button>
-        </div>
-
-        <!-- Generate Access Key -->
-        <div class="dash-card">
-            <h3><i class="fa-solid fa-ticket"></i> Generate Access Key</h3>
+        <!-- 2. WEBSITE MODE CONTROL (FREE / PAID) -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-globe" style="color:var(--accent-red);"></i> Website Access Mode</div>
             
             <div class="input-group">
-                <label>Select Plan Validity</label>
-                <select id="planDuration" class="form-select">
-                    <option value="1DAY">1 Day Pass (24 Hours)</option>
-                    <option value="7DAYS">7 Days Pass (1 Week)</option>
-                    <option value="1MONTH" selected>1 Month Pass (30 Days)</option>
-                    <option value="1YEAR">1 Year Pass (365 Days)</option>
-                    <option value="LIFETIME">Lifetime Pass (Permanent)</option>
+                <label>Website Access Status</label>
+                <select id="websiteMode" class="form-select">
+                    <option value="PAID">PAID MODE (Daily Free Limit + Subscription Plan Needed)</option>
+                    <option value="FREE">100% FREE MODE (No Message Limits for Anyone)</option>
+                    <option value="MAINTENANCE">MAINTENANCE MODE (Site Locked)</option>
                 </select>
             </div>
 
-            <button class="btn-signin" onclick="generateKeyByDuration()">Generate Access Key</button>
-            <div class="key-box" id="keyOutput">Generated key will appear here...</div>
+            <button class="btn-action" onclick="saveWebsiteMode()">Save Website Status</button>
         </div>
 
+        <!-- 3. DAILY QUESTION LIMIT SETTINGS -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-sliders" style="color:var(--accent-red);"></i> Daily Question Limit Settings</div>
+            
+            <div class="input-group">
+                <label>Free User Daily Questions Limit</label>
+                <input type="number" id="dailyLimit" class="form-input" value="7">
+            </div>
+
+            <button class="btn-action" onclick="saveLimit()">Save Question Limit</button>
+        </div>
+
+        <!-- 4. GENERATE ACCESS KEY WITH DEVICE CONTROL -->
+        <div class="card">
+            <div class="card-title"><i class="fa-solid fa-ticket" style="color:var(--accent-red);"></i> Generate Access Key</div>
+            
+            <div class="input-group">
+                <label>Select Plan Validity</label>
+                <select id="planValidity" class="form-select">
+                    <option value="1DAY">1 Day Pass (24 Hours)</option>
+                    <option value="7DAYS">7 Days Pass</option>
+                    <option value="1MONTH">1 Month Pass</option>
+                    <option value="1YEAR">1 Year Pass</option>
+                    <option value="LIFETIME">Lifetime VIP Pass</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Allowed Devices Limit (Key Login Limit)</label>
+                <select id="deviceLimit" class="form-select">
+                    <option value="1">1 Device</option>
+                    <option value="2">2 Devices</option>
+                    <option value="3">3 Devices</option>
+                    <option value="7">7 Devices</option>
+                    <option value="UNLIMITED">Unlimited Devices</option>
+                </select>
+            </div>
+
+            <button class="btn-action" onclick="generateKey()">Generate Key</button>
+
+            <div class="key-display" id="keyDisplayBox" onclick="copyGeneratedKey()">
+                <div style="font-size: 10px; color: var(--text-sub); margin-bottom: 4px;">CLICK TO COPY KEY</div>
+                <span id="keyText">FLAXXI-1MONTH-DEV1-XXXXXX</span>
+            </div>
+        </div>
     </div>
 
     <script>
-        const DEFAULT_USER = "Tenzino";
-        const DEFAULT_PASS = "Tenzino@766";
-
-        function getStoredUser() {
-            return localStorage.getItem('flaxxi_admin_user') || DEFAULT_USER;
-        }
-
-        function getStoredPass() {
-            return localStorage.getItem('flaxxi_admin_pass') || DEFAULT_PASS;
-        }
-
+        // Load existing settings on page load
         window.onload = function() {
-            // Load Admin credentials
-            document.getElementById('newAdminUser').value = getStoredUser();
-            document.getElementById('newAdminPass').value = getStoredPass();
+            if (localStorage.getItem('flaxxi_gemini_key')) document.getElementById('geminiKey').value = localStorage.getItem('flaxxi_gemini_key');
+            if (localStorage.getItem('flaxxi_openai_key')) document.getElementById('openaiKey').value = localStorage.getItem('flaxxi_openai_key');
+            if (localStorage.getItem('flaxxi_claude_key')) document.getElementById('claudeKey').value = localStorage.getItem('flaxxi_claude_key');
+            if (localStorage.getItem('flaxxi_darkgpt_key')) document.getElementById('darkGptKey').value = localStorage.getItem('flaxxi_darkgpt_key');
 
-            // Load saved AI keys and selected model
-            document.getElementById('activeAiModel').value = localStorage.getItem('flaxxi_active_ai') || 'gemini';
-            document.getElementById('geminiKeyInput').value = localStorage.getItem('flaxxi_gemini_key') || '';
-            document.getElementById('chatgptKeyInput').value = localStorage.getItem('flaxxi_chatgpt_key') || '';
-            document.getElementById('claudeKeyInput').value = localStorage.getItem('flaxxi_claude_key') || '';
-            document.getElementById('darkgptKeyInput').value = localStorage.getItem('flaxxi_darkgpt_key') || '';
+            if (localStorage.getItem('flaxxi_website_mode')) {
+                document.getElementById('websiteMode').value = localStorage.getItem('flaxxi_website_mode');
+            }
 
-            // Load Limit
-            const savedLimit = localStorage.getItem('flaxxi_free_limit') || 5;
-            document.getElementById('freeLimitInput').value = savedLimit;
+            if (localStorage.getItem('flaxxi_daily_limit')) {
+                document.getElementById('dailyLimit').value = localStorage.getItem('flaxxi_daily_limit');
+            }
         };
 
-        function handleLogin() {
-            const userIn = document.getElementById('adminUser').value.trim();
-            const passIn = document.getElementById('adminPass').value.trim();
-            
-            if (userIn === getStoredUser() && passIn === getStoredPass()) {
-                document.getElementById('loginCard').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-            } else {
-                document.getElementById('loginError').style.display = 'block';
-            }
+        function saveAiKeys() {
+            localStorage.setItem('flaxxi_gemini_key', document.getElementById('geminiKey').value.trim());
+            localStorage.setItem('flaxxi_openai_key', document.getElementById('openaiKey').value.trim());
+            localStorage.setItem('flaxxi_claude_key', document.getElementById('claudeKey').value.trim());
+            localStorage.setItem('flaxxi_darkgpt_key', document.getElementById('darkGptKey').value.trim());
+            alert('AI Configurations Saved Successfully!');
         }
 
-        function updateAdminCredentials() {
-            const newUser = document.getElementById('newAdminUser').value.trim();
-            const newPass = document.getElementById('newAdminPass').value.trim();
-
-            if (!newUser || !newPass) {
-                alert("Username aur Password khali nahi ho sakte!");
-                return;
-            }
-
-            localStorage.setItem('flaxxi_admin_user', newUser);
-            localStorage.setItem('flaxxi_admin_pass', newPass);
-
-            alert("Admin Credentials Successfully Updated!");
-        }
-
-        function saveAllAiKeys() {
-            const activeModel = document.getElementById('activeAiModel').value;
-            const geminiKey = document.getElementById('geminiKeyInput').value.trim();
-            const chatgptKey = document.getElementById('chatgptKeyInput').value.trim();
-            const claudeKey = document.getElementById('claudeKeyInput').value.trim();
-            const darkgptKey = document.getElementById('darkgptKeyInput').value.trim();
-
-            localStorage.setItem('flaxxi_active_ai', activeModel);
-            localStorage.setItem('flaxxi_gemini_key', geminiKey);
-            localStorage.setItem('flaxxi_chatgpt_key', chatgptKey);
-            localStorage.setItem('flaxxi_claude_key', claudeKey);
-            localStorage.setItem('flaxxi_darkgpt_key', darkgptKey);
-
-            alert('All AI Models and API Keys updated successfully!');
+        function saveWebsiteMode() {
+            const mode = document.getElementById('websiteMode').value;
+            localStorage.setItem('flaxxi_website_mode', mode);
+            alert('Website Mode updated to: ' + mode);
         }
 
         function saveLimit() {
-            const limitVal = parseInt(document.getElementById('freeLimitInput').value) || 5;
-            localStorage.setItem('flaxxi_free_limit', limitVal);
-            alert(`Free Daily Limit updated to ${limitVal} Questions!`);
+            const limit = document.getElementById('dailyLimit').value;
+            if(!limit || limit < 0) { alert('Valid limit numeric dalein!'); return; }
+            localStorage.setItem('flaxxi_daily_limit', limit);
+            alert('Daily Question Limit updated to ' + limit);
         }
 
-        function generateKeyByDuration() {
-            const duration = document.getElementById('planDuration').value;
-            const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
-            const newKey = `FLAXXI-${duration}-${randomCode}`;
+        function generateKey() {
+            const validity = document.getElementById('planValidity').value;
+            const deviceLimit = document.getElementById('deviceLimit').value;
+            const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
 
-            let existingKeys = JSON.parse(localStorage.getItem('flaxxi_active_keys')) || [];
-            existingKeys.push(newKey);
-            localStorage.setItem('flaxxi_active_keys', JSON.stringify(existingKeys));
+            // Format: FLAXXI-[PLAN]-[DEVICES]-[RANDOM]
+            const generatedKey = `FLAXXI-${validity}-DEV${deviceLimit}-${randomCode}`;
 
-            document.getElementById('keyOutput').innerText = "Generated Key: " + newKey;
+            let activeKeys = JSON.parse(localStorage.getItem('flaxxi_active_keys')) || [];
+            
+            // Key Data storing with device allowance details
+            const keyData = {
+                key: generatedKey,
+                validity: validity,
+                allowedDevices: deviceLimit,
+                usedDevicesCount: 0
+            };
+
+            activeKeys.push(generatedKey);
+            localStorage.setItem('flaxxi_active_keys', JSON.stringify(activeKeys));
+            localStorage.setItem('flaxxi_key_details_' + generatedKey, JSON.stringify(keyData));
+
+            document.getElementById('keyText').innerText = generatedKey;
+            document.getElementById('keyDisplayBox').style.display = 'block';
+        }
+
+        function copyGeneratedKey() {
+            const keyText = document.getElementById('keyText').innerText;
+            navigator.clipboard.writeText(keyText);
+            alert('Access Key Copied to Clipboard!');
         }
     </script>
 </body>
