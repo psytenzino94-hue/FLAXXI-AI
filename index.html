@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DarkGPT - AI without limits</title>
+    <title>FLAXXI AI - AI without limits</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -120,7 +120,7 @@
     <!-- Auth Overlay (Signup/Login) -->
     <div class="auth-overlay" id="authOverlay">
         <div class="auth-card" id="signupCard">
-            <div class="auth-title">Dark<span>GPT</span></div>
+            <div class="auth-title">FLAXXI <span>AI</span></div>
             <div class="auth-subtitle">Create an account to start using AI</div>
 
             <div class="input-group">
@@ -137,7 +137,7 @@
         </div>
 
         <div class="auth-card" id="loginCard" style="display: none;">
-            <div class="auth-title">Dark<span>GPT</span></div>
+            <div class="auth-title">FLAXXI <span>AI</span></div>
             <div class="auth-subtitle">Welcome back! Sign in to continue</div>
 
             <div class="input-group">
@@ -189,7 +189,7 @@
     <header>
         <div class="header-left">
             <button class="icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-            <div class="logo"><i class="fa-solid fa-fire" style="color: var(--accent-red);"></i> Dark<span>GPT</span></div>
+            <div class="logo"><i class="fa-solid fa-fire" style="color: var(--accent-red);"></i> FLAXXI <span>AI</span></div>
         </div>
         <div class="header-right">
             <div class="badge-pro" onclick="openModal('subscriptionModal')">Plan</div>
@@ -201,7 +201,7 @@
     <div class="chat-container">
         <div class="chat-messages" id="chatMessages">
             <div class="chat-hero" id="heroBanner">
-                <h1>Dark<span>GPT</span></h1>
+                <h1>FLAXXI <span>AI</span></h1>
                 <h2>AI without limits.</h2>
                 <div class="sub-tags">CODE · RESEARCH · ANALYSIS · CREATION</div>
             </div>
@@ -265,8 +265,8 @@
             if (!u || !p) { alert('Username aur Password dalein!'); return; }
 
             const userData = { username: u, password: p, plan: 'Discovery', expiry: '—' };
-            localStorage.setItem('darkgpt_user_' + u, JSON.stringify(userData));
-            localStorage.setItem('darkgpt_current_user', u);
+            localStorage.setItem('flaxxi_user_' + u, JSON.stringify(userData));
+            localStorage.setItem('flaxxi_current_user', u);
 
             alert('Account successfully created!');
             initUserSession();
@@ -276,12 +276,12 @@
             const u = document.getElementById('loginUser').value.trim();
             const p = document.getElementById('loginPass').value.trim();
             
-            const stored = localStorage.getItem('darkgpt_user_' + u);
+            const stored = localStorage.getItem('flaxxi_user_' + u);
             if (!stored) { alert('Account nahi mila!'); return; }
 
             const userObj = JSON.parse(stored);
             if (userObj.password === p) {
-                localStorage.setItem('darkgpt_current_user', u);
+                localStorage.setItem('flaxxi_current_user', u);
                 initUserSession();
             } else {
                 alert('Wrong password!');
@@ -289,13 +289,13 @@
         }
 
         function initUserSession() {
-            const currentUser = localStorage.getItem('darkgpt_current_user');
+            const currentUser = localStorage.getItem('flaxxi_current_user');
             if (!currentUser) {
                 document.getElementById('authOverlay').style.display = 'flex';
             } else {
                 document.getElementById('authOverlay').style.display = 'none';
                 
-                const userObj = JSON.parse(localStorage.getItem('darkgpt_user_' + currentUser)) || { username: currentUser, plan: 'Discovery', expiry: '—' };
+                const userObj = JSON.parse(localStorage.getItem('flaxxi_user_' + currentUser)) || { username: currentUser, plan: 'Discovery', expiry: '—' };
 
                 document.getElementById('sidebarUsername').innerText = userObj.username;
                 document.getElementById('subUsernameVal').innerText = userObj.username;
@@ -309,7 +309,7 @@
         }
 
         function logout() {
-            localStorage.removeItem('darkgpt_current_user');
+            localStorage.removeItem('flaxxi_current_user');
             location.reload();
         }
 
@@ -323,8 +323,8 @@
                 return;
             }
 
-            const currentUser = localStorage.getItem('darkgpt_current_user');
-            let userObj = JSON.parse(localStorage.getItem('darkgpt_user_' + currentUser));
+            const currentUser = localStorage.getItem('flaxxi_current_user');
+            let userObj = JSON.parse(localStorage.getItem('flaxxi_user_' + currentUser));
 
             let planName = "Premium Pass";
             let expiryDate = "Lifetime";
@@ -338,9 +338,8 @@
             userObj.plan = planName;
             userObj.expiry = expiryDate;
 
-            localStorage.setItem('darkgpt_user_' + currentUser, JSON.stringify(userObj));
+            localStorage.setItem('flaxxi_user_' + currentUser, JSON.stringify(userObj));
             
-            // Key Remove from system
             activeKeys = activeKeys.filter(k => k !== key);
             localStorage.setItem('flaxxi_active_keys', JSON.stringify(activeKeys));
 
@@ -360,7 +359,7 @@
         function newChat() {
             document.getElementById('chatMessages').innerHTML = `
                 <div class="chat-hero" id="heroBanner">
-                    <h1>Dark<span>GPT</span></h1>
+                    <h1>FLAXXI <span>AI</span></h1>
                     <h2>AI without limits.</h2>
                     <div class="sub-tags">CODE · RESEARCH · ANALYSIS · CREATION</div>
                 </div>`;
