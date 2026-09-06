@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLAXXI AI - Admin Dashboard</title>
+    <title>FLAXXI AI - Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-dark: #0a0507;
@@ -12,188 +13,92 @@
             --text-main: #ffffff;
             --text-sub: #a399a2;
             --border-color: #261822;
-            --green: #2ecc71;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+        body { background: var(--bg-dark); color: white; padding: 20px 15px; }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            padding: 20px 15px;
-        }
+        .card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; margin-bottom: 20px; }
+        .card-title { color: var(--accent-red); font-size: 16px; font-weight: bold; margin-bottom: 12px; }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
+        input, select { width: 100%; padding: 10px; background: #080306; border: 1px solid var(--border-color); color: white; border-radius: 8px; margin-bottom: 10px; outline: none; }
+        
+        .btn-red { background: var(--accent-red); color: white; border: none; padding: 10px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
+        .btn-logout { background: #20141c; color: white; border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 6px; cursor: pointer; float: right; }
 
-        .header h1 {
-            font-size: 20px;
-            color: var(--accent-red);
-            font-weight: 800;
-        }
-
-        .btn-logout {
-            background: #20141c;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            width: 100%;
-        }
-
-        .card-title {
-            color: var(--accent-red);
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        /* --- Table Overflow Fix --- */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 13px;
-            min-width: 480px; /* Ensures structure doesn't break on small screens */
-        }
-
-        th {
-            color: var(--text-sub);
-            padding: 12px 10px;
-            font-weight: 600;
-            border-bottom: 1px solid var(--border-color);
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 14px 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            white-space: nowrap;
-        }
-
-        .plan-starter { color: var(--accent-red); font-weight: 600; }
-        .plan-unlimited { color: var(--accent-red); font-weight: 700; }
-        .status-active { color: var(--green); font-weight: 600; }
-
-        /* Input Controls */
-        label { display: block; color: var(--text-sub); font-size: 11px; margin-bottom: 6px; text-transform: uppercase; }
-        select, input {
-            width: 100%;
-            padding: 12px;
-            background: #0a0507;
-            border: 1px solid var(--border-color);
-            color: white;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            outline: none;
-        }
-
-        .btn-red {
-            width: 100%;
-            background: var(--accent-red);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-        }
+        .key-display { background: #000; padding: 10px; border: 1px dashed var(--accent-red); border-radius: 6px; color: #2ecc71; margin-top: 10px; font-family: monospace; display: none; word-break: break-all; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>FLAXXI AI - Admin Dashboard</h1>
-        <button class="btn-logout">Logout</button>
+    <div style="margin-bottom: 20px; overflow: hidden;">
+        <span style="font-size: 18px; font-weight: bold; color: var(--accent-red);">FLAXXI AI - Admin Dashboard</span>
+        <button class="btn-logout" onclick="adminLogout()">Logout</button>
     </div>
 
-    <!-- Key Manager Card -->
+    <!-- API Key Settings Card -->
+    <div class="card">
+        <div class="card-title">System API Key Config</div>
+        <label style="font-size: 12px; color: var(--text-sub);">Custom OpenAI / LLM API Key</label>
+        <input type="password" id="apiKeyInput" placeholder="sk-proj-xxxxxxxxxxxxxxxx">
+        <button class="btn-red" onclick="saveApiKey()">Save System API Key</button>
+    </div>
+
+    <!-- Key Generator Card -->
     <div class="card">
         <div class="card-title">Key Manager</div>
-        <label>Select Plan</label>
-        <select>
-            <option>Lifetime Access</option>
-            <option>Unlimited Plan</option>
-            <option>Starter Plan</option>
+        <label style="font-size: 12px; color: var(--text-sub);">SELECT PLAN</label>
+        <select id="planSelect">
+            <option value="Starter Plan">Starter Plan</option>
+            <option value="Unlimited Plan">Unlimited Plan</option>
+            <option value="Lifetime Access">Lifetime Access</option>
         </select>
-        <button class="btn-red">Auto Generate Key</button>
-        
-        <div style="text-align: center; color: var(--text-sub); font-size: 11px; margin: 10px 0;">— OR ADD CUSTOM KEY —</div>
-        
-        <input type="text" value="FLAXXI">
-        <button class="btn-logout" style="width:100%;">Add Custom Key</button>
+
+        <button class="btn-red" onclick="generateNewKey()">Auto Generate Key</button>
+        <div id="generatedKeyBox" class="key-display"></div>
+
+        <div style="text-align: center; color: var(--text-sub); font-size: 11px; margin: 12px 0;">— OR ADD CUSTOM KEY —</div>
+
+        <input type="text" id="customKey" placeholder="FLAXXI-CUSTOM-KEY">
+        <button class="btn-red" style="background:#20141c;" onclick="addCustomKey()">Add Custom Key</button>
     </div>
 
-    <!-- Plan Price Manager Card -->
-    <div class="card">
-        <div class="card-title">Plan Price Manager</div>
-        <label>Select Plan to Edit</label>
-        <select>
-            <option>Lifetime Plan</option>
-        </select>
-        <label>Set New Price</label>
-        <input type="text" value="69.99 € once">
-        <button class="btn-red">Update Plan Price</button>
-    </div>
+    <script>
+        // Save System API Key
+        function saveApiKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if(key) {
+                localStorage.setItem('system_api_key', key);
+                alert("API Key saved successfully!");
+            } else {
+                alert("Please enter a valid API Key!");
+            }
+        }
 
-    <!-- User Accounts & Time Manager (Fixed Overflow) -->
-    <div class="card">
-        <div class="card-title">User Accounts & Time Manager</div>
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th>User Email / Phone</th>
-                        <th>Login Type</th>
-                        <th>Plan</th>
-                        <th>Time Remaining</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>user_9819833267</td>
-                        <td>Phone OTP</td>
-                        <td class="plan-unlimited">Unlimited</td>
-                        <td>28 Days 14 Hours</td>
-                        <td class="status-active">Active</td>
-                    </tr>
-                    <tr>
-                        <td>flaxxi.user@gmail.com</td>
-                        <td>Google</td>
-                        <td class="plan-starter">Starter</td>
-                        <td>12 Days 02 Hours</td>
-                        <td class="status-active">Active</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+        // Generate Key Function
+        function generateNewKey() {
+            const plan = document.getElementById('planSelect').value;
+            const key = "FLAXXI-" + plan.substring(0,3).toUpperCase() + "-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            const displayBox = document.getElementById('generatedKeyBox');
+            displayBox.style.display = 'block';
+            displayBox.innerText = `Generated Key (${plan}):\n${key}`;
+        }
 
+        function addCustomKey() {
+            const custom = document.getElementById('customKey').value.trim();
+            if(custom) {
+                alert(`Custom Key '${custom}' registered successfully!`);
+                document.getElementById('customKey').value = '';
+            }
+        }
+
+        // Logout Working Function
+        function adminLogout() {
+            if(confirm("Are you sure you want to logout?")) {
+                window.location.href = "index.html"; // Redirect to login/user page
+            }
+        }
+    </script>
 </body>
 </html>
