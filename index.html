@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FLAXXI AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -11,295 +11,311 @@
             --card-dark: #080204;
             --red-glow: #ff003c;
             --red-blur: rgba(255, 0, 60, 0.45);
-            --deadly-red: #d6002f;
-            --text-sub: #7a6a70;
             --border-glow: #1f070e;
+            --text-sub: #7a6a70;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        body {
+        html, body {
             background-color: var(--bg-dark);
             color: #fff;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            height: 100%;
+            width: 100%;
             overflow: hidden;
-            position: relative;
+            position: fixed;
         }
 
-        /* Ambient Glow Effect */
         .bg-glow-orb {
-            position: absolute; width: 350px; height: 350px;
+            position: absolute; 
+            width: 280px; 
+            height: 280px;
             background: radial-gradient(circle, var(--red-blur) 0%, rgba(0,0,0,0) 70%);
-            top: 45%; left: 50%; transform: translate(-50%, -50%);
-            z-index: 1; pointer-events: none;
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%);
+            z-index: 1; 
+            pointer-events: none;
             animation: pulseGlow 4s ease-in-out infinite alternate;
         }
 
-        /* Mandatory Full Screen First Login Page */
-        .auth-overlay-page {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #000000; z-index: 999999;
-            display: flex; align-items: center; justify-content: center;
-            backdrop-filter: blur(25px);
-        }
-
-        .auth-card {
-            background: var(--card-dark);
-            border: 1px solid var(--red-glow);
-            box-shadow: 0 0 45px var(--red-blur);
-            border-radius: 20px;
-            width: 90%; max-width: 400px;
-            padding: 35px 25px; text-align: center;
-            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .auth-card h1 { font-size: 26px; font-weight: 900; color: #fff; margin-bottom: 5px; }
-        .auth-card h1 span { color: var(--red-glow); }
-        .auth-card p { font-size: 12px; color: var(--text-sub); margin-bottom: 25px; }
-
-        .input-group { text-align: left; margin-bottom: 18px; }
-        .input-group label { display: block; font-size: 11px; color: var(--text-sub); font-weight: bold; margin-bottom: 6px; text-transform: uppercase; }
-
-        .auth-input {
-            width: 100%; background: #040102; border: 1px solid var(--border-glow);
-            padding: 13px 15px; border-radius: 10px; color: #fff; font-size: 14px; outline: none;
-            transition: 0.3s;
-        }
-        .auth-input:focus { border-color: var(--red-glow); box-shadow: 0 0 15px var(--red-blur); }
-
-        .btn-primary {
-            width: 100%; background: var(--red-glow); color: #fff; border: none;
-            padding: 14px; border-radius: 10px; font-weight: bold; font-size: 15px;
-            cursor: pointer; box-shadow: 0 0 20px var(--red-blur); margin-top: 10px;
-            transition: 0.2s ease;
-        }
-        .btn-primary:active { transform: scale(0.97); }
-
-        /* Deadly Red & Black Play Button */
-        .play-float-btn {
-            position: fixed; top: 15px; right: 20px;
-            width: 42px; height: 42px;
-            background: #000;
-            color: var(--red-glow); border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 16px; cursor: pointer; z-index: 999;
-            box-shadow: 0 0 20px var(--red-blur);
-            border: 2px solid var(--red-glow);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            animation: pulseRed 2s infinite;
-        }
-        .play-float-btn:hover { background: var(--red-glow); color: #fff; transform: scale(1.12); box-shadow: 0 0 30px var(--red-glow); }
-        .play-float-btn:active { transform: scale(0.95); }
-
-        /* Top Navigation Header */
+        /* Top Navigation Bar */
         .user-nav {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 18px; background: rgba(8, 2, 4, 0.9);
+            padding: 10px 12px; background: rgba(8, 2, 4, 0.95);
             backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-glow);
-            z-index: 10;
+            z-index: 10; height: 55px; width: 100%;
         }
 
-        .brand-logo { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .top-left-group { display: flex; align-items: center; gap: 8px; }
+
+        .btn-hamburger {
+            background: transparent; border: none; color: #fff;
+            font-size: 18px; cursor: pointer; padding: 4px;
+        }
+
+        .brand-logo { font-size: 15px; font-weight: 900; display: flex; align-items: center; gap: 6px; }
         .brand-logo i { color: var(--red-glow); }
 
-        .nav-right-actions { display: flex; align-items: center; gap: 10px; margin-right: 50px; }
+        .nav-right-actions { display: flex; align-items: center; gap: 6px; margin-right: 48px; }
 
         .top-btn {
             background: rgba(255, 0, 60, 0.1); border: 1px solid var(--red-glow);
-            color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 12px;
-            font-weight: bold; display: flex; align-items: center; gap: 6px;
-            text-decoration: none; cursor: pointer; transition: 0.2s;
+            color: #fff; padding: 5px 9px; border-radius: 16px; font-size: 11px;
+            font-weight: bold; display: flex; align-items: center; gap: 4px;
+            text-decoration: none; cursor: pointer;
         }
-        .top-btn:hover { background: var(--red-glow); box-shadow: 0 0 10px var(--red-blur); }
 
-        .top-icon-btn {
-            background: transparent; border: none; color: #fff; font-size: 18px;
-            cursor: pointer; padding: 4px 8px; transition: 0.2s;
+        /* Floating Top-Right Play Voice Icon */
+        .play-float-btn {
+            position: fixed; top: 10px; right: 10px;
+            width: 38px; height: 38px;
+            background: #000; color: var(--red-glow); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 14px; cursor: pointer; z-index: 999;
+            box-shadow: 0 0 15px var(--red-blur);
+            border: 1.5px solid var(--red-glow);
+            animation: pulseRed 2s infinite;
         }
-        .top-icon-btn:hover { color: var(--red-glow); }
 
-        /* Sidebar Drawer */
+        /* Sidebar Overlay Panel */
         .sidebar-drawer {
-            position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
-            background: var(--card-dark); border-right: 1px solid var(--border-glow);
-            z-index: 10000; padding: 20px; display: flex; flex-direction: column;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 5px 0 25px rgba(0,0,0,0.9);
+            position: fixed; top: 0; left: -100%; width: 75%; max-width: 300px; height: 100%;
+            background: #040002; border-right: 1px solid var(--border-glow);
+            z-index: 10000; padding: 18px 15px; display: flex; flex-direction: column;
+            transition: 0.3s ease-in-out; box-shadow: 10px 0 30px rgba(0,0,0,0.9);
             overflow-y: auto;
         }
         .sidebar-drawer.active { left: 0; }
 
         .sidebar-header {
             display: flex; justify-content: space-between; align-items: center;
-            padding-bottom: 15px; border-bottom: 1px solid var(--border-glow); margin-bottom: 20px;
+            padding-bottom: 12px; margin-bottom: 15px;
         }
+        .sidebar-header h3 { font-size: 16px; font-weight: 900; letter-spacing: 0.5px; }
+
+        .sidebar-sub-card {
+            background: rgba(255, 0, 60, 0.05); border: 1px dashed var(--red-glow);
+            padding: 12px; border-radius: 10px; margin-bottom: 18px;
+        }
+        .sidebar-sub-card h4 { font-size: 12px; color: var(--red-glow); margin-bottom: 2px; display: flex; align-items: center; gap: 5px; }
+        .sidebar-sub-card p { font-size: 10px; color: var(--text-sub); }
 
         .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
 
         .menu-item {
-            background: #040102; border: 1px solid var(--border-glow); padding: 12px;
-            border-radius: 10px; color: #fff; display: flex; align-items: center;
-            gap: 10px; cursor: pointer; font-size: 13px; transition: 0.2s ease;
+            background: #090205; border: 1px solid var(--border-glow); padding: 12px;
+            border-radius: 8px; color: #fff; display: flex; align-items: center;
+            gap: 10px; cursor: pointer; font-size: 12px; font-weight: 500;
+            transition: 0.2s ease;
         }
-        .menu-item:hover { border-color: var(--red-glow); background: rgba(255, 0, 60, 0.1); transform: translateX(4px); }
-        .menu-item i { color: var(--red-glow); width: 20px; text-align: center; }
+        .menu-item i { color: var(--red-glow); width: 16px; text-align: center; font-size: 13px; }
+        .menu-item:active { border-color: var(--red-glow); background: rgba(255, 0, 60, 0.1); }
 
-        .sub-box {
-            background: rgba(255,0,60,0.08); border: 1px dashed var(--red-glow);
-            padding: 12px; border-radius: 10px; margin-bottom: 15px;
+        .logout-btn {
+            background: transparent; border: 1px solid var(--red-glow);
+            color: #fff; padding: 12px; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-size: 12px; font-weight: bold; margin-top: auto; cursor: pointer;
+            box-shadow: 0 0 10px rgba(255,0,60,0.15);
         }
-        .sub-box h4 { font-size: 13px; color: var(--red-glow); margin-bottom: 4px; }
-        .sub-box p { font-size: 11px; color: var(--text-sub); }
+        .logout-btn i { color: var(--red-glow); }
 
-        /* Universal Animated Modals */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.88); backdrop-filter: blur(12px);
-            z-index: 99999; display: none; align-items: center; justify-content: center;
-            animation: fadeIn 0.2s ease;
-        }
-        .modal-card {
-            background: var(--card-dark); border: 1px solid var(--red-glow);
-            width: 90%; max-width: 400px; border-radius: 16px; padding: 20px;
-            box-shadow: 0 0 35px var(--red-blur); animation: popUp 0.3s ease;
-            max-height: 80vh; display: flex; flex-direction: column;
+        /* Main Viewport */
+        .main-app-viewport {
+            display: flex; flex-direction: column;
+            height: calc(100% - 55px); width: 100%; position: relative;
         }
 
-        .plan-item {
-            background: #040102; border: 1px solid var(--border-glow); padding: 12px;
-            border-radius: 10px; margin-top: 10px; display: flex; justify-content: space-between;
-            align-items: center; cursor: pointer; transition: all 0.2s;
-        }
-        .plan-item.active-plan { border-color: var(--red-glow); background: rgba(255, 0, 60, 0.15); box-shadow: 0 0 15px var(--red-blur); }
-        .plan-price { color: var(--red-glow); font-weight: bold; font-size: 14px; }
-
-        .acc-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-glow); font-size: 13px; }
-        .acc-row span:first-child { color: var(--text-sub); }
-
-        .history-list { overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; max-height: 280px; }
-        .history-item { background: #040102; border: 1px solid var(--border-glow); padding: 10px; border-radius: 8px; font-size: 12px; color: #ddd; }
-
-        /* Main Center Hero Section */
         .hero-center {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 5; text-align: center; padding: 20px;
+            flex: 1; display: flex; flex-direction: column; 
+            align-items: center; justify-content: flex-start;
+            z-index: 5; text-align: center; 
+            padding: 10px 12px 100px 12px; overflow-y: auto; width: 100%;
         }
 
-        .main-title { font-size: 32px; font-weight: 900; text-shadow: 0 0 20px var(--red-blur); margin-bottom: 5px; }
+        .main-title { font-size: 26px; font-weight: 900; text-shadow: 0 0 15px var(--red-blur); margin-top: 5px; }
         .main-title span { color: var(--red-glow); }
-        .sub-title { font-size: 12px; color: var(--text-sub); margin-bottom: 15px; }
+        .sub-title { font-size: 11px; color: var(--text-sub); margin-bottom: 6px; }
 
         .limit-badge {
-            background: rgba(255, 0, 60, 0.1); border: 1px solid var(--border-glow);
-            padding: 4px 12px; border-radius: 12px; font-size: 11px; color: var(--text-sub);
-            margin-bottom: 15px; display: inline-block;
+            background: rgba(255, 0, 60, 0.08); border: 1px solid var(--border-glow);
+            padding: 3px 10px; border-radius: 10px; font-size: 10px; color: var(--text-sub);
+            margin-bottom: 12px; display: inline-block;
         }
-        .limit-badge span { color: var(--red-glow); font-weight: bold; }
+        .limit-badge span { color: #25d366; font-weight: bold; }
 
+        /* Chat Container */
         .chat-container {
-            width: 100%; max-width: 700px; height: 280px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-right: 5px;
+            width: 100%; max-width: 600px;
+            display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;
         }
 
-        .msg-bubble { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.4; animation: popUp 0.25s ease-out; word-break: break-word; }
-        .msg-user { background: var(--red-glow); color: #fff; align-self: flex-end; box-shadow: 0 0 10px var(--red-blur); }
-        .msg-ai { background: var(--card-dark); border: 1px solid var(--border-glow); align-self: flex-start; }
+        .msg-bubble { 
+            max-width: 85%; padding: 10px 14px; border-radius: 14px; 
+            font-size: 13px; line-height: 1.5; word-wrap: break-word; text-align: left; 
+        }
 
-        /* Chat Controls with File Attachment */
+        .msg-user { 
+            background: var(--red-glow); color: #fff; align-self: flex-end; 
+            margin-left: auto; border-bottom-right-radius: 2px;
+            box-shadow: 0 0 10px var(--red-blur); 
+        }
+
+        .msg-ai { 
+            background: var(--card-dark); border: 1px solid var(--border-glow); 
+            align-self: flex-start; margin-right: auto;
+            border-bottom-left-radius: 2px; color: #ececec; max-width: 90%; 
+        }
+
+        /* Input Controls */
         .chat-input-wrapper {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 650px; z-index: 20;
+            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 600px; z-index: 20;
         }
 
-        .attachment-badge {
-            position: absolute; top: -38px; left: 15px;
+        .file-preview-badge {
             background: var(--card-dark); border: 1px solid var(--red-glow);
-            padding: 5px 12px; border-radius: 15px; font-size: 11px;
-            display: none; align-items: center; gap: 8px; color: #fff;
-            box-shadow: 0 0 10px var(--red-blur); animation: popUp 0.2s ease;
+            padding: 4px 10px; border-radius: 12px; font-size: 11px;
+            color: #fff; display: none; align-items: center; gap: 6px;
+            margin-bottom: 6px; width: fit-content;
         }
 
         .chat-input-box {
             background: rgba(8, 2, 4, 0.95); border: 1px solid var(--border-glow);
-            border-radius: 30px; padding: 8px 15px; display: flex; align-items: center; gap: 10px;
-            box-shadow: 0 0 25px rgba(0,0,0,0.9); transition: 0.2s ease;
+            border-radius: 25px; padding: 6px 12px; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.9);
         }
-        .chat-input-box:focus-within { border-color: var(--red-glow); box-shadow: 0 0 15px var(--red-blur); }
+        
+        .chat-input-box input[type="text"] { 
+            flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 13px; 
+        }
 
-        .chat-input-box input[type="text"] { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 14px; }
-
-        .btn-action-icon { background: transparent; border: none; color: var(--text-sub); font-size: 17px; cursor: pointer; transition: 0.2s; }
-        .btn-action-icon:hover { color: var(--red-glow); }
-
+        .btn-attach {
+            background: transparent; border: none; color: var(--text-sub);
+            font-size: 16px; cursor: pointer; padding: 2px 4px;
+        }
+        .btn-attach:hover { color: var(--red-glow); }
+        
         .btn-send {
-            background: var(--red-glow); color: #fff; width: 35px; height: 35px;
+            background: var(--red-glow); color: #fff; width: 32px; height: 32px;
             border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; transition: 0.2s ease; box-shadow: 0 0 10px var(--red-blur);
+            cursor: pointer; box-shadow: 0 0 10px var(--red-blur); flex-shrink: 0;
         }
 
-        @keyframes pulseGlow { 0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.9); } 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); } }
-        @keyframes pulseRed { 0% { box-shadow: 0 0 10px var(--red-blur); } 50% { box-shadow: 0 0 25px var(--red-glow); } 100% { box-shadow: 0 0 10px var(--red-blur); } }
-        @keyframes popUp { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* Modal Overlays */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(12px);
+            z-index: 99999; display: none; align-items: center; justify-content: center;
+        }
+
+        .modal-card {
+            background: #060103; border: 1px solid var(--red-glow);
+            width: 88%; max-width: 340px; border-radius: 16px; padding: 18px 16px;
+            box-shadow: 0 0 30px var(--red-blur);
+        }
+
+        .modal-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 15px;
+        }
+        .modal-header h3 {
+            color: var(--red-glow); font-size: 14px; font-weight: 800;
+            display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px;
+        }
+
+        .auth-input {
+            width: 100%; background: #030001; border: 1px solid #1a060c;
+            padding: 12px 14px; border-radius: 8px; color: #fff; font-size: 12px; outline: none;
+            margin: 10px 0 15px 0;
+        }
+        .auth-input:focus { border-color: var(--red-glow); }
+
+        .btn-primary-full {
+            width: 100%; background: var(--red-glow); color: #fff; border: none;
+            padding: 12px; border-radius: 8px; font-weight: bold; font-size: 13px;
+            cursor: pointer; box-shadow: 0 0 12px var(--red-blur); text-align: center;
+            text-decoration: none; display: block;
+        }
+
+        /* Subscription Plan Cards */
+        .plans-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+
+        .plan-card-item {
+            background: #090205; border: 1px solid #1c060d;
+            border-radius: 10px; padding: 12px 14px;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; transition: 0.2s;
+        }
+        .plan-card-item.selected {
+            border: 1px solid var(--red-glow);
+            background: rgba(255, 0, 60, 0.08);
+            box-shadow: 0 0 10px rgba(255, 0, 60, 0.2);
+        }
+
+        .plan-title { font-size: 13px; font-weight: bold; color: #fff; }
+        .plan-price { font-size: 13px; font-weight: 800; color: var(--red-glow); }
+
+        /* Account Details Table Style */
+        .account-details-list {
+            display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;
+        }
+        .account-row {
+            background: #090205; border: 1px solid #1c060d;
+            padding: 10px 12px; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 12px;
+        }
+        .account-row span.label { color: var(--text-sub); }
+        .account-row span.value { color: #fff; font-weight: bold; }
+
+        @keyframes pulseGlow { 0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.95); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); } }
+        @keyframes pulseRed { 0% { box-shadow: 0 0 8px var(--red-blur); } 50% { box-shadow: 0 0 18px var(--red-glow); } 100% { box-shadow: 0 0 8px var(--red-blur); } }
     </style>
 </head>
 <body>
 
-    <!-- Deadly Red Play Button -->
-    <div class="play-float-btn" onclick="executeScriptRun()" title="Run Script">
-        <i class="fa-solid fa-play"></i>
-    </div>
-
-    <!-- Mandatory Full Screen First Login Page -->
-    <div class="auth-overlay-page" id="mainAuthPage">
-        <div class="auth-card">
-            <h1><i class="fa-solid fa-skull"></i> FLAXXI <span>AI</span></h1>
-            <p>Account Login Required To Access Panel</p>
-
-            <div class="input-group">
-                <label>Username</label>
-                <input type="text" id="loginUsername" class="auth-input" placeholder="Enter Username">
-            </div>
-
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" id="loginPassword" class="auth-input" placeholder="Enter Password">
-            </div>
-
-            <button class="btn-primary" onclick="handleAccountLogin()">Login / Access Website</button>
-        </div>
+    <!-- Floating Top-Right AI Voice Button -->
+    <div class="play-float-btn" id="voiceToggleBtn" onclick="toggleAIVoice()" title="Read Aloud">
+        <i class="fa-solid fa-play" id="playIcon"></i>
     </div>
 
     <div class="bg-glow-orb"></div>
 
-    <!-- Sidebar Drawer -->
+    <!-- Sidebar Panel Drawer -->
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div class="sidebar-header">
             <h3>FLAXXI Panel</h3>
-            <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="toggleSidebar()"></i>
+            <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px;" onclick="toggleSidebar()"></i>
         </div>
 
-        <div class="sub-box">
+        <div class="sidebar-sub-card">
             <h4><i class="fa-solid fa-crown"></i> Active Plan</h4>
-            <p id="currentPlanStatus">Free Access (5 Daily Limit)</p>
+            <p id="userActivePlanDisplay">Free Tier (6 Messages/Day)</p>
         </div>
 
         <div class="sidebar-menu">
-            <div class="menu-item" onclick="openPlansModal(); toggleSidebar();"><i class="fa-solid fa-gem"></i> Subscription Plans</div>
-            <div class="menu-item" onclick="openKeyModal(); toggleSidebar();"><i class="fa-solid fa-key"></i> Key Enter (Redeem)</div>
-            <div class="menu-item" onclick="openAccountModal(); toggleSidebar();"><i class="fa-solid fa-user-gear"></i> Account Details</div>
-            <div class="menu-item" onclick="openHistoryModal(); toggleSidebar();"><i class="fa-solid fa-clock-rotate-left"></i> Chat History</div>
+            <div class="menu-item" onclick="openModal('plansModal'); toggleSidebar();"><i class="fa-solid fa-gem"></i> Subscription Plans</div>
+            <div class="menu-item" onclick="openModal('keyModal'); toggleSidebar();"><i class="fa-solid fa-key"></i> Key Enter (Redeem)</div>
+            <div class="menu-item" onclick="openModal('accountModal'); toggleSidebar();"><i class="fa-solid fa-user-gear"></i> Account Details</div>
+            <div class="menu-item" onclick="alert('Chat History Synced'); toggleSidebar();"><i class="fa-solid fa-clock-rotate-left"></i> Chat History</div>
             <div class="menu-item" onclick="clearChatHistory()"><i class="fa-solid fa-trash-can"></i> Clear History</div>
             <a href="https://wa.me/9779819833267" target="_blank" class="menu-item" style="text-decoration: none;"><i class="fa-brands fa-whatsapp"></i> WhatsApp Support</a>
-            <div class="menu-item" style="margin-top: auto; border-color: #ff003c;" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> Logout Account</div>
         </div>
+
+        <button class="logout-btn" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> Logout Account</button>
     </div>
 
-    <!-- Top Navigation Header -->
+    <!-- Top Bar -->
     <div class="user-nav">
-        <div style="display: flex; align-items: center; gap: 10px;">
-            <button class="top-icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+        <div class="top-left-group">
+            <button class="btn-hamburger" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
             <div class="brand-logo">
                 <i class="fa-solid fa-skull"></i>
                 <span>FLAXXI <span>AI</span></span>
@@ -310,250 +326,297 @@
             <a href="https://wa.me/9779819833267" target="_blank" class="top-btn" style="border-color: #25d366; color: #25d366;">
                 <i class="fa-brands fa-whatsapp"></i> Support
             </a>
-            <button class="top-btn" onclick="openPlansModal()"><i class="fa-solid fa-crown"></i> Plans</button>
+            <button class="top-btn" onclick="openModal('plansModal')"><i class="fa-solid fa-crown"></i> Plans</button>
         </div>
     </div>
 
-    <!-- Modals (Plans, Key, Account, History) -->
-    <div class="modal-overlay" id="plansModal">
-        <div class="modal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="color: var(--red-glow);"><i class="fa-solid fa-gem"></i> FLAXXI AI PRO</h3>
-                <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('plansModal')"></i>
-            </div>
-            <div class="plan-item" onclick="selectPlan(this, '1 Day Pass (₹49)')"><div><strong>1 Day Pass</strong></div><span class="plan-price">₹49</span></div>
-            <div class="plan-item" onclick="selectPlan(this, '7 Days Pass (₹199)')"><div><strong>7 Days Pass</strong></div><span class="plan-price">₹199</span></div>
-            <div class="plan-item active-plan" onclick="selectPlan(this, '1 Month Pass (₹499)')"><div><strong>1 Month Pass</strong></div><span class="plan-price">₹499</span></div>
-            <div class="plan-item" onclick="selectPlan(this, 'Lifetime Pass VIP (₹4,999)')"><div><strong>Lifetime VIP Pass</strong></div><span class="plan-price">₹4,999</span></div>
-            <a id="whatsappBuyBtn" href="https://wa.me/9779819833267?text=Hello,%20I%20want%20to%20buy%20FLAXXI%20AI%201%20Month%20Pass%20(₹499)" target="_blank" class="btn-primary" style="display: block; text-decoration: none; text-align: center; margin-top: 15px;">Buy via WhatsApp</a>
-        </div>
-    </div>
-
-    <!-- SECURED KEY MODAL (Hidden Text & Dots Input) -->
+    <!-- Key Enter (Redeem) Modal -->
     <div class="modal-overlay" id="keyModal">
         <div class="modal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="color: var(--red-glow);"><i class="fa-solid fa-key"></i> Key Activation</h3>
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-key"></i> Key Enter (Redeem)</h3>
                 <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('keyModal')"></i>
             </div>
-            <div class="input-group">
-                <label>Enter Key Code</label>
-                <!-- type="password" added so input remains masked as dots -->
-                <input type="password" id="proKeyInput" class="auth-input" placeholder="Enter Secret Key">
-            </div>
-            <button class="btn-primary" onclick="redeemKey()">Activate Key</button>
+            <input type="text" id="customApiKey" class="auth-input" placeholder="Enter License Key">
+            <button class="btn-primary-full" onclick="saveApiKey()">Save & Redeem</button>
         </div>
     </div>
 
+    <!-- Account Details Modal -->
     <div class="modal-overlay" id="accountModal">
         <div class="modal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="color: var(--red-glow);"><i class="fa-solid fa-user-gear"></i> Account Details</h3>
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-gear"></i> Account Details</h3>
                 <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('accountModal')"></i>
             </div>
-            <div class="acc-row"><span>Username:</span><span id="accUsername">-</span></div>
-            <div class="acc-row"><span>Account Status:</span><span id="accStatus" style="color: var(--red-glow);">Free Member</span></div>
-            <div class="acc-row"><span>Messages Used:</span><span id="accUsage">0 / 5</span></div>
-            <button class="btn-primary" style="margin-top: 15px;" onclick="closeModal('accountModal')">Close</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="historyModal">
-        <div class="modal-card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h3 style="color: var(--red-glow);"><i class="fa-solid fa-clock-rotate-left"></i> History</h3>
-                <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('historyModal')"></i>
+            
+            <div class="account-details-list">
+                <div class="account-row">
+                    <span class="label">User Status:</span>
+                    <span class="value" style="color:#25d366;"><i class="fa-solid fa-circle-check"></i> Connected</span>
+                </div>
+                <div class="account-row">
+                    <span class="label">Device ID:</span>
+                    <span class="value" id="accDeviceId">FX-882910</span>
+                </div>
+                <div class="account-row">
+                    <span class="label">Current Plan:</span>
+                    <span class="value" id="accCurrentPlan" style="color:var(--red-glow);">Free Access</span>
+                </div>
+                <div class="account-row">
+                    <span class="label">Daily Limit:</span>
+                    <span class="value" id="accDailyLimit">6 Messages</span>
+                </div>
             </div>
-            <div class="history-list" id="historyLogsContainer"></div>
+
+            <button class="btn-primary-full" onclick="closeModal('accountModal')">Close</button>
         </div>
     </div>
 
-    <!-- Center Hero Section -->
-    <div class="hero-center">
-        <div class="main-title">FLAXXI <span>AI</span></div>
-        <div class="sub-title">AI without limits</div>
-        <div class="limit-badge" id="limitTracker">Daily Limit: <span id="usedMsgCount">0</span>/5 Used</div>
-        <div class="chat-container" id="chatContainer"></div>
+    <!-- FLAXXI AI PRO Plans Modal -->
+    <div class="modal-overlay" id="plansModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-gem"></i> FLAXXI AI PRO</h3>
+                <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('plansModal')"></i>
+            </div>
+            
+            <div class="plans-list">
+                <div class="plan-card-item" onclick="selectPlan(this)">
+                    <span class="plan-title">1 Day Pass</span>
+                    <span class="plan-price">₹49</span>
+                </div>
+                <div class="plan-card-item" onclick="selectPlan(this)">
+                    <span class="plan-title">7 Days Pass</span>
+                    <span class="plan-price">₹199</span>
+                </div>
+                <div class="plan-card-item selected" onclick="selectPlan(this)">
+                    <span class="plan-title">1 Month Pass</span>
+                    <span class="plan-price">₹499</span>
+                </div>
+                <div class="plan-card-item" onclick="selectPlan(this)">
+                    <span class="plan-title">1 Year Pass</span>
+                    <span class="plan-price">₹1,999</span>
+                </div>
+                <div class="plan-card-item" onclick="selectPlan(this)">
+                    <span class="plan-title">Lifetime VIP Pass</span>
+                    <span class="plan-price">₹4,999</span>
+                </div>
+            </div>
+
+            <a href="https://wa.me/9779819833267" target="_blank" class="btn-primary-full">Buy via WhatsApp</a>
+        </div>
     </div>
 
-    <!-- Bottom Input Controls -->
-    <div class="chat-input-wrapper">
-        <div class="attachment-badge" id="fileBadge">
-            <i class="fa-solid fa-paperclip" style="color: var(--red-glow);"></i>
-            <span id="attachedFileName">file.png</span>
-            <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="clearAttachedFile()"></i>
+    <!-- Main Content Area -->
+    <div class="main-app-viewport">
+        <div class="hero-center" id="heroScrollArea">
+            <div class="main-title">FLAXXI <span>AI</span></div>
+            <div class="sub-title">AI without limits</div>
+            <div class="limit-badge">Limit: <span id="currentBadgePlan">6 Messages Left</span></div>
+            <div class="chat-container" id="chatContainer"></div>
         </div>
 
-        <div class="chat-input-box">
-            <input type="file" id="fileUploader" style="display: none;" onchange="handleFileSelection(event)">
-            <button class="btn-action-icon" onclick="document.getElementById('fileUploader').click()" title="Attach File">
-                <i class="fa-solid fa-paperclip"></i>
-            </button>
-            <input type="text" id="userPrompt" placeholder="What can I do for you?" onkeypress="handleKeyPress(event)">
-            <button class="btn-send" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        <div class="chat-input-wrapper">
+            <div class="file-preview-badge" id="fileBadge">
+                <i class="fa-solid fa-file" style="color:var(--red-glow);"></i>
+                <span id="fileNameDisplay">file.png</span>
+                <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="removeSelectedFile()"></i>
+            </div>
+
+            <div class="chat-input-box">
+                <input type="file" id="fileSelector" style="display:none;" onchange="handleFileSelect(event)">
+                <button class="btn-attach" onclick="document.getElementById('fileSelector').click()" title="Attach File">
+                    <i class="fa-solid fa-paperclip"></i>
+                </button>
+                <input type="text" id="userPrompt" placeholder="What can I do for you?" onkeypress="handleKeyPress(event)">
+                <button class="btn-send" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            </div>
         </div>
     </div>
 
     <script>
-        const FREE_DAILY_LIMIT = 5;
-        let currentSelectedFile = null;
+        // Only Admin Key Configuration
+        const ADMIN_KEY = "FLAXXI-PRO-VIP";
+        const FREE_DAILY_LIMIT = 6;
 
-        window.onload = function() {
-            checkForceLogin();
-            updateLimitUI();
-        };
+        let lastAiText = "";
+        let isSpeaking = false;
+        let attachedFile = null;
 
-        // File Upload Handlers
-        function handleFileSelection(e) {
+        // Load or initialize local settings
+        let isPremium = localStorage.getItem('flaxxi_is_premium') === 'true';
+        let usedCount = parseInt(localStorage.getItem('flaxxi_used_count') || '0');
+        let lastDate = localStorage.getItem('flaxxi_last_date');
+        let currentDate = new Date().toDateString();
+
+        // Reset limit on a new day
+        if (lastDate !== currentDate) {
+            usedCount = 0;
+            localStorage.setItem('flaxxi_used_count', '0');
+            localStorage.setItem('flaxxi_last_date', currentDate);
+        }
+
+        // Random Device ID Generator
+        document.getElementById('accDeviceId').innerText = "FX-" + Math.floor(100000 + Math.random() * 900000);
+
+        function updateUIStatus() {
+            if (isPremium) {
+                document.getElementById('currentBadgePlan').innerText = "Unlimited Premium";
+                document.getElementById('userActivePlanDisplay').innerText = "Unlimited Premium (Activated)";
+                document.getElementById('accCurrentPlan').innerText = "Unlimited Premium";
+                document.getElementById('accDailyLimit').innerText = "Unlimited Messages";
+            } else {
+                let remaining = Math.max(0, FREE_DAILY_LIMIT - usedCount);
+                document.getElementById('currentBadgePlan').innerText = `${remaining} Left Today`;
+                document.getElementById('userActivePlanDisplay').innerText = `Free Tier (${remaining}/6 Left)`;
+                document.getElementById('accCurrentPlan').innerText = "Free Access";
+                document.getElementById('accDailyLimit').innerText = "6 Messages/Day";
+            }
+        }
+
+        updateUIStatus();
+
+        function toggleSidebar() { document.getElementById('sidebarDrawer').classList.toggle('active'); }
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+
+        function selectPlan(element) {
+            document.querySelectorAll('.plan-card-item').forEach(card => card.classList.remove('selected'));
+            element.classList.add('selected');
+        }
+
+        function handleFileSelect(e) {
             const file = e.target.files[0];
             if (file) {
-                currentSelectedFile = file;
-                document.getElementById('attachedFileName').innerText = file.name;
+                attachedFile = file;
+                document.getElementById('fileNameDisplay').innerText = file.name;
                 document.getElementById('fileBadge').style.display = 'flex';
             }
         }
 
-        function clearAttachedFile() {
-            currentSelectedFile = null;
-            document.getElementById('fileUploader').value = '';
+        function removeSelectedFile() {
+            attachedFile = null;
+            document.getElementById('fileSelector').value = '';
             document.getElementById('fileBadge').style.display = 'none';
         }
 
-        // Login Logic
-        function checkForceLogin() {
-            const loggedUser = localStorage.getItem('flaxxi_session_user');
-            if (!loggedUser) {
-                document.getElementById('mainAuthPage').style.display = 'flex';
-            } else {
-                document.getElementById('mainAuthPage').style.display = 'none';
-            }
-        }
-
-        function handleAccountLogin() {
-            const u = document.getElementById('loginUsername').value.trim();
-            const p = document.getElementById('loginPassword').value.trim();
-
-            if (!u || !p) {
-                alert("Please enter both Username and Password!");
+        function saveApiKey() {
+            const inputKey = document.getElementById('customApiKey').value.trim();
+            if (!inputKey) {
+                alert("⚠️ Please enter a License Key!");
                 return;
             }
 
-            localStorage.setItem('flaxxi_session_user', JSON.stringify({ username: u }));
-            document.getElementById('mainAuthPage').style.display = 'none';
+            // Verify Key strictly against ADMIN_KEY only
+            if (inputKey.toUpperCase() === ADMIN_KEY) {
+                isPremium = true;
+                localStorage.setItem('flaxxi_is_premium', 'true');
+                localStorage.setItem('flaxxi_key', inputKey);
+                updateUIStatus();
+                alert("✅ Key Redeemed Successfully! Welcome to Premium Unlimited Access.");
+                closeModal('keyModal');
+            } else {
+                alert("❌ Invalid or Expired License Key! Please enter a valid Admin Key.");
+            }
+        }
+
+        function clearChatHistory() {
+            document.getElementById('chatContainer').innerHTML = '';
+            toggleSidebar();
         }
 
         function logoutUser() {
-            if(confirm("Are you sure you want to logout?")) {
-                localStorage.removeItem('flaxxi_session_user');
+            if(confirm("Are you sure you want to reset your account?")) {
+                localStorage.clear();
                 location.reload();
             }
         }
 
-        // Top Floating Red Play Action
-        function executeScriptRun() {
-            alert("▶ Script Executed Successfully!");
-        }
+        function toggleAIVoice() {
+            if (!('speechSynthesis' in window)) return;
+            const icon = document.getElementById('playIcon');
 
-        // Key Activation
-        function openKeyModal() { document.getElementById('keyModal').style.display = 'flex'; }
-        function redeemKey() {
-            const keyInput = document.getElementById('proKeyInput').value.trim();
-            if(keyInput === "FLAXXI-PRO-VIP" || keyInput === "FLAXXI100") {
-                localStorage.setItem('flaxxi_user_plan', 'premium');
-                alert("🎉 PRO Key Activated!");
-                closeModal('keyModal');
-                updateLimitUI();
-            } else { alert("❌ Invalid Secret Key!"); }
-        }
-
-        function openAccountModal() {
-            const userAcc = JSON.parse(localStorage.getItem('flaxxi_session_user') || '{}');
-            const userPlan = localStorage.getItem('flaxxi_user_plan') || 'free';
-            document.getElementById('accUsername').innerText = userAcc.username || 'User';
-            document.getElementById('accStatus').innerText = userPlan === 'premium' ? "VIP Unlimited" : "Free Member";
-            document.getElementById('accUsage').innerText = `${getMessageCount()} / 5`;
-            document.getElementById('accountModal').style.display = 'flex';
-        }
-
-        function openPlansModal() { document.getElementById('plansModal').style.display = 'flex'; }
-        function openHistoryModal() { document.getElementById('historyModal').style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function toggleSidebar() { document.getElementById('sidebarDrawer').classList.toggle('active'); }
-
-        function getMessageCount() {
-            const today = new Date().toISOString().split('T')[0];
-            const storedData = JSON.parse(localStorage.getItem('flaxxi_chat_usage') || '{}');
-            return storedData.date === today ? (storedData.count || 0) : 0;
-        }
-
-        function incrementMessageCount() {
-            const today = new Date().toISOString().split('T')[0];
-            const currentCount = getMessageCount();
-            localStorage.setItem('flaxxi_chat_usage', JSON.stringify({ date: today, count: currentCount + 1 }));
-            updateLimitUI();
-        }
-
-        function updateLimitUI() {
-            const count = getMessageCount();
-            const userPlan = localStorage.getItem('flaxxi_user_plan') || 'free';
-            if(userPlan === 'premium') {
-                document.getElementById('limitTracker').innerHTML = `Plan: <span style="color:#25d366;">Unlimited PRO</span>`;
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                icon.className = "fa-solid fa-play";
             } else {
-                document.getElementById('usedMsgCount').innerText = count;
+                if (!lastAiText) lastAiText = "FLAXXI AI is ready.";
+                const utterance = new SpeechSynthesisUtterance(lastAiText);
+                utterance.onend = () => { isSpeaking = false; icon.className = "fa-solid fa-play"; };
+                window.speechSynthesis.speak(utterance);
+                isSpeaking = true;
+                icon.className = "fa-solid fa-stop";
             }
         }
 
-        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+        async function fetchDetailedFastAI(promptText) {
+            if (/^[0-9\s\+\-\*\/\(\)\.\^\%]+$/.test(promptText.trim())) {
+                try {
+                    const mathCalc = Function(`"use strict"; return (${promptText.replace(/×/g, '*').replace(/÷/g, '/')})`)();
+                    return `${promptText} = ${mathCalc}`;
+                } catch(e) {}
+            }
 
-        function sendMessage() {
-            const userPlan = localStorage.getItem('flaxxi_user_plan') || 'free';
-            if (userPlan !== 'premium' && getMessageCount() >= FREE_DAILY_LIMIT) {
-                alert("Daily limit reached! Please upgrade your plan.");
-                openPlansModal();
+            try {
+                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(promptText)}?model=openai`);
+                if (res.ok) {
+                    const text = await res.text();
+                    if (text && text.trim()) return text.trim();
+                }
+            } catch (e) {}
+
+            return "Answer for: " + promptText;
+        }
+
+        async function sendMessage() {
+            // Check Daily Limit for non-premium users
+            if (!isPremium && usedCount >= FREE_DAILY_LIMIT) {
+                alert("⚠️ You have reached your Free Daily Limit of 6 messages!\n\nPlease purchase a Key or enter a valid License Key to enjoy Unlimited Access.");
+                openModal('plansModal');
                 return;
             }
 
             const input = document.getElementById('userPrompt');
             const text = input.value.trim();
-            if (!text && !currentSelectedFile) return;
+            if (!text && !attachedFile) return;
+
+            // Increment count for free users
+            if (!isPremium) {
+                usedCount++;
+                localStorage.setItem('flaxxi_used_count', usedCount.toString());
+                updateUIStatus();
+            }
 
             const chatBox = document.getElementById('chatContainer');
-            const msg = document.createElement('div');
-            msg.className = 'msg-bubble msg-user';
-
-            let outputContent = text;
-            if (currentSelectedFile) {
-                outputContent += `<br><small style="opacity:0.85; font-size:11px;"><i class="fa-solid fa-file"></i> Attached: ${currentSelectedFile.name}</small>`;
+            const heroArea = document.getElementById('heroScrollArea');
+            
+            const userMsg = document.createElement('div');
+            userMsg.className = 'msg-bubble msg-user';
+            
+            let messageHTML = text;
+            if (attachedFile) {
+                messageHTML += `<br><small style="font-size:10px; opacity:0.8;"><i class="fa-solid fa-paperclip"></i> ${attachedFile.name}</small>`;
             }
+            userMsg.innerHTML = messageHTML;
+            chatBox.appendChild(userMsg);
 
-            msg.innerHTML = outputContent;
-            chatBox.appendChild(msg);
-
-            if (userPlan !== 'premium') incrementMessageCount();
             input.value = '';
-            clearAttachedFile();
-            chatBox.scrollTop = chatBox.scrollHeight;
+            removeSelectedFile();
+            heroArea.scrollTop = heroArea.scrollHeight;
 
-            setTimeout(() => {
-                const aiMsg = document.createElement('div');
-                aiMsg.className = 'msg-bubble msg-ai';
-                aiMsg.innerText = "I am processing your request with FLAXXI AI...";
-                chatBox.appendChild(aiMsg);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 500);
-        }
+            const aiMsg = document.createElement('div');
+            aiMsg.className = 'msg-bubble msg-ai';
+            aiMsg.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--red-glow)"></i> Generating...`;
+            chatBox.appendChild(aiMsg);
+            heroArea.scrollTop = heroArea.scrollHeight;
 
-        function selectPlan(element, planName) {
-            document.querySelectorAll('.plan-item').forEach(item => item.classList.remove('active-plan'));
-            element.classList.add('active-plan');
-            document.getElementById('whatsappBuyBtn').href = `https://wa.me/9779819833267?text=${encodeURIComponent('Hello, I want to buy ' + planName)}`;
-        }
-
-        function clearChatHistory() {
-            if(confirm("Clear history?")) {
-                document.getElementById('chatContainer').innerHTML = '';
-                toggleSidebar();
-            }
+            const result = await fetchDetailedFastAI(text || "Process file");
+            lastAiText = result;
+            aiMsg.innerText = result;
+            heroArea.scrollTop = heroArea.scrollHeight;
         }
     </script>
 </body>
