@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLAXXI AI - Deathly Edition</title>
+    <title>FLAXXI AI - Deathly Limit Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -37,7 +37,6 @@
             position: relative;
         }
 
-        /* BACKGROUND CANVAS PARTICLES */
         #bgCanvas {
             position: fixed;
             top: 0; left: 0;
@@ -46,13 +45,12 @@
             pointer-events: none;
         }
 
-        /* LOGIN OVERLAY */
         .login-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(3, 0, 2, 0.96);
             backdrop-filter: blur(10px);
-            z-index: 10000;
+            z-index: 99999;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -141,7 +139,6 @@
 
         .btn-red:active { transform: scale(0.98); }
 
-        /* HEADER */
         .app-header {
             position: relative;
             z-index: 10;
@@ -151,40 +148,11 @@
             justify-content: space-between;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .menu-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 900;
-            font-size: 16px;
-            letter-spacing: 0.5px;
-        }
-
-        .brand-logo i {
-            color: var(--red-glow);
-            font-size: 18px;
-            filter: drop-shadow(0 0 6px var(--red-glow));
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .header-left { display: flex; align-items: center; gap: 12px; }
+        .menu-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
+        .brand-logo { display: flex; align-items: center; gap: 6px; font-weight: 900; font-size: 16px; letter-spacing: 0.5px; }
+        .brand-logo i { color: var(--red-glow); font-size: 18px; filter: drop-shadow(0 0 6px var(--red-glow)); }
+        .header-right { display: flex; align-items: center; gap: 8px; }
 
         .pill-btn {
             background: var(--card-inner);
@@ -202,46 +170,22 @@
             transition: all 0.3s;
         }
 
-        .pill-btn.green {
-            border-color: rgba(34, 197, 94, 0.4);
-            color: var(--green-glow);
-        }
-
+        .pill-btn.green { border-color: rgba(34, 197, 94, 0.4); color: var(--green-glow); }
         .pill-btn.plans-glow-active {
             border-color: var(--red-glow) !important;
             box-shadow: 0 0 25px var(--red-glow), 0 0 10px #ff003c inset !important;
             background: rgba(255, 0, 60, 0.25) !important;
-            transform: scale(1.1);
+            animation: deathlyPulse 0.8s infinite alternate;
         }
 
-        /* PLAY BUTTON + AUDIO WAVE ANIMATION */
-        .play-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .audio-wave-bars {
-            display: none;
-            align-items: center;
-            gap: 3px;
-            height: 18px;
-        }
-
-        .play-wrapper.playing .audio-wave-bars {
-            display: flex;
-        }
-
+        .play-wrapper { position: relative; display: flex; align-items: center; gap: 6px; }
+        .audio-wave-bars { display: none; align-items: center; gap: 3px; height: 18px; }
+        .play-wrapper.playing .audio-wave-bars { display: flex; }
         .audio-bar {
-            width: 3px;
-            height: 100%;
-            background: var(--red-glow);
-            border-radius: 2px;
-            box-shadow: 0 0 8px var(--red-glow);
+            width: 3px; height: 100%; background: var(--red-glow);
+            border-radius: 2px; box-shadow: 0 0 8px var(--red-glow);
             animation: deathlyBarWave 0.5s infinite alternate ease-in-out;
         }
-
         .audio-bar:nth-child(1) { animation-delay: 0.1s; }
         .audio-bar:nth-child(2) { animation-delay: 0.3s; }
         .audio-bar:nth-child(3) { animation-delay: 0.2s; }
@@ -253,103 +197,52 @@
         }
 
         .play-circle-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255, 0, 60, 0.15);
-            border: 1.5px solid var(--red-glow);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            cursor: pointer;
-            box-shadow: 0 0 12px var(--red-soft);
+            width: 36px; height: 36px; border-radius: 50%;
+            background: rgba(255, 0, 60, 0.15); border: 1.5px solid var(--red-glow);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; cursor: pointer; box-shadow: 0 0 12px var(--red-soft);
             transition: all 0.2s ease;
         }
 
         .play-wrapper.playing .play-circle-btn {
-            background: var(--red-glow);
-            box-shadow: 0 0 25px var(--red-glow);
-            transform: scale(1.1);
+            background: var(--red-glow); box-shadow: 0 0 25px var(--red-glow); transform: scale(1.1);
         }
 
-        /* HERO SECTION */
         .hero-section {
-            position: relative;
-            z-index: 5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
-            text-align: center;
+            position: relative; z-index: 5; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; margin-top: 15px; text-align: center;
         }
 
-        .hero-title {
-            font-size: 32px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
-
+        .hero-title { font-size: 32px; font-weight: 900; letter-spacing: 1px; margin-bottom: 4px; }
         .hero-title span { color: var(--red-glow); }
-
-        .hero-sub {
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-bottom: 12px;
-        }
+        .hero-sub { font-size: 12px; color: var(--text-sub); margin-bottom: 12px; }
 
         .limit-badge {
-            background: rgba(255, 0, 60, 0.12);
-            border: 1px dashed var(--red-glow);
-            color: var(--red-glow);
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 800;
+            background: rgba(255, 0, 60, 0.12); border: 1px dashed var(--red-glow);
+            color: var(--red-glow); padding: 4px 12px; border-radius: 12px;
+            font-size: 11px; font-weight: 800; transition: all 0.3s;
         }
 
-        /* CHAT CONTAINER */
+        .limit-badge.expired {
+            background: var(--red-glow); color: #fff; box-shadow: 0 0 15px var(--red-glow);
+            animation: deathlyBossPulse 1s infinite alternate;
+        }
+
         .chat-container {
-            position: relative;
-            z-index: 5;
-            max-width: 650px;
-            width: 100%;
-            margin: 15px auto;
-            padding: 0 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            max-height: 50vh;
-            overflow-y: auto;
+            position: relative; z-index: 5; max-width: 650px; width: 100%;
+            margin: 15px auto; padding: 0 16px; display: flex; flex-direction: column;
+            gap: 12px; max-height: 50vh; overflow-y: auto;
         }
 
         .chat-msg {
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 12px;
-            line-height: 1.4;
-            max-width: 90%;
-            word-break: break-word;
-            transition: all 0.3s ease;
+            padding: 10px 14px; border-radius: 12px; font-size: 12px;
+            line-height: 1.4; max-width: 90%; word-break: break-word; transition: all 0.3s ease;
         }
 
-        .chat-msg.user {
-            align-self: flex-end;
-            background: var(--card-inner);
-            border: 1px solid var(--red-border);
-            color: #fff;
-        }
-
+        .chat-msg.user { align-self: flex-end; background: var(--card-inner); border: 1px solid var(--red-border); color: #fff; }
         .chat-msg.bot {
-            align-self: flex-start;
-            background: var(--card-dark);
-            border: 1px solid var(--red-glow);
-            color: #fff;
-            box-shadow: 0 0 15px var(--red-soft);
-            width: 100%;
+            align-self: flex-start; background: var(--card-dark); border: 1px solid var(--red-glow);
+            color: #fff; box-shadow: 0 0 15px var(--red-soft); width: 100%;
         }
 
         .chat-msg.boss-msg {
@@ -357,8 +250,12 @@
             box-shadow: 0 0 25px var(--red-glow), 0 0 10px #ff003c inset !important;
             animation: deathlyBossPulse 1.2s infinite alternate ease-in-out;
             background: linear-gradient(135deg, #180008, #2a000f) !important;
-            font-weight: 800;
-            letter-spacing: 0.5px;
+            font-weight: 800; letter-spacing: 0.5px;
+        }
+
+        .chat-msg.limit-msg {
+            border: 2px dashed #ff003c !important; background: #20000a !important;
+            color: #ff3366 !important; font-weight: 800; text-align: center;
         }
 
         @keyframes deathlyBossPulse {
@@ -366,316 +263,152 @@
             100% { transform: scale(1.02); box-shadow: 0 0 30px #ff003c, 0 0 15px #ff003c inset; }
         }
 
-        /* CODE BLOCK WITH COPY BUTTON */
         .code-wrapper {
-            position: relative;
-            background: #080104;
-            border: 1px solid var(--red-border);
-            border-radius: 8px;
-            margin-top: 8px;
-            overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
+            position: relative; background: #080104; border: 1px solid var(--red-border);
+            border-radius: 8px; margin-top: 8px; overflow: hidden; box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
         }
 
         .code-header {
-            background: #120308;
-            padding: 6px 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--red-border);
-            font-size: 10px;
-            color: var(--text-sub);
-            font-weight: 700;
+            background: #120308; padding: 6px 12px; display: flex;
+            justify-content: space-between; align-items: center; border-bottom: 1px solid var(--red-border);
+            font-size: 10px; color: var(--text-sub); font-weight: 700;
         }
 
         .copy-code-btn {
-            background: rgba(255, 0, 60, 0.15);
-            border: 1px solid var(--red-glow);
-            color: #fff;
-            padding: 3px 8px;
-            border-radius: 5px;
-            font-size: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.2s ease;
-        }
-
-        .copy-code-btn:hover {
-            background: var(--red-glow);
-            box-shadow: 0 0 10px var(--red-glow);
+            background: rgba(255, 0, 60, 0.15); border: 1px solid var(--red-glow);
+            color: #fff; padding: 3px 8px; border-radius: 5px; font-size: 10px;
+            font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;
         }
 
         .code-wrapper pre {
-            padding: 10px 12px;
-            font-family: "Courier New", Courier, monospace;
-            font-size: 11px;
-            color: #00ffcc;
-            overflow-x: auto;
-            white-space: pre-wrap;
+            padding: 10px 12px; font-family: "Courier New", Courier, monospace;
+            font-size: 11px; color: #00ffcc; overflow-x: auto; white-space: pre-wrap;
         }
 
-        /* CHAT FOOTER */
-        .chat-footer {
-            position: relative;
-            z-index: 10;
-            padding: 16px;
-            max-width: 650px;
-            width: 100%;
-            margin: 0 auto 10px auto;
-        }
-
+        .chat-footer { position: relative; z-index: 10; padding: 16px; max-width: 650px; width: 100%; margin: 0 auto 10px auto; }
         .chat-box {
-            background: var(--card-dark);
-            border: 1px solid var(--red-border);
-            border-radius: 28px;
-            padding: 6px 8px 6px 16px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            background: var(--card-dark); border: 1px solid var(--red-border);
+            border-radius: 28px; padding: 6px 8px 6px 16px; display: flex; align-items: center; gap: 10px;
         }
 
-        .attachment-btn {
-            background: none;
-            border: none;
-            color: var(--text-sub);
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .chat-input {
-            flex: 1;
-            background: none;
-            border: none;
-            color: #fff;
-            outline: none;
-            font-size: 13px;
-        }
-
+        .attachment-btn { background: none; border: none; color: var(--text-sub); font-size: 18px; cursor: pointer; }
+        .chat-input { flex: 1; background: none; border: none; color: #fff; outline: none; font-size: 13px; }
         .send-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: var(--red-glow);
-            border: none;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 0 12px var(--red-soft);
+            width: 38px; height: 38px; border-radius: 50%; background: var(--red-glow);
+            border: none; color: #fff; display: flex; align-items: center; justify-content: center;
+            font-size: 14px; cursor: pointer; box-shadow: 0 0 12px var(--red-soft);
         }
 
-        /* SIDEBAR DRAWER */
         .sidebar-drawer {
-            position: fixed;
-            top: 0; left: -100%;
-            width: 280px; height: 100%;
-            background: rgba(13, 2, 6, 0.98);
-            border-right: 1px solid var(--red-border);
-            backdrop-filter: blur(12px);
-            z-index: 9999;
-            padding: 20px 16px;
-            display: flex;
-            flex-direction: column;
-            transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8);
+            position: fixed; top: 0; left: -100%; width: 280px; height: 100%;
+            background: rgba(13, 2, 6, 0.98); border-right: 1px solid var(--red-border);
+            backdrop-filter: blur(12px); z-index: 9999; padding: 20px 16px;
+            display: flex; flex-direction: column; transition: left 0.35s ease;
         }
-
         .sidebar-drawer.open { left: 0; }
+        .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sidebar-close { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
 
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+        .plan-box { background: var(--card-inner); border: 1px dashed var(--red-glow); border-radius: 12px; padding: 12px; margin-bottom: 16px; }
+        .plan-box-title { color: var(--red-glow); font-size: 12px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .plan-box-sub { font-size: 10px; color: var(--text-sub); }
 
-        .sidebar-close {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .plan-box {
-            background: var(--card-inner);
-            border: 1px dashed var(--red-glow);
-            border-radius: 12px;
-            padding: 12px;
-            margin-bottom: 16px;
-        }
-
-        .plan-box-title {
-            color: var(--red-glow);
-            font-size: 12px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-
-        .plan-box-sub {
-            font-size: 10px;
-            color: var(--text-sub);
-        }
-
-        .menu-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
+        .menu-list { display: flex; flex-direction: column; gap: 10px; }
         .menu-item {
-            background: var(--card-inner);
-            border: 1px solid var(--red-border);
-            color: #fff;
-            padding: 12px 14px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: var(--card-inner); border: 1px solid var(--red-border); color: #fff;
+            padding: 12px 14px; border-radius: 10px; font-size: 12px; font-weight: 700;
+            display: flex; align-items: center; gap: 10px; cursor: pointer;
         }
-
         .menu-item i { color: var(--red-glow); width: 16px; text-align: center; }
+        .menu-item.logout { margin-top: auto; border-color: var(--red-glow); color: var(--red-glow); justify-content: center; }
 
-        .menu-item:hover {
-            border-color: var(--red-glow);
-            box-shadow: 0 0 10px var(--red-soft);
-        }
-
-        .menu-item.logout {
-            margin-top: auto;
-            border-color: var(--red-glow);
-            color: var(--red-glow);
-            justify-content: center;
-        }
-
-        /* MODAL OVERLAYS */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(6px);
-            z-index: 10001;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(8px); z-index: 10001;
+            display: none; align-items: center; justify-content: center; padding: 16px;
         }
-
         .modal-overlay.active { display: flex; }
 
         .modal-card {
-            background: var(--card-dark);
-            border: 1px solid var(--red-glow);
-            border-radius: 16px;
-            padding: 22px;
-            width: 100%;
-            max-width: 380px;
-            box-shadow: 0 0 30px var(--red-soft);
-            position: relative;
+            background: var(--card-dark); border: 1px solid var(--red-glow); border-radius: 16px;
+            padding: 22px; width: 100%; max-width: 380px; box-shadow: 0 0 35px var(--red-glow); position: relative;
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 900;
-            font-size: 15px;
-            color: var(--red-glow);
-            margin-bottom: 16px;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 16px;
+        .modal-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 15px; color: var(--red-glow); margin-bottom: 16px; }
+        .modal-close { background: none; border: none; color: #fff; font-size: 16px; cursor: pointer; }
+        
+        .plan-option { 
+            background: var(--card-inner); 
+            border: 1px solid var(--red-border); 
+            border-radius: 10px; 
+            padding: 12px 14px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 8px; 
+            font-size: 12px; 
+            font-weight: 800; 
             cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.25s, box-shadow 0.25s, background 0.25s;
+            user-select: none;
         }
 
-        .plan-option {
-            background: var(--card-inner);
-            border: 1px solid var(--red-border);
-            border-radius: 10px;
-            padding: 12px 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            font-size: 12px;
-            font-weight: 800;
+        .plan-option:hover {
+            border-color: rgba(255, 0, 60, 0.5);
+            transform: translateY(-1px);
         }
 
-        .plan-option.selected {
-            border-color: var(--red-glow);
-            box-shadow: 0 0 10px var(--red-soft);
+        .plan-option.selected { 
+            border-color: var(--red-glow); 
+            box-shadow: 0 0 15px var(--red-soft); 
+            background: rgba(255, 0, 60, 0.08);
+        }
+
+        .plan-option.deathly-click-anim {
+            animation: deathlyPlanStrike 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes deathlyPlanStrike {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0px var(--red-glow);
+                background: #ff003c;
+                color: #fff;
+            }
+            30% {
+                transform: scale(1.04) rotate(-1deg);
+                box-shadow: 0 0 30px #ff003c, 0 0 15px #ff003c inset;
+                border-color: #ffffff;
+            }
+            60% {
+                transform: scale(0.99) rotate(1deg);
+                box-shadow: 0 0 25px #ff003c;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                box-shadow: 0 0 20px var(--red-glow), 0 0 8px rgba(255, 0, 60, 0.4) inset;
+                border-color: var(--red-glow);
+                background: rgba(255, 0, 60, 0.15);
+            }
         }
 
         .plan-price { color: var(--red-glow); }
 
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--red-border);
-        }
-
+        .detail-row { display: flex; justify-content: space-between; font-size: 11px; padding: 10px 0; border-bottom: 1px solid var(--red-border); }
         .detail-label { color: var(--text-sub); font-weight: 700; }
         .detail-value { font-weight: 800; color: #fff; }
 
-        /* DEATHLY BANNER */
         .deathly-banner {
-            position: fixed;
-            top: -120px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 420px;
-            background: linear-gradient(135deg, #0d0206, #24000c);
-            border: 2px solid var(--red-glow);
-            box-shadow: 0 0 35px var(--red-glow), 0 0 15px #ff003c inset;
-            border-radius: 16px;
-            padding: 14px 18px;
-            color: #fff;
-            font-size: 11px;
-            font-weight: 900;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            z-index: 20000;
-            text-align: left;
+            position: fixed; top: -120px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 420px; background: linear-gradient(135deg, #0d0206, #24000c);
+            border: 2px solid var(--red-glow); box-shadow: 0 0 35px var(--red-glow), 0 0 15px #ff003c inset;
+            border-radius: 16px; padding: 14px 18px; color: #fff; font-size: 11px; font-weight: 900;
+            display: flex; align-items: center; gap: 12px; z-index: 20000; text-align: left;
             transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
-        .deathly-banner.show {
-            top: 20px;
-            animation: deathlyPulse 1.5s infinite alternate;
-        }
-
-        @keyframes deathlyPulse {
-            0% { box-shadow: 0 0 20px var(--red-glow); }
-            100% { box-shadow: 0 0 45px #ff003c, 0 0 20px #ff003c inset; }
-        }
-
-        .deathly-banner i {
-            color: var(--red-glow);
-            font-size: 22px;
-            filter: drop-shadow(0 0 8px var(--red-glow));
-        }
+        .deathly-banner.show { top: 20px; animation: deathlyPulse 1.5s infinite alternate; }
+        @keyframes deathlyPulse { 0% { box-shadow: 0 0 20px var(--red-glow); } 100% { box-shadow: 0 0 45px #ff003c, 0 0 20px #ff003c inset; } }
+        .deathly-banner i { color: var(--red-glow); font-size: 22px; filter: drop-shadow(0 0 8px var(--red-glow)); }
     </style>
 </head>
 <body>
@@ -684,9 +417,7 @@
 
     <div class="deathly-banner" id="deathlyBanner">
         <i class="fa-solid fa-skull-crossbones"></i>
-        <div id="deathlyBannerText">
-            DEATHLY MODE ACTIVATED 💀⚡
-        </div>
+        <div id="deathlyBannerText">DEATHLY MODE ACTIVATED 💀⚡</div>
     </div>
 
     <div class="login-overlay" id="loginOverlay">
@@ -704,7 +435,7 @@
                 <input type="password" id="loginPassword" class="input-box" placeholder="Enter Password" autocomplete="off">
             </div>
 
-            <button class="btn-red" onclick="handleUserLogin()">
+            <button type="button" id="btnLogin" class="btn-red" onclick="handleUserLogin()">
                 <i class="fa-solid fa-right-to-bracket"></i> Login to User Panel
             </button>
         </div>
@@ -718,7 +449,7 @@
 
         <div class="plan-box">
             <div class="plan-box-title"><i class="fa-solid fa-crown"></i> Active Plan</div>
-            <div class="plan-box-sub" id="sidebarPlanText">Free Tier (6/6 Left)</div>
+            <div class="plan-box-sub" id="sidebarPlanText">Free Tier (6 Messages Max)</div>
         </div>
 
         <div class="menu-list">
@@ -734,7 +465,8 @@
             <div class="menu-item" onclick="clearChatHistory()">
                 <i class="fa-solid fa-trash"></i> Clear History
             </div>
-            <div class="menu-item" onclick="window.open('https://wa.me/', '_blank')">
+            <!-- TARGET WHATSAPP SUPPORT LINK ADDED -->
+            <div class="menu-item" onclick="openWhatsAppDirect()">
                 <i class="fa-brands fa-whatsapp"></i> WhatsApp Support
             </div>
         </div>
@@ -750,7 +482,8 @@
             <div class="brand-logo"><i class="fa-solid fa-skull"></i> FLAXXI AI</div>
         </div>
         <div class="header-right">
-            <a href="https://wa.me/" target="_blank" class="pill-btn green"><i class="fa-brands fa-whatsapp"></i> Support</a>
+            <!-- TARGET WHATSAPP SUPPORT HEADER BUTTON ADDED -->
+            <button onclick="openWhatsAppDirect()" class="pill-btn green"><i class="fa-brands fa-whatsapp"></i> Support</button>
             <button class="pill-btn" id="plansHeaderBtn" onclick="triggerPlansGlow(); openModal('plansModal');">
                 <i class="fa-solid fa-crown" style="color:var(--red-glow);"></i> Plans
             </button>
@@ -788,15 +521,31 @@
     <div class="modal-overlay" id="plansModal">
         <div class="modal-card">
             <div class="modal-header">
-                <span><i class="fa-solid fa-gem"></i> FLAXXI AI PRO</span>
+                <span><i class="fa-solid fa-gem"></i> FLAXXI AI PRO PLANS</span>
                 <button class="modal-close" onclick="closeModal('plansModal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="plan-option"><span>1 Day Pass</span> <span class="plan-price">₹49</span></div>
-            <div class="plan-option"><span>7 Days Pass</span> <span class="plan-price">₹199</span></div>
-            <div class="plan-option selected"><span>1 Month Pass</span> <span class="plan-price">₹499</span></div>
-            <div class="plan-option"><span>1 Year Pass</span> <span class="plan-price">₹1,999</span></div>
-            <div class="plan-option"><span>Lifetime VIP Pass 👑</span> <span class="plan-price">₹4,999</span></div>
-            <button class="btn-red" onclick="window.open('https://wa.me/', '_blank')">Buy via WhatsApp</button>
+            <p style="font-size: 11px; color: var(--text-sub); margin-bottom: 12px; text-align: center;">Upgrade now to remove 6-message daily limit!</p>
+            
+            <div class="plan-option" onclick="selectPlanDeathly(this, '1 Day Pass (₹49)')">
+                <span>1 Day Pass</span> <span class="plan-price">₹49</span>
+            </div>
+            <div class="plan-option" onclick="selectPlanDeathly(this, '7 Days Pass (₹199)')">
+                <span>7 Days Pass</span> <span class="plan-price">₹199</span>
+            </div>
+            <div class="plan-option selected" onclick="selectPlanDeathly(this, '1 Month Pass (₹499)')">
+                <span>1 Month Pass</span> <span class="plan-price">₹499</span>
+            </div>
+            <div class="plan-option" onclick="selectPlanDeathly(this, '1 Year Pass (₹1,999)')">
+                <span>1 Year Pass</span> <span class="plan-price">₹1,999</span>
+            </div>
+            <div class="plan-option" onclick="selectPlanDeathly(this, 'Lifetime VIP Pass (₹4,999)')">
+                <span>Lifetime VIP Pass 👑</span> <span class="plan-price">₹4,999</span>
+            </div>
+
+            <!-- TARGET WHATSAPP BUY BUTTON -->
+            <button class="btn-red" id="whatsappBuyBtn" onclick="buySelectedPlanWhatsApp()">
+                <i class="fa-brands fa-whatsapp"></i> Buy Plan via WhatsApp
+            </button>
         </div>
     </div>
 
@@ -821,40 +570,89 @@
             <div class="detail-row"><span class="detail-label">User Status:</span><span class="detail-value" style="color:var(--green-glow);">✔ Connected</span></div>
             <div class="detail-row"><span class="detail-label">Device ID:</span><span class="detail-value">FX-810778</span></div>
             <div class="detail-row"><span class="detail-label">Current Plan:</span><span class="detail-value" id="accPlanValue" style="color:var(--red-glow);">Free Access</span></div>
-            <div class="detail-row"><span class="detail-label">Daily Limit:</span><span class="detail-value" id="accLimitValue">6 Messages/Day</span></div>
+            <div class="detail-row"><span class="detail-label">Messages Used:</span><span class="detail-value" id="accMsgCount">0 / 6</span></div>
             <button class="btn-red" style="margin-top:16px;" onclick="closeModal('accountModal')">Close</button>
         </div>
     </div>
 
     <script>
         let currentLoggedInUser = "Afzal";
-        let activeStatusText = "FLAXXI AI LOGIN SUCCESSFULLY USER ACTIVATED FREE TIER / LIMIT 6";
+        let messageCount = 0;
+        const maxFreeLimit = 6;
+        let isUnlimitedVIP = false;
+        let selectedPlanName = "1 Month Pass (₹499)";
 
-        const validAdminKeys = [
-            "FLAXXI-LIFETIME-QMOH",
-            "FLAXXI-PRO-100",
-            "TENZINO-PRO-2026"
-        ];
+        // TARGET WHATSAPP NUMBER (+977 981-9833267)
+        const targetWhatsappNumber = "9779819833267";
+
+        const validAdminKeys = ["FLAXXI-LIFETIME-QMOH", "FLAXXI-PRO-100", "TENZINO-PRO-2026"];
+
+        function openWhatsAppDirect() {
+            showDeathlyBanner("REDIRECTING TO WHATSAPP SUPPORT 💀⚡");
+            const msg = encodeURIComponent(`Hello FLAXXI Support, I need help with my account (${currentLoggedInUser}).`);
+            window.open(`https://wa.me/${targetWhatsappNumber}?text=${msg}`, '_blank');
+        }
+
+        function selectPlanDeathly(element, planName) {
+            const allOptions = document.querySelectorAll('.plan-option');
+            allOptions.forEach(opt => {
+                opt.classList.remove('selected', 'deathly-click-anim');
+            });
+
+            element.classList.add('selected');
+            element.classList.add('deathly-click-anim');
+
+            selectedPlanName = planName;
+            showDeathlyBanner(`SELECTED: ${planName.toUpperCase()} 💀⚡`);
+
+            setTimeout(() => {
+                element.classList.remove('deathly-click-anim');
+            }, 500);
+        }
+
+        function buySelectedPlanWhatsApp() {
+            showDeathlyBanner("REDIRECTING TO BUY PLAN ON WHATSAPP 💀⚡");
+            const message = encodeURIComponent(`Hello FLAXXI Support, I want to purchase the ${selectedPlanName}. My Username is ${currentLoggedInUser}.`);
+            window.open(`https://wa.me/${targetWhatsappNumber}?text=${message}`, '_blank');
+        }
 
         function handleUserLogin() {
-            const u = document.getElementById('loginUsername').value.trim();
-            if(u !== "") {
-                currentLoggedInUser = u;
-                document.getElementById('accUserName').innerText = u;
-                document.getElementById('loginOverlay').style.display = 'none';
-                
-                addChatMessage(`Welcome ${currentLoggedInUser}! ${activeStatusText}`, 'bot');
-                showDeathlyBanner(`WELCOME ${currentLoggedInUser.toUpperCase()} BOSS 💀⚡`);
-            } else {
-                alert("⚠️ Please enter a Username!");
+            const userInput = document.getElementById('loginUsername');
+            const overlay = document.getElementById('loginOverlay');
+            
+            let u = userInput ? userInput.value.trim() : "";
+            if(!u) u = "User";
+
+            currentLoggedInUser = u;
+            
+            const accUser = document.getElementById('accUserName');
+            if(accUser) accUser.innerText = u;
+
+            if(overlay) {
+                overlay.style.display = 'none';
             }
+
+            addChatMessage(`Welcome ${currentLoggedInUser}! FLAXXI AI FREE TIER ACTIVATED (Limit: 6 Messages)`, 'bot');
+            showDeathlyBanner(`WELCOME ${currentLoggedInUser.toUpperCase()} BOSS 💀⚡`);
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginBtn = document.getElementById('btnLogin');
+            if(loginBtn) {
+                loginBtn.addEventListener('click', handleUserLogin);
+            }
+        });
 
         function handleKeyPress(e) {
             if(e.key === 'Enter') sendMessage();
         }
 
         function sendMessage() {
+            if (!isUnlimitedVIP && messageCount >= maxFreeLimit) {
+                showLimitExceededAction();
+                return;
+            }
+
             const input = document.getElementById('chatMessageInput');
             const text = input.value.trim();
             if(!text) return;
@@ -862,14 +660,15 @@
             addChatMessage(text, 'user');
             input.value = '';
 
+            messageCount++;
+            updateLimitUI();
+
             const lowerText = text.toLowerCase();
 
-            // "HELLO FLAXXI" AUTO RESPONSE
             if(lowerText.includes('hello flaxxi') || lowerText.includes('hi flaxxi') || lowerText === 'hello' || lowerText === 'hi') {
                 setTimeout(() => {
                     const bossReply = `Yes ${currentLoggedInUser} Boss! 💀⚡`;
                     addChatMessage(bossReply, 'bot boss-msg');
-                    
                     showDeathlyBanner(`RESPONDED: YES ${currentLoggedInUser.toUpperCase()} BOSS! 💀⚡`);
 
                     const wrapper = document.getElementById('playAudioWrapper');
@@ -886,15 +685,9 @@
                         wrapper.classList.remove('playing');
                     }
                 }, 400);
-            }
-            // CODE DETECT
-            else if(lowerText.includes('code') || lowerText.includes('html') || lowerText.includes('script') || lowerText.includes('python')) {
+            } else if(lowerText.includes('code') || lowerText.includes('html') || lowerText.includes('script') || lowerText.includes('python')) {
                 setTimeout(() => {
-                    const sampleCode = `// FLAXXI AI Generated Code
-function deathlyEngine() {
-    console.log("FLAXXI AI Engine Activated for ${currentLoggedInUser} Boss 💀⚡");
-    return true;
-}`;
+                    const sampleCode = `// FLAXXI AI Generated Code\nfunction deathlyEngine() {\n    console.log("FLAXXI AI Engine Activated for ${currentLoggedInUser} Boss 💀⚡");\n    return true;\n}`;
                     addCodeMessage("Here is your requested code:", sampleCode);
                 }, 500);
             } else {
@@ -902,6 +695,40 @@ function deathlyEngine() {
                     addChatMessage(`FLAXXI AI: Processing request for "${text}"...`, 'bot');
                 }, 500);
             }
+
+            if (!isUnlimitedVIP && messageCount === maxFreeLimit) {
+                setTimeout(() => {
+                    showLimitExceededAction();
+                }, 1200);
+            }
+        }
+
+        function updateLimitUI() {
+            const badge = document.getElementById('dailyLimitTag');
+            const accCount = document.getElementById('accMsgCount');
+
+            if(isUnlimitedVIP) {
+                badge.innerText = "Plan: Unlimited VIP 👑";
+                badge.classList.remove('expired');
+                accCount.innerText = `${messageCount} / Unlimited`;
+            } else {
+                const remaining = maxFreeLimit - messageCount;
+                if(remaining > 0) {
+                    badge.innerText = `Limit: ${remaining} Left Today`;
+                    badge.classList.remove('expired');
+                } else {
+                    badge.innerText = `Limit Reached (0 Left)`;
+                    badge.classList.add('expired');
+                }
+                accCount.innerText = `${messageCount} / ${maxFreeLimit}`;
+            }
+        }
+
+        function showLimitExceededAction() {
+            addChatMessage(`⚠️ FREE LIMIT EXCEEDED! You have used all 6 messages for today. Please buy a plan or enter VIP Key to continue! 👑💀`, 'bot limit-msg');
+            showDeathlyBanner(`LIMIT EXCEEDED! BUY PLAN TO CONTINUE 💀⚡`);
+            triggerPlansGlow();
+            openModal('plansModal');
         }
 
         function addChatMessage(msg, senderClass) {
@@ -917,7 +744,6 @@ function deathlyEngine() {
             const container = document.getElementById('chatContainer');
             const div = document.createElement('div');
             div.className = 'chat-msg bot';
-
             const codeId = 'code_' + Date.now();
 
             div.innerHTML = `
@@ -932,7 +758,6 @@ function deathlyEngine() {
                     <pre id="${codeId}">${escapeHtml(codeText)}</pre>
                 </div>
             `;
-
             container.appendChild(div);
             container.scrollTop = container.scrollHeight;
         }
@@ -946,12 +771,7 @@ function deathlyEngine() {
             navigator.clipboard.writeText(codeContent).then(() => {
                 btn.innerHTML = `<i class="fa-solid fa-check" style="color:var(--green-glow);"></i> Copied!`;
                 showDeathlyBanner("CODE COPIED TO CLIPBOARD 💀⚡");
-
-                setTimeout(() => {
-                    btn.innerHTML = `<i class="fa-regular fa-copy"></i> Copy`;
-                }, 2500);
-            }).catch(err => {
-                alert("Failed to copy code.");
+                setTimeout(() => { btn.innerHTML = `<i class="fa-regular fa-copy"></i> Copy`; }, 2500);
             });
         }
 
@@ -994,7 +814,7 @@ function deathlyEngine() {
         function triggerPlansGlow() {
             const btn = document.getElementById('plansHeaderBtn');
             btn.classList.add('plans-glow-active');
-            setTimeout(() => { btn.classList.remove('plans-glow-active'); }, 1200);
+            setTimeout(() => { btn.classList.remove('plans-glow-active'); }, 1500);
         }
 
         function redeemKey() {
@@ -1002,14 +822,13 @@ function deathlyEngine() {
             if(!k) { alert("Please enter a License Key!"); return; }
 
             if(validAdminKeys.includes(k)) {
-                activeStatusText = "FLAXXI AI LOGIN SUCCESSFULLY USER ACTIVATED UNLIMITED VIP TIER";
-                showDeathlyBanner("VIP TIER ACTIVATED SUCCESSFULLY 👑💀⚡");
+                isUnlimitedVIP = true;
+                showDeathlyBanner("VIP TIER UNLOCKED! UNLIMITED MESSAGES 👑💀⚡");
+                updateLimitUI();
 
                 setTimeout(() => {
                     document.getElementById('sidebarPlanText').innerText = "Lifetime VIP Pass 👑";
-                    document.getElementById('dailyLimitTag').innerText = "Plan: Unlimited VIP";
                     document.getElementById('accPlanValue').innerText = "Lifetime VIP Pass 👑";
-                    document.getElementById('accLimitValue').innerText = "Unlimited Messages";
                     document.getElementById('redeemKeyInput').value = '';
                     closeModal('keyModal');
                 }, 800);
@@ -1026,7 +845,6 @@ function deathlyEngine() {
             setTimeout(() => { banner.classList.remove('show'); }, 3500);
         }
 
-        /* --- PARTICLES CANVAS ANIMATION --- */
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
