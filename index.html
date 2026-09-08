@@ -3,846 +3,557 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FLAXXI AI - Animated Ultra Edition</title>
+    <title>FLAXXI AI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #0a0407;
-            --card-bg: #140b10;
-            --accent-red: #ff2a55;
-            --accent-glow: rgba(255, 42, 85, 0.4);
-            --text-main: #ffffff;
-            --text-sub: #a399a2;
-            --border-color: #2b1723;
+            --bg-dark: #030102;
+            --card-dark: #080204;
+            --red-glow: #ff003c;
+            --red-blur: rgba(255, 0, 60, 0.45);
+            --deadly-red: #d6002f;
+            --text-sub: #7a6a70;
+            --border-glow: #1f070e;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
         body {
             background-color: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
+            color: #fff;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* Glassmorphism Navbar with Pulse Glow */
-        .navbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 20px;
-            background: rgba(20, 11, 16, 0.7);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border-color);
-            position: sticky; top: 0; z-index: 100;
+        /* Ambient Glow Effect */
+        .bg-glow-orb {
+            position: absolute; width: 350px; height: 350px;
+            background: radial-gradient(circle, var(--red-blur) 0%, rgba(0,0,0,0) 70%);
+            top: 45%; left: 50%; transform: translate(-50%, -50%);
+            z-index: 1; pointer-events: none;
+            animation: pulseGlow 4s ease-in-out infinite alternate;
         }
 
-        .nav-left { display: flex; align-items: center; gap: 15px; }
-        .menu-btn { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; transition: transform 0.2s; }
-        .menu-btn:active { transform: scale(0.85); }
-
-        .brand { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 18px; }
-        .brand i { color: var(--accent-red); font-size: 20px; animation: iconFlame 2s infinite alternate; }
-        .brand span { color: var(--accent-red); }
-
-        .nav-actions { display: flex; align-items: center; gap: 10px; }
-        
-        /* Neon Badge Pulse */
-        .btn-badge {
-            background: var(--accent-red); color: #fff; padding: 6px 14px;
-            border-radius: 20px; font-size: 12px; font-weight: 700; border: none; cursor: pointer;
-            box-shadow: 0 0 10px var(--accent-glow);
-            animation: pulseGlow 2s infinite;
+        /* Mandatory Full Screen First Login Page */
+        .auth-overlay-page {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #000000; z-index: 999999;
+            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(25px);
         }
 
-        .user-avatar {
-            background: var(--accent-red); color: #fff; width: 32px; height: 32px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 14px; cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 0 8px var(--accent-glow);
+        .auth-card {
+            background: var(--card-dark);
+            border: 1px solid var(--red-glow);
+            box-shadow: 0 0 45px var(--red-blur);
+            border-radius: 20px;
+            width: 90%; max-width: 400px;
+            padding: 35px 25px; text-align: center;
+            animation: popUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Sidebar Drawer */
-        .sidebar-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); z-index: 200; display: none;
-            backdrop-filter: blur(4px);
-            animation: fadeIn 0.3s ease;
-        }
-        .sidebar {
-            position: fixed; top: 0; left: -280px; width: 280px; height: 100%;
-            background: #0f070c; border-right: 1px solid var(--border-color);
-            z-index: 201; transition: left 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); 
-            display: flex; flex-direction: column; padding: 15px;
-        }
-        .sidebar.active { left: 0; }
-        
-        .btn-new-chat {
-            background: var(--accent-red); color: white; border: none; padding: 12px;
-            border-radius: 10px; font-weight: bold; cursor: pointer; display: flex;
-            align-items: center; justify-content: center; gap: 8px; margin-bottom: 15px;
-            box-shadow: 0 0 12px var(--accent-glow); transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-new-chat:hover { transform: translateY(-2px); box-shadow: 0 0 18px var(--accent-glow); }
+        .auth-card h1 { font-size: 26px; font-weight: 900; color: #fff; margin-bottom: 5px; }
+        .auth-card h1 span { color: var(--red-glow); }
+        .auth-card p { font-size: 12px; color: var(--text-sub); margin-bottom: 25px; }
 
-        .search-box {
-            background: var(--card-bg); border: 1px solid var(--border-color);
-            padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px;
-            color: var(--text-sub); font-size: 13px; margin-bottom: 20px;
-        }
-        .search-box input { background: transparent; border: none; color: white; outline: none; width: 100%; }
-
-        .history-section { flex: 1; overflow-y: auto; }
-        .history-title { font-size: 11px; color: var(--text-sub); display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; }
-        .no-chats { font-size: 13px; color: var(--text-sub); text-align: center; margin-top: 20px; }
-
-        .sidebar-footer { border-top: 1px solid var(--border-color); padding-top: 15px; }
-        .version-card {
-            background: var(--card-bg); padding: 10px; border-radius: 8px; display: flex;
-            justify-content: space-between; align-items: center; margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-        }
-        .version-info { font-size: 11px; color: var(--text-sub); }
-        .version-info strong { display: block; color: white; font-size: 13px; }
-        .btn-upgrade-sm { background: var(--accent-red); color: white; border: none; padding: 5px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; cursor: pointer; }
-
-        .menu-item { display: flex; align-items: center; gap: 10px; color: white; padding: 10px 0; cursor: pointer; font-size: 14px; transition: color 0.2s; }
-        .menu-item:hover { color: var(--accent-red); }
-
-        /* Hero Welcome Area with Floating Animation */
-        .hero-container {
-            flex: 1; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; text-align: center; padding: 20px;
-            animation: heroFloat 4s ease-in-out infinite alternate;
-        }
-        .hero-title { font-size: 36px; font-weight: 900; letter-spacing: 1px; text-shadow: 0 0 20px rgba(255, 42, 85, 0.3); }
-        .hero-title span { color: var(--accent-red); }
-        .hero-subtitle { color: var(--text-sub); margin-top: 5px; font-size: 14px; }
-        .hero-tags { margin-top: 15px; font-size: 11px; color: var(--accent-red); letter-spacing: 2px; font-weight: bold; }
-
-        /* Chat View & Message Animations */
-        .chat-container { 
-            flex: 1; max-width: 650px; width: 100%; margin: 0 auto; 
-            padding: 20px 15px 120px; display: none; flex-direction: column; 
-            gap: 15px; overflow-y: auto; 
-        }
-
-        .msg-bubble { 
-            position: relative; max-width: 85%; padding: 12px 16px; 
-            border-radius: 16px; font-size: 14px; line-height: 1.5; 
-            word-break: break-word; white-space: pre-wrap;
-            animation: bubblePop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .msg-user { 
-            align-self: flex-end; background: var(--accent-red); color: #fff; 
-            border-bottom-right-radius: 4px; box-shadow: 0 4px 15px var(--accent-glow); 
-        }
-        .msg-ai { 
-            align-self: flex-start; background: var(--card-bg); 
-            border: 1px solid var(--border-color); color: var(--text-main); 
-            border-bottom-left-radius: 4px; padding-bottom: 32px; 
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-        }
-        .msg-error { align-self: flex-start; background: rgba(255, 42, 85, 0.15); border: 1px solid var(--accent-red); color: #ff6b8b; }
-
-        /* Real-Time Cursor Animations */
-        .typing-cursor::after {
-            content: '▋';
-            display: inline-block;
-            color: var(--accent-red);
-            margin-left: 3px;
-            animation: blink 0.7s infinite;
-        }
-
-        /* Animations Definition */
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes bubblePop { 0% { opacity: 0; transform: translateY(20px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes heroFloat { 0% { transform: translateY(0px); } 100% { transform: translateY(-8px); } }
-        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 8px var(--accent-glow); } 50% { box-shadow: 0 0 18px var(--accent-glow); } }
-        @keyframes iconFlame { 0% { transform: scale(1); filter: drop-shadow(0 0 2px var(--accent-red)); } 100% { transform: scale(1.15); filter: drop-shadow(0 0 8px var(--accent-red)); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .msg-play-btn {
-            position: absolute; bottom: 6px; right: 10px;
-            background: rgba(255, 42, 85, 0.1); border: 1px solid var(--border-color); color: var(--accent-red);
-            cursor: pointer; font-size: 11px; font-weight: 600;
-            display: flex; align-items: center; gap: 4px; padding: 3px 8px;
-            border-radius: 6px; transition: all 0.2s;
-        }
-        .msg-play-btn:hover { background: var(--accent-red); color: white; }
-        .msg-play-btn.playing { animation: pulseGlow 1s infinite; }
-
-        /* Glowing Bottom Input Bar */
-        .input-bar-container {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(10, 4, 7, 0.85); backdrop-filter: blur(12px);
-            padding: 12px 15px 20px; border-top: 1px solid var(--border-color);
-        }
-        .input-status-tag { text-align: center; font-size: 11px; color: var(--text-sub); margin-bottom: 8px; }
-        
-        .file-preview {
-            max-width: 650px; margin: 0 auto 5px; font-size: 12px; color: var(--accent-red);
-            display: none; align-items: center; justify-content: space-between;
-            background: var(--card-bg); padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border-color);
-            animation: fadeIn 0.2s ease;
-        }
-
-        .input-box-wrapper {
-            max-width: 650px; margin: 0 auto; background: var(--card-bg);
-            border: 1px solid var(--border-color); border-radius: 25px; padding: 4px 6px 4px 12px;
-            display: flex; align-items: center; gap: 6px;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .input-box-wrapper:focus-within { 
-            border-color: var(--accent-red); 
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-        
-        .language-select {
-            background: #1d0f17; color: #fff; border: 1px solid var(--border-color);
-            font-size: 11px; outline: none; cursor: pointer; border-radius: 12px;
-            padding: 4px; max-width: 95px;
-        }
-        .language-select option { background: #140b10; color: #fff; }
-
-        .chat-input { flex: 1; background: transparent; border: none; color: #fff; font-size: 14px; outline: none; padding: 8px 2px; }
-        
-        .btn-icon { color: var(--text-sub); font-size: 15px; cursor: pointer; transition: color 0.2s, transform 0.2s; padding: 4px; }
-        .btn-icon:hover { color: var(--accent-red); transform: scale(1.1); }
-        .btn-icon.active { color: var(--accent-red); animation: pulseGlow 1s infinite; }
-
-        .btn-send {
-            background: var(--accent-red); color: white; border: none; width: 32px; height: 32px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
-            box-shadow: 0 0 10px var(--accent-glow); flex-shrink: 0; outline: none; transition: transform 0.15s, box-shadow 0.15s;
-        }
-        .btn-send:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--accent-glow); }
-        .btn-send:active { transform: scale(0.9); }
-
-        /* Modal Glow Cards */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); display: none; align-items: center; justify-content: center;
-            z-index: 300; padding: 20px; animation: fadeIn 0.25s ease;
-        }
-        .modal-content {
-            background: #12090e; border: 1px solid var(--border-color); border-radius: 16px;
-            width: 100%; max-width: 400px; padding: 20px; position: relative;
-            box-shadow: 0 0 30px rgba(255, 42, 85, 0.15);
-            animation: bubblePop 0.3s ease;
-        }
-        .modal-close { position: absolute; top: 15px; right: 15px; color: var(--text-sub); cursor: pointer; }
+        .input-group { text-align: left; margin-bottom: 18px; }
+        .input-group label { display: block; font-size: 11px; color: var(--text-sub); font-weight: bold; margin-bottom: 6px; text-transform: uppercase; }
 
         .auth-input {
-            width: 100%; background: var(--card-bg); border: 1px solid var(--border-color);
-            padding: 12px; border-radius: 8px; color: #fff; outline: none; margin-bottom: 12px; font-size: 14px;
-            transition: border-color 0.2s;
+            width: 100%; background: #040102; border: 1px solid var(--border-glow);
+            padding: 13px 15px; border-radius: 10px; color: #fff; font-size: 14px; outline: none;
+            transition: 0.3s;
         }
-        .auth-input:focus { border-color: var(--accent-red); }
+        .auth-input:focus { border-color: var(--red-glow); box-shadow: 0 0 15px var(--red-blur); }
 
-        .btn-auth {
-            width: 100%; background: var(--accent-red); color: white; border: none;
-            padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px;
-            box-shadow: 0 0 10px var(--accent-glow);
+        .btn-primary {
+            width: 100%; background: var(--red-glow); color: #fff; border: none;
+            padding: 14px; border-radius: 10px; font-weight: bold; font-size: 15px;
+            cursor: pointer; box-shadow: 0 0 20px var(--red-blur); margin-top: 10px;
+            transition: 0.2s ease;
         }
-        .auth-switch { text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-sub); }
-        .auth-switch span { color: var(--accent-red); cursor: pointer; font-weight: bold; }
-        
-        .plan-header { text-align: center; margin-bottom: 15px; }
-        .plan-header h3 { color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 18px; }
-        .plan-header p { font-size: 11px; color: var(--text-sub); margin-top: 4px; }
-        
-        .plan-card {
-            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px;
-            padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;
-            transition: border-color 0.2s, transform 0.2s;
+        .btn-primary:active { transform: scale(0.97); }
+
+        /* Deadly Red & Black Play Button */
+        .play-float-btn {
+            position: fixed; top: 15px; right: 20px;
+            width: 42px; height: 42px;
+            background: #000;
+            color: var(--red-glow); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; cursor: pointer; z-index: 999;
+            box-shadow: 0 0 20px var(--red-blur);
+            border: 2px solid var(--red-glow);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: pulseRed 2s infinite;
         }
-        .plan-card:hover { transform: translateY(-2px); border-color: var(--accent-red); }
-        .plan-card.popular { border-color: var(--accent-red); box-shadow: 0 0 10px rgba(255, 42, 85, 0.2); }
-        .plan-card.lifetime { border-color: #ffd700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.2); }
-        .plan-title strong { display: block; font-size: 14px; }
-        .plan-title span { font-size: 11px; color: var(--text-sub); }
-        .plan-price { font-weight: bold; color: var(--accent-red); font-size: 15px; }
-        
-        .btn-whatsapp {
-            width: 100%; background: #25d366; color: white; border: none; padding: 12px;
-            border-radius: 10px; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;
-            text-decoration: none; margin-top: 10px; font-size: 14px; box-shadow: 0 0 12px rgba(37, 211, 102, 0.3);
+        .play-float-btn:hover { background: var(--red-glow); color: #fff; transform: scale(1.12); box-shadow: 0 0 30px var(--red-glow); }
+        .play-float-btn:active { transform: scale(0.95); }
+
+        /* Top Navigation Header */
+        .user-nav {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 18px; background: rgba(8, 2, 4, 0.9);
+            backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-glow);
+            z-index: 10;
         }
 
-        .sub-field { 
-            background: var(--card-bg); padding: 12px 14px; border-radius: 10px; 
-            margin-bottom: 12px; border: 1px solid var(--border-color);
+        .brand-logo { font-size: 18px; font-weight: 900; display: flex; align-items: center; gap: 8px; }
+        .brand-logo i { color: var(--red-glow); }
+
+        .nav-right-actions { display: flex; align-items: center; gap: 10px; margin-right: 50px; }
+
+        .top-btn {
+            background: rgba(255, 0, 60, 0.1); border: 1px solid var(--red-glow);
+            color: #fff; padding: 6px 12px; border-radius: 20px; font-size: 12px;
+            font-weight: bold; display: flex; align-items: center; gap: 6px;
+            text-decoration: none; cursor: pointer; transition: 0.2s;
         }
-        .sub-field label { font-size: 10px; color: var(--text-sub); text-transform: uppercase; display: block; letter-spacing: 0.5px; }
-        .sub-field div { font-size: 15px; font-weight: bold; color: white; margin-top: 3px; }
-        .sub-field div.red-text { color: var(--accent-red); }
-        
-        .redeem-box { 
-            border: 1px dashed var(--accent-red); border-radius: 12px; padding: 14px; 
-            margin-top: 15px; background: rgba(255, 42, 85, 0.03);
+        .top-btn:hover { background: var(--red-glow); box-shadow: 0 0 10px var(--red-blur); }
+
+        .top-icon-btn {
+            background: transparent; border: none; color: #fff; font-size: 18px;
+            cursor: pointer; padding: 4px 8px; transition: 0.2s;
         }
-        .redeem-box label { font-size: 13px; font-weight: bold; display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #fff; }
-        .redeem-box input { 
-            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); 
-            background: #1a0d15; color: #fff; outline: none; margin-bottom: 12px; font-size: 13px;
+        .top-icon-btn:hover { color: var(--red-glow); }
+
+        /* Sidebar Drawer */
+        .sidebar-drawer {
+            position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
+            background: var(--card-dark); border-right: 1px solid var(--border-glow);
+            z-index: 10000; padding: 20px; display: flex; flex-direction: column;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 5px 0 25px rgba(0,0,0,0.9);
+            overflow-y: auto;
         }
-        .btn-activate { 
-            width: 100%; background: var(--accent-red); color: white; border: none; 
-            padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px;
+        .sidebar-drawer.active { left: 0; }
+
+        .sidebar-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 15px; border-bottom: 1px solid var(--border-glow); margin-bottom: 20px;
         }
+
+        .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+
+        .menu-item {
+            background: #040102; border: 1px solid var(--border-glow); padding: 12px;
+            border-radius: 10px; color: #fff; display: flex; align-items: center;
+            gap: 10px; cursor: pointer; font-size: 13px; transition: 0.2s ease;
+        }
+        .menu-item:hover { border-color: var(--red-glow); background: rgba(255, 0, 60, 0.1); transform: translateX(4px); }
+        .menu-item i { color: var(--red-glow); width: 20px; text-align: center; }
+
+        .sub-box {
+            background: rgba(255,0,60,0.08); border: 1px dashed var(--red-glow);
+            padding: 12px; border-radius: 10px; margin-bottom: 15px;
+        }
+        .sub-box h4 { font-size: 13px; color: var(--red-glow); margin-bottom: 4px; }
+        .sub-box p { font-size: 11px; color: var(--text-sub); }
+
+        /* Universal Animated Modals */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.88); backdrop-filter: blur(12px);
+            z-index: 99999; display: none; align-items: center; justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
+        .modal-card {
+            background: var(--card-dark); border: 1px solid var(--red-glow);
+            width: 90%; max-width: 400px; border-radius: 16px; padding: 20px;
+            box-shadow: 0 0 35px var(--red-blur); animation: popUp 0.3s ease;
+            max-height: 80vh; display: flex; flex-direction: column;
+        }
+
+        .plan-item {
+            background: #040102; border: 1px solid var(--border-glow); padding: 12px;
+            border-radius: 10px; margin-top: 10px; display: flex; justify-content: space-between;
+            align-items: center; cursor: pointer; transition: all 0.2s;
+        }
+        .plan-item.active-plan { border-color: var(--red-glow); background: rgba(255, 0, 60, 0.15); box-shadow: 0 0 15px var(--red-blur); }
+        .plan-price { color: var(--red-glow); font-weight: bold; font-size: 14px; }
+
+        .acc-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border-glow); font-size: 13px; }
+        .acc-row span:first-child { color: var(--text-sub); }
+
+        .history-list { overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; max-height: 280px; }
+        .history-item { background: #040102; border: 1px solid var(--border-glow); padding: 10px; border-radius: 8px; font-size: 12px; color: #ddd; }
+
+        /* Main Center Hero Section */
+        .hero-center {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 5; text-align: center; padding: 20px;
+        }
+
+        .main-title { font-size: 32px; font-weight: 900; text-shadow: 0 0 20px var(--red-blur); margin-bottom: 5px; }
+        .main-title span { color: var(--red-glow); }
+        .sub-title { font-size: 12px; color: var(--text-sub); margin-bottom: 15px; }
+
+        .limit-badge {
+            background: rgba(255, 0, 60, 0.1); border: 1px solid var(--border-glow);
+            padding: 4px 12px; border-radius: 12px; font-size: 11px; color: var(--text-sub);
+            margin-bottom: 15px; display: inline-block;
+        }
+        .limit-badge span { color: var(--red-glow); font-weight: bold; }
+
+        .chat-container {
+            width: 100%; max-width: 700px; height: 280px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-right: 5px;
+        }
+
+        .msg-bubble { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.4; animation: popUp 0.25s ease-out; word-break: break-word; }
+        .msg-user { background: var(--red-glow); color: #fff; align-self: flex-end; box-shadow: 0 0 10px var(--red-blur); }
+        .msg-ai { background: var(--card-dark); border: 1px solid var(--border-glow); align-self: flex-start; }
+
+        /* Chat Controls with File Attachment */
+        .chat-input-wrapper {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 650px; z-index: 20;
+        }
+
+        .attachment-badge {
+            position: absolute; top: -38px; left: 15px;
+            background: var(--card-dark); border: 1px solid var(--red-glow);
+            padding: 5px 12px; border-radius: 15px; font-size: 11px;
+            display: none; align-items: center; gap: 8px; color: #fff;
+            box-shadow: 0 0 10px var(--red-blur); animation: popUp 0.2s ease;
+        }
+
+        .chat-input-box {
+            background: rgba(8, 2, 4, 0.95); border: 1px solid var(--border-glow);
+            border-radius: 30px; padding: 8px 15px; display: flex; align-items: center; gap: 10px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.9); transition: 0.2s ease;
+        }
+        .chat-input-box:focus-within { border-color: var(--red-glow); box-shadow: 0 0 15px var(--red-blur); }
+
+        .chat-input-box input[type="text"] { flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 14px; }
+
+        .btn-action-icon { background: transparent; border: none; color: var(--text-sub); font-size: 17px; cursor: pointer; transition: 0.2s; }
+        .btn-action-icon:hover { color: var(--red-glow); }
+
+        .btn-send {
+            background: var(--red-glow); color: #fff; width: 35px; height: 35px;
+            border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; 
+            cursor: pointer; transition: 0.2s ease; box-shadow: 0 0 10px var(--red-blur);
+        }
+
+        @keyframes pulseGlow { 0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.9); } 100% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); } }
+        @keyframes pulseRed { 0% { box-shadow: 0 0 10px var(--red-blur); } 50% { box-shadow: 0 0 25px var(--red-glow); } 100% { box-shadow: 0 0 10px var(--red-blur); } }
+        @keyframes popUp { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="nav-left">
-            <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-            <div class="brand">
-                <i class="fa-solid fa-fire-flame-curved"></i>
-                FLAXXI <span>AI</span>
+    <!-- Deadly Red Play Button -->
+    <div class="play-float-btn" onclick="executeScriptRun()" title="Run Script">
+        <i class="fa-solid fa-play"></i>
+    </div>
+
+    <!-- Mandatory Full Screen First Login Page -->
+    <div class="auth-overlay-page" id="mainAuthPage">
+        <div class="auth-card">
+            <h1><i class="fa-solid fa-skull"></i> FLAXXI <span>AI</span></h1>
+            <p>Account Login Required To Access Panel</p>
+
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" id="loginUsername" class="auth-input" placeholder="Enter Username">
             </div>
-        </div>
-        <div class="nav-actions">
-            <button class="btn-badge" onclick="openModal('planModal')">Plan</button>
-            <div class="user-avatar" id="avatarIcon" onclick="openModal('subModal')">A</div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" class="auth-input" placeholder="Enter Password">
+            </div>
+
+            <button class="btn-primary" onclick="handleAccountLogin()">Login / Access Website</button>
         </div>
     </div>
+
+    <div class="bg-glow-orb"></div>
 
     <!-- Sidebar Drawer -->
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-    <div class="sidebar" id="sidebar">
-        <button class="btn-new-chat" onclick="newChat()"><i class="fa-solid fa-plus"></i> New chat</button>
-        <div class="search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Search chats...">
+    <div class="sidebar-drawer" id="sidebarDrawer">
+        <div class="sidebar-header">
+            <h3>FLAXXI Panel</h3>
+            <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="toggleSidebar()"></i>
         </div>
-        <div class="history-section">
-            <div class="history-title">
-                <span>HISTORY</span>
-                <i class="fa-regular fa-trash-can" style="cursor: pointer;"></i>
-            </div>
-            <div class="no-chats">No chats found</div>
+
+        <div class="sub-box">
+            <h4><i class="fa-solid fa-crown"></i> Active Plan</h4>
+            <p id="currentPlanStatus">Free Access (5 Daily Limit)</p>
         </div>
-        <div class="sidebar-footer">
-            <div class="version-card">
-                <div class="version-info">
-                    <span>DISCOVERY VERSION</span>
-                    <strong id="sidebarUsername">admin</strong>
-                </div>
-                <button class="btn-upgrade-sm" onclick="openModal('planModal')">Upgrade</button>
-            </div>
-            <div class="menu-item" onclick="openModal('subModal')"><i class="fa-regular fa-id-card"></i> Subscription</div>
-            <div class="menu-item" style="color: var(--accent-red);" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Log out</div>
+
+        <div class="sidebar-menu">
+            <div class="menu-item" onclick="openPlansModal(); toggleSidebar();"><i class="fa-solid fa-gem"></i> Subscription Plans</div>
+            <div class="menu-item" onclick="openKeyModal(); toggleSidebar();"><i class="fa-solid fa-key"></i> Key Enter (Redeem)</div>
+            <div class="menu-item" onclick="openAccountModal(); toggleSidebar();"><i class="fa-solid fa-user-gear"></i> Account Details</div>
+            <div class="menu-item" onclick="openHistoryModal(); toggleSidebar();"><i class="fa-solid fa-clock-rotate-left"></i> Chat History</div>
+            <div class="menu-item" onclick="clearChatHistory()"><i class="fa-solid fa-trash-can"></i> Clear History</div>
+            <a href="https://wa.me/9779819833267" target="_blank" class="menu-item" style="text-decoration: none;"><i class="fa-brands fa-whatsapp"></i> WhatsApp Support</a>
+            <div class="menu-item" style="margin-top: auto; border-color: #ff003c;" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> Logout Account</div>
         </div>
     </div>
 
-    <!-- Animated Floating Hero Welcome -->
-    <div class="hero-container" id="heroArea">
-        <div class="hero-title">FLAXXI <span>AI</span></div>
-        <div class="hero-subtitle">AI without limits.</div>
-        <div class="hero-tags">CODE · RESEARCH · ANALYSIS · CREATION</div>
-    </div>
-
-    <!-- Chat Messages View -->
-    <div class="chat-container" id="chatContainer"></div>
-
-    <!-- Bottom Action Bar -->
-    <div class="input-bar-container">
-        <div class="input-status-tag" id="statusTag">Daily Limit: Free (9 Messages/Day) ⚡</div>
-        
-        <div class="file-preview" id="filePreview">
-            <span id="fileName"><i class="fa-solid fa-file"></i> Attached File</span>
-            <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="clearAttachedFile()"></i>
+    <!-- Top Navigation Header -->
+    <div class="user-nav">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <button class="top-icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <div class="brand-logo">
+                <i class="fa-solid fa-skull"></i>
+                <span>FLAXXI <span>AI</span></span>
+            </div>
         </div>
 
-        <div class="input-box-wrapper">
-            <input type="file" id="fileInput" style="display:none;" onchange="handleFileSelected(event)">
-            <i class="fa-solid fa-paperclip btn-icon" title="Attach File" onclick="document.getElementById('fileInput').click()"></i>
-            
-            <select id="langSelect" class="language-select">
-                <option value="Hindi" selected>HI (Hindi)</option>
-                <option value="English">EN (English)</option>
-                <option value="Nepali">NE (Nepali)</option>
-                <option value="Hinglish">HI-EN (Hinglish)</option>
-                <option value="Marathi">MR (Marathi)</option>
-                <option value="Bengali">BN (Bengali)</option>
-                <option value="Punjabi">PA (Punjabi)</option>
-                <option value="Gujarati">GU (Gujarati)</option>
-                <option value="Tamil">TA (Tamil)</option>
-                <option value="Telugu">TE (Telugu)</option>
-                <option value="Urdu">UR (Urdu)</option>
-                <option value="French">FR (French)</option>
-                <option value="Spanish">ES (Spanish)</option>
-            </select>
-
-            <i class="fa-solid fa-microphone btn-icon" id="micBtn" title="Voice Input" onclick="toggleVoiceInput()"></i>
-            
-            <input type="text" id="userInput" class="chat-input" placeholder="What can I do for you?" onkeypress="handleKeyPress(event)">
-            
-            <button class="btn-send" id="sendBtn" title="Send Message" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        <div class="nav-right-actions">
+            <a href="https://wa.me/9779819833267" target="_blank" class="top-btn" style="border-color: #25d366; color: #25d366;">
+                <i class="fa-brands fa-whatsapp"></i> Support
+            </a>
+            <button class="top-btn" onclick="openPlansModal()"><i class="fa-solid fa-crown"></i> Plans</button>
         </div>
     </div>
 
-    <!-- Modals -->
-    <div class="modal" id="authModal">
-        <div class="modal-content">
-            <i class="fa-solid fa-xmark modal-close" onclick="closeModal('authModal')"></i>
-            <div class="plan-header">
-                <h3 id="authTitle">Create Account</h3>
-                <p id="authSubtitle">Sign up to access FLAXXI AI features</p>
+    <!-- Modals (Plans, Key, Account, History) -->
+    <div class="modal-overlay" id="plansModal">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: var(--red-glow);"><i class="fa-solid fa-gem"></i> FLAXXI AI PRO</h3>
+                <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('plansModal')"></i>
             </div>
-            <input type="text" id="authUsername" class="auth-input" placeholder="Enter Username">
-            <input type="password" id="authPassword" class="auth-input" placeholder="Enter Password">
-            <button class="btn-auth" id="authBtn" onclick="handleAuth()">Create Account</button>
-            <div class="auth-switch">
-                <span id="authToggleText">Already have an account?</span> 
-                <span id="authToggleBtn" onclick="toggleAuthMode()">Login</span>
-            </div>
+            <div class="plan-item" onclick="selectPlan(this, '1 Day Pass (₹49)')"><div><strong>1 Day Pass</strong></div><span class="plan-price">₹49</span></div>
+            <div class="plan-item" onclick="selectPlan(this, '7 Days Pass (₹199)')"><div><strong>7 Days Pass</strong></div><span class="plan-price">₹199</span></div>
+            <div class="plan-item active-plan" onclick="selectPlan(this, '1 Month Pass (₹499)')"><div><strong>1 Month Pass</strong></div><span class="plan-price">₹499</span></div>
+            <div class="plan-item" onclick="selectPlan(this, 'Lifetime Pass VIP (₹4,999)')"><div><strong>Lifetime VIP Pass</strong></div><span class="plan-price">₹4,999</span></div>
+            <a id="whatsappBuyBtn" href="https://wa.me/9779819833267?text=Hello,%20I%20want%20to%20buy%20FLAXXI%20AI%201%20Month%20Pass%20(₹499)" target="_blank" class="btn-primary" style="display: block; text-decoration: none; text-align: center; margin-top: 15px;">Buy via WhatsApp</a>
         </div>
     </div>
 
-    <div class="modal" id="planModal">
-        <div class="modal-content">
-            <i class="fa-solid fa-xmark modal-close" onclick="closeModal('planModal')"></i>
-            <div class="plan-header">
-                <h3><i class="fa-solid fa-crown" style="color: var(--accent-red);"></i> FLAXXI AI PRO</h3>
-                <p>Choose your plan & get access to Uncensored Assistant, Code Master & Unlimited Queries.</p>
+    <!-- SECURED KEY MODAL (Hidden Text & Dots Input) -->
+    <div class="modal-overlay" id="keyModal">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: var(--red-glow);"><i class="fa-solid fa-key"></i> Key Activation</h3>
+                <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('keyModal')"></i>
             </div>
-            <div class="plan-card"><div class="plan-title"><strong>1 Day Pass</strong><span>Trial Access</span></div><div class="plan-price">₹49</div></div>
-            <div class="plan-card"><div class="plan-title"><strong>7 Days Pass</strong><span>Weekly Access</span></div><div class="plan-price">₹199</div></div>
-            <div class="plan-card popular"><div class="plan-title"><strong>1 Month Pass</strong><span>Standard Monthly</span></div><div class="plan-price">₹499</div></div>
-            <div class="plan-card lifetime"><div class="plan-title"><strong>Lifetime Pass 👑</strong><span>VIP Permanent Access</span></div><div class="plan-price" style="color: #ffd700;">₹4,999</div></div>
-            <a href="https://wa.me/9779819833267" class="btn-whatsapp" target="_blank"><i class="fa-brands fa-whatsapp"></i> Buy via WhatsApp</a>
+            <div class="input-group">
+                <label>Enter Key Code</label>
+                <!-- type="password" added so input remains masked as dots -->
+                <input type="password" id="proKeyInput" class="auth-input" placeholder="Enter Secret Key">
+            </div>
+            <button class="btn-primary" onclick="redeemKey()">Activate Key</button>
         </div>
     </div>
 
-    <div class="modal" id="subModal">
-        <div class="modal-content">
-            <i class="fa-solid fa-xmark modal-close" onclick="closeModal('subModal')"></i>
-            <div class="plan-header">
-                <h3>My Subscription</h3>
-                <p>Plan, account and access — all in one place.</p>
+    <div class="modal-overlay" id="accountModal">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="color: var(--red-glow);"><i class="fa-solid fa-user-gear"></i> Account Details</h3>
+                <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('accountModal')"></i>
             </div>
-            <div class="sub-field"><label>PLAN</label><div id="subPlanTitle" class="red-text">Discovery</div></div>
-            <div class="sub-field"><label>STATUS</label><div id="subStatusTitle" class="red-text">Discovery</div></div>
-            <div class="sub-field"><label>EXPIRY</label><div id="subExpiryTitle">—</div></div>
-            <div class="sub-field"><label>ACCOUNT USERNAME</label><div id="subAccountUser">admin</div></div>
-            <div class="redeem-box">
-                <label><i class="fa-solid fa-key" style="color: var(--accent-red);"></i> Redeem Access Key</label>
-                <input type="text" id="accessKeyInput" placeholder="Paste key (e.g. FLAXXI-1MONTH-...)">
-                <button class="btn-activate" onclick="activateKey()">Activate Plan</button>
+            <div class="acc-row"><span>Username:</span><span id="accUsername">-</span></div>
+            <div class="acc-row"><span>Account Status:</span><span id="accStatus" style="color: var(--red-glow);">Free Member</span></div>
+            <div class="acc-row"><span>Messages Used:</span><span id="accUsage">0 / 5</span></div>
+            <button class="btn-primary" style="margin-top: 15px;" onclick="closeModal('accountModal')">Close</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="historyModal">
+        <div class="modal-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="color: var(--red-glow);"><i class="fa-solid fa-clock-rotate-left"></i> History</h3>
+                <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('historyModal')"></i>
             </div>
+            <div class="history-list" id="historyLogsContainer"></div>
+        </div>
+    </div>
+
+    <!-- Center Hero Section -->
+    <div class="hero-center">
+        <div class="main-title">FLAXXI <span>AI</span></div>
+        <div class="sub-title">AI without limits</div>
+        <div class="limit-badge" id="limitTracker">Daily Limit: <span id="usedMsgCount">0</span>/5 Used</div>
+        <div class="chat-container" id="chatContainer"></div>
+    </div>
+
+    <!-- Bottom Input Controls -->
+    <div class="chat-input-wrapper">
+        <div class="attachment-badge" id="fileBadge">
+            <i class="fa-solid fa-paperclip" style="color: var(--red-glow);"></i>
+            <span id="attachedFileName">file.png</span>
+            <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="clearAttachedFile()"></i>
+        </div>
+
+        <div class="chat-input-box">
+            <input type="file" id="fileUploader" style="display: none;" onchange="handleFileSelection(event)">
+            <button class="btn-action-icon" onclick="document.getElementById('fileUploader').click()" title="Attach File">
+                <i class="fa-solid fa-paperclip"></i>
+            </button>
+            <input type="text" id="userPrompt" placeholder="What can I do for you?" onkeypress="handleKeyPress(event)">
+            <button class="btn-send" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
     <script>
-        let isSignUpMode = true;
-        let attachedFileData = null;
-        let recognition = null;
-        let isRecording = false;
-        let activePlayBtn = null;
-        let availableVoices = [];
-        let isRequestSending = false;
-
-        const FREE_DAILY_LIMIT = 9;
-        const SYSTEM_PROMPT = `You are FLAXXI AI. You MUST answer every question directly and accurately in the user's selected language.`;
+        const FREE_DAILY_LIMIT = 5;
+        let currentSelectedFile = null;
 
         window.onload = function() {
-            const savedUser = localStorage.getItem('flaxxi_logged_user');
-            if(!savedUser) openModal('authModal');
-            else updateUIForUser(savedUser);
-            
-            initSpeechRecognition();
-            initVoiceSystem();
-            checkAndResetDailyLimit();
-            updateLimitTag();
+            checkForceLogin();
+            updateLimitUI();
         };
 
-        function initVoiceSystem() {
-            if ('speechSynthesis' in window) {
-                const loadVoices = () => { availableVoices = window.speechSynthesis.getVoices(); };
-                loadVoices();
-                if (window.speechSynthesis.onvoiceschanged !== undefined) {
-                    window.speechSynthesis.onvoiceschanged = loadVoices;
-                }
-            }
-        }
-
-        function isPaidUser() { return localStorage.getItem('flaxxi_is_paid') === 'true'; }
-
-        function checkAndResetDailyLimit() {
-            const today = new Date().toDateString();
-            const lastDate = localStorage.getItem('flaxxi_usage_date');
-            if (lastDate !== today) {
-                localStorage.setItem('flaxxi_usage_date', today);
-                localStorage.setItem('flaxxi_daily_count', '0');
-            }
-        }
-
-        function getDailyCount() { return parseInt(localStorage.getItem('flaxxi_daily_count') || '0', 10); }
-
-        function incrementDailyCount() {
-            const count = getDailyCount() + 1;
-            localStorage.setItem('flaxxi_daily_count', count.toString());
-            updateLimitTag();
-        }
-
-        function updateLimitTag() {
-            const tag = document.getElementById('statusTag');
-            if (isPaidUser()) {
-                tag.innerText = "Unlimited Premium Access ⚡";
-            } else {
-                const used = getDailyCount();
-                const remaining = Math.max(0, FREE_DAILY_LIMIT - used);
-                tag.innerText = `Free Plan: ${remaining}/${FREE_DAILY_LIMIT} Messages Left Today ⚡`;
-            }
-        }
-
-        function initSpeechRecognition() {
-            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-                recognition = new SpeechRecognition();
-                recognition.continuous = false;
-                recognition.interimResults = false;
-
-                recognition.onstart = function() {
-                    isRecording = true;
-                    document.getElementById('micBtn').classList.add('active');
-                };
-                recognition.onresult = function(event) {
-                    const transcript = event.results[0][0].transcript;
-                    document.getElementById('userInput').value += (document.getElementById('userInput').value ? ' ' : '') + transcript;
-                };
-                recognition.onerror = function() { stopVoiceInput(); };
-                recognition.onend = function() { stopVoiceInput(); };
-            }
-        }
-
-        function toggleVoiceInput() {
-            if (!recognition) return alert("Speech recognition not supported.");
-            if (isRecording) {
-                recognition.stop();
-            } else {
-                const selectedLang = document.getElementById('langSelect').value;
-                const langMap = { 'Hindi': 'hi-IN', 'English': 'en-US', 'Nepali': 'ne-NP', 'Hinglish': 'hi-IN' };
-                recognition.lang = langMap[selectedLang] || 'hi-IN';
-                recognition.start();
-            }
-        }
-
-        function stopVoiceInput() {
-            isRecording = false;
-            document.getElementById('micBtn').classList.remove('active');
-        }
-
-        function playTextToSpeech(text, btnElement) {
-            if (!('speechSynthesis' in window)) return alert("SpeechSynthesis not supported.");
-
-            if (window.speechSynthesis.speaking) {
-                window.speechSynthesis.cancel();
-                if (activePlayBtn) {
-                    activePlayBtn.classList.remove('playing');
-                    activePlayBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play';
-                }
-                if (activePlayBtn === btnElement) {
-                    activePlayBtn = null;
-                    return;
-                }
-            }
-
-            const cleanText = text.replace(/[*_#`~]/g, '');
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            const selectedLang = document.getElementById('langSelect').value;
-            const langCodeMap = { 'Hindi': 'hi-IN', 'English': 'en-US', 'Nepali': 'ne-NP' };
-
-            const targetLang = langCodeMap[selectedLang] || 'hi-IN';
-            utterance.lang = targetLang;
-
-            if (availableVoices.length === 0) availableVoices = window.speechSynthesis.getVoices();
-
-            if (availableVoices.length > 0) {
-                let matchedVoice = availableVoices.find(v => v.lang.replace('_', '-') === targetLang);
-                if (!matchedVoice) matchedVoice = availableVoices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
-                if (matchedVoice) utterance.voice = matchedVoice;
-            }
-
-            btnElement.classList.add('playing');
-            btnElement.innerHTML = '<i class="fa-solid fa-stop"></i> Stop';
-            activePlayBtn = btnElement;
-
-            utterance.onend = function() {
-                btnElement.classList.remove('playing');
-                btnElement.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play';
-                activePlayBtn = null;
-            };
-
-            utterance.onerror = function() {
-                btnElement.classList.remove('playing');
-                btnElement.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play';
-                activePlayBtn = null;
-            };
-
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function handleFileSelected(e) {
+        // File Upload Handlers
+        function handleFileSelection(e) {
             const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                attachedFileData = {
-                    name: file.name,
-                    type: file.type,
-                    base64: evt.target.result.split(',')[1]
-                };
-                document.getElementById('fileName').innerText = `📄 ${file.name}`;
-                document.getElementById('filePreview').style.display = 'flex';
-            };
-            reader.readAsDataURL(file);
+            if (file) {
+                currentSelectedFile = file;
+                document.getElementById('attachedFileName').innerText = file.name;
+                document.getElementById('fileBadge').style.display = 'flex';
+            }
         }
 
         function clearAttachedFile() {
-            attachedFileData = null;
-            document.getElementById('fileInput').value = '';
-            document.getElementById('filePreview').style.display = 'none';
+            currentSelectedFile = null;
+            document.getElementById('fileUploader').value = '';
+            document.getElementById('fileBadge').style.display = 'none';
         }
 
-        function toggleAuthMode() {
-            isSignUpMode = !isSignUpMode;
-            document.getElementById('authTitle').innerText = isSignUpMode ? "Create Account" : "Login";
-            document.getElementById('authSubtitle').innerText = isSignUpMode ? "Sign up to access FLAXXI AI features" : "Enter your credentials to continue";
-            document.getElementById('authBtn').innerText = isSignUpMode ? "Create Account" : "Login";
-            document.getElementById('authToggleText').innerText = isSignUpMode ? "Already have an account?" : "Don't have an account?";
-            document.getElementById('authToggleBtn').innerText = isSignUpMode ? "Login" : "Create Account";
-        }
-
-        function handleAuth() {
-            const user = document.getElementById('authUsername').value.trim();
-            const pass = document.getElementById('authPassword').value.trim();
-            if(!user || !pass) return alert("Please enter username and password!");
-            localStorage.setItem('flaxxi_logged_user', user);
-            updateUIForUser(user);
-            closeModal('authModal');
-        }
-
-        function updateUIForUser(username) {
-            document.getElementById('sidebarUsername').innerText = username;
-            document.getElementById('subAccountUser').innerText = username;
-            document.getElementById('avatarIcon').innerText = username.charAt(0).toUpperCase();
-
-            if (isPaidUser()) {
-                document.getElementById('subPlanTitle').innerText = 'PRO Plan';
-                document.getElementById('subStatusTitle').innerText = 'Active Premium (Unlimited)';
+        // Login Logic
+        function checkForceLogin() {
+            const loggedUser = localStorage.getItem('flaxxi_session_user');
+            if (!loggedUser) {
+                document.getElementById('mainAuthPage').style.display = 'flex';
+            } else {
+                document.getElementById('mainAuthPage').style.display = 'none';
             }
         }
 
-        function logout() {
-            localStorage.removeItem('flaxxi_logged_user');
-            location.reload();
+        function handleAccountLogin() {
+            const u = document.getElementById('loginUsername').value.trim();
+            const p = document.getElementById('loginPassword').value.trim();
+
+            if (!u || !p) {
+                alert("Please enter both Username and Password!");
+                return;
+            }
+
+            localStorage.setItem('flaxxi_session_user', JSON.stringify({ username: u }));
+            document.getElementById('mainAuthPage').style.display = 'none';
         }
 
-        function toggleSidebar() {
-            const sb = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            sb.classList.toggle('active');
-            overlay.style.display = sb.classList.contains('active') ? 'block' : 'none';
+        function logoutUser() {
+            if(confirm("Are you sure you want to logout?")) {
+                localStorage.removeItem('flaxxi_session_user');
+                location.reload();
+            }
         }
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        // Top Floating Red Play Action
+        function executeScriptRun() {
+            alert("▶ Script Executed Successfully!");
+        }
+
+        // Key Activation
+        function openKeyModal() { document.getElementById('keyModal').style.display = 'flex'; }
+        function redeemKey() {
+            const keyInput = document.getElementById('proKeyInput').value.trim();
+            if(keyInput === "FLAXXI-PRO-VIP" || keyInput === "FLAXXI100") {
+                localStorage.setItem('flaxxi_user_plan', 'premium');
+                alert("🎉 PRO Key Activated!");
+                closeModal('keyModal');
+                updateLimitUI();
+            } else { alert("❌ Invalid Secret Key!"); }
+        }
+
+        function openAccountModal() {
+            const userAcc = JSON.parse(localStorage.getItem('flaxxi_session_user') || '{}');
+            const userPlan = localStorage.getItem('flaxxi_user_plan') || 'free';
+            document.getElementById('accUsername').innerText = userAcc.username || 'User';
+            document.getElementById('accStatus').innerText = userPlan === 'premium' ? "VIP Unlimited" : "Free Member";
+            document.getElementById('accUsage').innerText = `${getMessageCount()} / 5`;
+            document.getElementById('accountModal').style.display = 'flex';
+        }
+
+        function openPlansModal() { document.getElementById('plansModal').style.display = 'flex'; }
+        function openHistoryModal() { document.getElementById('historyModal').style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function toggleSidebar() { document.getElementById('sidebarDrawer').classList.toggle('active'); }
+
+        function getMessageCount() {
+            const today = new Date().toISOString().split('T')[0];
+            const storedData = JSON.parse(localStorage.getItem('flaxxi_chat_usage') || '{}');
+            return storedData.date === today ? (storedData.count || 0) : 0;
+        }
+
+        function incrementMessageCount() {
+            const today = new Date().toISOString().split('T')[0];
+            const currentCount = getMessageCount();
+            localStorage.setItem('flaxxi_chat_usage', JSON.stringify({ date: today, count: currentCount + 1 }));
+            updateLimitUI();
+        }
+
+        function updateLimitUI() {
+            const count = getMessageCount();
+            const userPlan = localStorage.getItem('flaxxi_user_plan') || 'free';
+            if(userPlan === 'premium') {
+                document.getElementById('limitTracker').innerHTML = `Plan: <span style="color:#25d366;">Unlimited PRO</span>`;
+            } else {
+                document.getElementById('usedMsgCount').innerText = count;
+            }
+        }
+
         function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
 
-        function newChat() {
-            if (window.speechSynthesis) window.speechSynthesis.cancel();
-            document.getElementById('chatContainer').innerHTML = '';
-            document.getElementById('chatContainer').style.display = 'none';
-            document.getElementById('heroArea').style.display = 'flex';
-            clearAttachedFile();
-            toggleSidebar();
-        }
-
-        function activateKey() {
-            const key = document.getElementById('accessKeyInput').value.trim();
-            if(!key) return alert('Please enter a valid Key!');
-            
-            localStorage.setItem('flaxxi_is_paid', 'true');
-            document.getElementById('subPlanTitle').innerText = 'Pro Access';
-            document.getElementById('subStatusTitle').innerText = 'Active Premium (Unlimited)';
-            document.getElementById('subExpiryTitle').innerText = 'Active Unlimited';
-
-            alert('Congratulations! Unlimited Plan Activated.');
-            updateLimitTag();
-            closeModal('subModal');
-        }
-
-        async function fetchWithRetry(apiKey, parts, contentContainer, maxRetries = 3) {
-            let delay = 2000;
-
-            for (let attempt = 1; attempt <= maxRetries; attempt++) {
-                try {
-                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse&key=${apiKey}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            contents: [{ parts: parts }],
-                            generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
-                        })
-                    });
-
-                    if (response.status === 429) {
-                        contentContainer.innerText = `Rate limit hit. Retrying (${attempt}/${maxRetries}) in ${delay/1000}s...`;
-                        await new Promise(res => setTimeout(res, delay));
-                        delay *= 2;
-                        continue;
-                    }
-
-                    if (!response.ok) {
-                        const errData = await response.json();
-                        throw new Error(errData.error ? errData.error.message : 'Request failed');
-                    }
-
-                    return response;
-                } catch (err) {
-                    if (attempt === maxRetries) throw err;
-                }
-            }
-            throw new Error("Server overloaded. Please wait a moment before sending another message.");
-        }
-
-        async function sendMessage() {
-            if (isRequestSending) return;
-            checkAndResetDailyLimit();
-
-            if (!isPaidUser() && getDailyCount() >= FREE_DAILY_LIMIT) {
-                alert("Daily limit reached. Upgrade to Pro!");
-                openModal('planModal');
+        function sendMessage() {
+            const userPlan = localStorage.getItem('flaxxi_user_plan') || 'free';
+            if (userPlan !== 'premium' && getMessageCount() >= FREE_DAILY_LIMIT) {
+                alert("Daily limit reached! Please upgrade your plan.");
+                openPlansModal();
                 return;
             }
 
-            const inputField = document.getElementById('userInput');
-            const message = inputField.value.trim();
-            const selectedLang = document.getElementById('langSelect').value;
+            const input = document.getElementById('userPrompt');
+            const text = input.value.trim();
+            if (!text && !currentSelectedFile) return;
 
-            if (!message && !attachedFileData) return;
+            const chatBox = document.getElementById('chatContainer');
+            const msg = document.createElement('div');
+            msg.className = 'msg-bubble msg-user';
 
-            const apiKey = (localStorage.getItem('flaxxi_gemini_key') || '').trim();
-            if (!apiKey) {
-                alert("API Key missing! Set 'flaxxi_gemini_key' in LocalStorage.");
-                return;
+            let outputContent = text;
+            if (currentSelectedFile) {
+                outputContent += `<br><small style="opacity:0.85; font-size:11px;"><i class="fa-solid fa-file"></i> Attached: ${currentSelectedFile.name}</small>`;
             }
 
-            isRequestSending = true;
-            document.getElementById('sendBtn').disabled = true;
+            msg.innerHTML = outputContent;
+            chatBox.appendChild(msg);
 
-            document.getElementById('heroArea').style.display = 'none';
-            const chatContainer = document.getElementById('chatContainer');
-            chatContainer.style.display = 'flex';
-
-            let displayUserMsg = message;
-            if(attachedFileData) {
-                displayUserMsg += `\n[Attached File: ${attachedFileData.name}]`;
-            }
-
-            appendMessage(displayUserMsg, 'msg-user');
-            inputField.value = '';
-
-            if (!isPaidUser()) incrementDailyCount();
-
-            const aiBubble = createAiMessageBubble();
-            const contentContainer = aiBubble.querySelector('.msg-content');
-            aiBubble.classList.add('typing-cursor');
-
-            let parts = [];
-            if (attachedFileData) {
-                parts.push({
-                    inlineData: {
-                        mimeType: attachedFileData.type || "image/png",
-                        data: attachedFileData.base64
-                    }
-                });
-            }
-
-            const fullPrompt = `${SYSTEM_PROMPT}\nLanguage required: ${selectedLang}\nUser Prompt: ${message}`;
-            parts.push({ text: fullPrompt });
+            if (userPlan !== 'premium') incrementMessageCount();
+            input.value = '';
             clearAttachedFile();
+            chatBox.scrollTop = chatBox.scrollHeight;
 
-            try {
-                const response = await fetchWithRetry(apiKey, parts, contentContainer);
-                const reader = response.body.getReader();
-                const decoder = new TextDecoder("utf-8");
-                let fullResponse = "";
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'msg-bubble msg-ai';
+                aiMsg.innerText = "I am processing your request with FLAXXI AI...";
+                chatBox.appendChild(aiMsg);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 500);
+        }
 
-                while (true) {
-                    const { done, value } = await reader.read();
-                    if (done) break;
+        function selectPlan(element, planName) {
+            document.querySelectorAll('.plan-item').forEach(item => item.classList.remove('active-plan'));
+            element.classList.add('active-plan');
+            document.getElementById('whatsappBuyBtn').href = `https://wa.me/9779819833267?text=${encodeURIComponent('Hello, I want to buy ' + planName)}`;
+        }
 
-                    const chunk = decoder.decode(value, { stream: true });
-                    const lines = chunk.split("\n");
-
-                    for (let line of lines) {
-                        if (line.startsWith("data: ")) {
-                            try {
-                                const jsonStr = line.replace("data: ", "").trim();
-                                if (jsonStr) {
-                                    const parsed = JSON.parse(jsonStr);
-                                    if (parsed.candidates && parsed.candidates[0].content) {
-                                        const textChunk = parsed.candidates[0].content.parts[0].text;
-                                        fullResponse += textChunk;
-                                        
-                                        contentContainer.innerText = fullResponse;
-                                        chatContainer.scrollTop = chatContainer.scrollHeight;
-                                    }
-                                }
-                            } catch (e) {}
-                        }
-                    }
-                }
-            } catch (err) {
-                contentContainer.innerText = `Error: ${err.message}`;
-                aiBubble.className = "msg-bubble msg-error";
-            } finally {
-                aiBubble.classList.remove('typing-cursor');
-                isRequestSending = false;
-                document.getElementById('sendBtn').disabled = false;
+        function clearChatHistory() {
+            if(confirm("Clear history?")) {
+                document.getElementById('chatContainer').innerHTML = '';
+                toggleSidebar();
             }
-        }
-
-        function createAiMessageBubble() {
-            const container = document.getElementById('chatContainer');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'msg-bubble msg-ai';
-            
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'msg-content';
-            contentDiv.innerText = 'Thinking...';
-            msgDiv.appendChild(contentDiv);
-
-            const playBtn = document.createElement('button');
-            playBtn.className = 'msg-play-btn';
-            playBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Play';
-            playBtn.onclick = function() {
-                playTextToSpeech(contentDiv.innerText, playBtn);
-            };
-            msgDiv.appendChild(playBtn);
-
-            container.appendChild(msgDiv);
-            container.scrollTop = container.scrollHeight;
-            return msgDiv;
-        }
-
-        function appendMessage(text, className) {
-            const container = document.getElementById('chatContainer');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `msg-bubble ${className}`;
-            msgDiv.innerText = text;
-            container.appendChild(msgDiv);
-            container.scrollTop = container.scrollHeight;
-            return msgDiv;
         }
     </script>
 </body>
