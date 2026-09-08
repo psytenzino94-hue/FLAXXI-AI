@@ -2,622 +2,1073 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>FLAXXI AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLAXXI AI - Deathly Edition</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-dark: #030102;
-            --card-dark: #080204;
+            --bg-dark: #030002;
+            --card-dark: #0d0206;
+            --card-inner: #15030a;
             --red-glow: #ff003c;
-            --red-blur: rgba(255, 0, 60, 0.45);
-            --border-glow: #1f070e;
-            --text-sub: #7a6a70;
+            --red-soft: rgba(255, 0, 60, 0.25);
+            --red-border: #3b0616;
+            --text-main: #ffffff;
+            --text-sub: #9a7d87;
+            --green-glow: #22c55e;
         }
 
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
-        html, body {
+        body {
             background-color: var(--bg-dark);
-            color: #fff;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* BACKGROUND CANVAS PARTICLES */
+        #bgCanvas {
             position: fixed;
-        }
-
-        .bg-glow-orb {
-            position: absolute; 
-            width: 280px; 
-            height: 280px;
-            background: radial-gradient(circle, var(--red-blur) 0%, rgba(0,0,0,0) 70%);
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%);
-            z-index: 1; 
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
             pointer-events: none;
-            animation: pulseGlow 4s ease-in-out infinite alternate;
         }
 
-        /* Top Navigation Bar */
-        .user-nav {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 12px; background: rgba(8, 2, 4, 0.95);
-            backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-glow);
-            z-index: 10; height: 55px; width: 100%;
+        /* LOGIN OVERLAY */
+        .login-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 0, 2, 0.96);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
 
-        .top-left-group { display: flex; align-items: center; gap: 8px; }
-
-        .btn-hamburger {
-            background: transparent; border: none; color: #fff;
-            font-size: 18px; cursor: pointer; padding: 4px;
+        .login-card {
+            background: var(--card-dark);
+            border: 1px solid var(--red-glow);
+            border-radius: 18px;
+            padding: 28px 22px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 0 30px var(--red-soft);
+            text-align: center;
+            animation: pulseGlow 2.5s infinite alternate ease-in-out;
         }
 
-        .brand-logo { font-size: 15px; font-weight: 900; display: flex; align-items: center; gap: 6px; }
-        .brand-logo i { color: var(--red-glow); }
-
-        .nav-right-actions { display: flex; align-items: center; gap: 6px; margin-right: 48px; }
-
-        .top-btn {
-            background: rgba(255, 0, 60, 0.1); border: 1px solid var(--red-glow);
-            color: #fff; padding: 5px 9px; border-radius: 16px; font-size: 11px;
-            font-weight: bold; display: flex; align-items: center; gap: 4px;
-            text-decoration: none; cursor: pointer;
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 15px var(--red-soft); border-color: #880020; }
+            100% { box-shadow: 0 0 35px var(--red-glow); border-color: var(--red-glow); }
         }
 
-        /* Floating Top-Right Play Voice Icon */
-        .play-float-btn {
-            position: fixed; top: 10px; right: 10px;
-            width: 38px; height: 38px;
-            background: #000; color: var(--red-glow); 
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 14px; cursor: pointer; z-index: 999;
-            box-shadow: 0 0 15px var(--red-blur);
+        .login-card h2 {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #fff;
+        }
+
+        .login-card h2 i { color: var(--red-glow); }
+
+        .input-group {
+            text-align: left;
+            margin-top: 14px;
+        }
+
+        .input-group label {
+            font-size: 10px;
+            color: var(--text-sub);
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .input-box {
+            width: 100%;
+            background: var(--card-inner);
+            border: 1px solid var(--red-border);
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-box:focus {
+            border-color: var(--red-glow);
+            box-shadow: 0 0 12px var(--red-soft);
+        }
+
+        .btn-red {
+            width: 100%;
+            background: linear-gradient(135deg, var(--red-glow), #b3002d);
+            color: #fff;
+            border: none;
+            padding: 13px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 13px;
+            margin-top: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 0 18px var(--red-soft);
+            transition: all 0.3s;
+        }
+
+        .btn-red:active { transform: scale(0.98); }
+
+        /* HEADER */
+        .app-header {
+            position: relative;
+            z-index: 10;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 900;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .brand-logo i {
+            color: var(--red-glow);
+            font-size: 18px;
+            filter: drop-shadow(0 0 6px var(--red-glow));
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pill-btn {
+            background: var(--card-inner);
+            border: 1px solid var(--red-border);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .pill-btn.green {
+            border-color: rgba(34, 197, 94, 0.4);
+            color: var(--green-glow);
+        }
+
+        .pill-btn.plans-glow-active {
+            border-color: var(--red-glow) !important;
+            box-shadow: 0 0 25px var(--red-glow), 0 0 10px #ff003c inset !important;
+            background: rgba(255, 0, 60, 0.25) !important;
+            transform: scale(1.1);
+        }
+
+        /* PLAY BUTTON + AUDIO WAVE ANIMATION */
+        .play-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .audio-wave-bars {
+            display: none;
+            align-items: center;
+            gap: 3px;
+            height: 18px;
+        }
+
+        .play-wrapper.playing .audio-wave-bars {
+            display: flex;
+        }
+
+        .audio-bar {
+            width: 3px;
+            height: 100%;
+            background: var(--red-glow);
+            border-radius: 2px;
+            box-shadow: 0 0 8px var(--red-glow);
+            animation: deathlyBarWave 0.5s infinite alternate ease-in-out;
+        }
+
+        .audio-bar:nth-child(1) { animation-delay: 0.1s; }
+        .audio-bar:nth-child(2) { animation-delay: 0.3s; }
+        .audio-bar:nth-child(3) { animation-delay: 0.2s; }
+        .audio-bar:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes deathlyBarWave {
+            0% { height: 4px; box-shadow: 0 0 4px var(--red-glow); }
+            100% { height: 20px; box-shadow: 0 0 15px var(--red-glow); }
+        }
+
+        .play-circle-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 0, 60, 0.15);
             border: 1.5px solid var(--red-glow);
-            animation: pulseRed 2s infinite;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 12px var(--red-soft);
+            transition: all 0.2s ease;
         }
 
-        /* Sidebar Overlay Panel */
-        .sidebar-drawer {
-            position: fixed; top: 0; left: -100%; width: 75%; max-width: 300px; height: 100%;
-            background: #040002; border-right: 1px solid var(--border-glow);
-            z-index: 10000; padding: 18px 15px; display: flex; flex-direction: column;
-            transition: 0.3s ease-in-out; box-shadow: 10px 0 30px rgba(0,0,0,0.9);
-            overflow-y: auto;
-        }
-        .sidebar-drawer.active { left: 0; }
-
-        .sidebar-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding-bottom: 12px; margin-bottom: 15px;
-        }
-        .sidebar-header h3 { font-size: 16px; font-weight: 900; letter-spacing: 0.5px; }
-
-        .sidebar-sub-card {
-            background: rgba(255, 0, 60, 0.05); border: 1px dashed var(--red-glow);
-            padding: 12px; border-radius: 10px; margin-bottom: 18px;
-        }
-        .sidebar-sub-card h4 { font-size: 12px; color: var(--red-glow); margin-bottom: 2px; display: flex; align-items: center; gap: 5px; }
-        .sidebar-sub-card p { font-size: 10px; color: var(--text-sub); }
-
-        .sidebar-menu { display: flex; flex-direction: column; gap: 10px; flex: 1; }
-
-        .menu-item {
-            background: #090205; border: 1px solid var(--border-glow); padding: 12px;
-            border-radius: 8px; color: #fff; display: flex; align-items: center;
-            gap: 10px; cursor: pointer; font-size: 12px; font-weight: 500;
-            transition: 0.2s ease;
-        }
-        .menu-item i { color: var(--red-glow); width: 16px; text-align: center; font-size: 13px; }
-        .menu-item:active { border-color: var(--red-glow); background: rgba(255, 0, 60, 0.1); }
-
-        .logout-btn {
-            background: transparent; border: 1px solid var(--red-glow);
-            color: #fff; padding: 12px; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            font-size: 12px; font-weight: bold; margin-top: auto; cursor: pointer;
-            box-shadow: 0 0 10px rgba(255,0,60,0.15);
-        }
-        .logout-btn i { color: var(--red-glow); }
-
-        /* Main Viewport */
-        .main-app-viewport {
-            display: flex; flex-direction: column;
-            height: calc(100% - 55px); width: 100%; position: relative;
+        .play-wrapper.playing .play-circle-btn {
+            background: var(--red-glow);
+            box-shadow: 0 0 25px var(--red-glow);
+            transform: scale(1.1);
         }
 
-        .hero-center {
-            flex: 1; display: flex; flex-direction: column; 
-            align-items: center; justify-content: flex-start;
-            z-index: 5; text-align: center; 
-            padding: 10px 12px 100px 12px; overflow-y: auto; width: 100%;
+        /* HERO SECTION */
+        .hero-section {
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            text-align: center;
         }
 
-        .main-title { font-size: 26px; font-weight: 900; text-shadow: 0 0 15px var(--red-blur); margin-top: 5px; }
-        .main-title span { color: var(--red-glow); }
-        .sub-title { font-size: 11px; color: var(--text-sub); margin-bottom: 6px; }
+        .hero-title {
+            font-size: 32px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .hero-title span { color: var(--red-glow); }
+
+        .hero-sub {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 12px;
+        }
 
         .limit-badge {
-            background: rgba(255, 0, 60, 0.08); border: 1px solid var(--border-glow);
-            padding: 3px 10px; border-radius: 10px; font-size: 10px; color: var(--text-sub);
-            margin-bottom: 12px; display: inline-block;
+            background: rgba(255, 0, 60, 0.12);
+            border: 1px dashed var(--red-glow);
+            color: var(--red-glow);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
         }
-        .limit-badge span { color: #25d366; font-weight: bold; }
 
-        /* Chat Container */
+        /* CHAT CONTAINER */
         .chat-container {
-            width: 100%; max-width: 600px;
-            display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;
+            position: relative;
+            z-index: 5;
+            max-width: 650px;
+            width: 100%;
+            margin: 15px auto;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-height: 50vh;
+            overflow-y: auto;
         }
 
-        .msg-bubble { 
-            max-width: 85%; padding: 10px 14px; border-radius: 14px; 
-            font-size: 13px; line-height: 1.5; word-wrap: break-word; text-align: left; 
+        .chat-msg {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            line-height: 1.4;
+            max-width: 90%;
+            word-break: break-word;
+            transition: all 0.3s ease;
         }
 
-        .msg-user { 
-            background: var(--red-glow); color: #fff; align-self: flex-end; 
-            margin-left: auto; border-bottom-right-radius: 2px;
-            box-shadow: 0 0 10px var(--red-blur); 
+        .chat-msg.user {
+            align-self: flex-end;
+            background: var(--card-inner);
+            border: 1px solid var(--red-border);
+            color: #fff;
         }
 
-        .msg-ai { 
-            background: var(--card-dark); border: 1px solid var(--border-glow); 
-            align-self: flex-start; margin-right: auto;
-            border-bottom-left-radius: 2px; color: #ececec; max-width: 90%; 
+        .chat-msg.bot {
+            align-self: flex-start;
+            background: var(--card-dark);
+            border: 1px solid var(--red-glow);
+            color: #fff;
+            box-shadow: 0 0 15px var(--red-soft);
+            width: 100%;
         }
 
-        /* Input Controls */
-        .chat-input-wrapper {
-            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%);
-            width: 92%; max-width: 600px; z-index: 20;
+        .chat-msg.boss-msg {
+            border: 2px solid var(--red-glow) !important;
+            box-shadow: 0 0 25px var(--red-glow), 0 0 10px #ff003c inset !important;
+            animation: deathlyBossPulse 1.2s infinite alternate ease-in-out;
+            background: linear-gradient(135deg, #180008, #2a000f) !important;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
 
-        .file-preview-badge {
-            background: var(--card-dark); border: 1px solid var(--red-glow);
-            padding: 4px 10px; border-radius: 12px; font-size: 11px;
-            color: #fff; display: none; align-items: center; gap: 6px;
-            margin-bottom: 6px; width: fit-content;
+        @keyframes deathlyBossPulse {
+            0% { transform: scale(1); box-shadow: 0 0 15px var(--red-glow); }
+            100% { transform: scale(1.02); box-shadow: 0 0 30px #ff003c, 0 0 15px #ff003c inset; }
         }
 
-        .chat-input-box {
-            background: rgba(8, 2, 4, 0.95); border: 1px solid var(--border-glow);
-            border-radius: 25px; padding: 6px 12px; display: flex; align-items: center; gap: 8px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.9);
-        }
-        
-        .chat-input-box input[type="text"] { 
-            flex: 1; background: transparent; border: none; color: #fff; outline: none; font-size: 13px; 
-        }
-
-        .btn-attach {
-            background: transparent; border: none; color: var(--text-sub);
-            font-size: 16px; cursor: pointer; padding: 2px 4px;
-        }
-        .btn-attach:hover { color: var(--red-glow); }
-        
-        .btn-send {
-            background: var(--red-glow); color: #fff; width: 32px; height: 32px;
-            border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; box-shadow: 0 0 10px var(--red-blur); flex-shrink: 0;
+        /* CODE BLOCK WITH COPY BUTTON */
+        .code-wrapper {
+            position: relative;
+            background: #080104;
+            border: 1px solid var(--red-border);
+            border-radius: 8px;
+            margin-top: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
         }
 
-        /* Modal Overlays */
+        .code-header {
+            background: #120308;
+            padding: 6px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--red-border);
+            font-size: 10px;
+            color: var(--text-sub);
+            font-weight: 700;
+        }
+
+        .copy-code-btn {
+            background: rgba(255, 0, 60, 0.15);
+            border: 1px solid var(--red-glow);
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .copy-code-btn:hover {
+            background: var(--red-glow);
+            box-shadow: 0 0 10px var(--red-glow);
+        }
+
+        .code-wrapper pre {
+            padding: 10px 12px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 11px;
+            color: #00ffcc;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        /* CHAT FOOTER */
+        .chat-footer {
+            position: relative;
+            z-index: 10;
+            padding: 16px;
+            max-width: 650px;
+            width: 100%;
+            margin: 0 auto 10px auto;
+        }
+
+        .chat-box {
+            background: var(--card-dark);
+            border: 1px solid var(--red-border);
+            border-radius: 28px;
+            padding: 6px 8px 6px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+        }
+
+        .attachment-btn {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #fff;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .send-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--red-glow);
+            border: none;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 0 12px var(--red-soft);
+        }
+
+        /* SIDEBAR DRAWER */
+        .sidebar-drawer {
+            position: fixed;
+            top: 0; left: -100%;
+            width: 280px; height: 100%;
+            background: rgba(13, 2, 6, 0.98);
+            border-right: 1px solid var(--red-border);
+            backdrop-filter: blur(12px);
+            z-index: 9999;
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .sidebar-drawer.open { left: 0; }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .plan-box {
+            background: var(--card-inner);
+            border: 1px dashed var(--red-glow);
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .plan-box-title {
+            color: var(--red-glow);
+            font-size: 12px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .plan-box-sub {
+            font-size: 10px;
+            color: var(--text-sub);
+        }
+
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .menu-item {
+            background: var(--card-inner);
+            border: 1px solid var(--red-border);
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .menu-item i { color: var(--red-glow); width: 16px; text-align: center; }
+
+        .menu-item:hover {
+            border-color: var(--red-glow);
+            box-shadow: 0 0 10px var(--red-soft);
+        }
+
+        .menu-item.logout {
+            margin-top: auto;
+            border-color: var(--red-glow);
+            color: var(--red-glow);
+            justify-content: center;
+        }
+
+        /* MODAL OVERLAYS */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.88); backdrop-filter: blur(12px);
-            z-index: 99999; display: none; align-items: center; justify-content: center;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
+            z-index: 10001;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
         }
+
+        .modal-overlay.active { display: flex; }
 
         .modal-card {
-            background: #060103; border: 1px solid var(--red-glow);
-            width: 88%; max-width: 340px; border-radius: 16px; padding: 18px 16px;
-            box-shadow: 0 0 30px var(--red-blur);
+            background: var(--card-dark);
+            border: 1px solid var(--red-glow);
+            border-radius: 16px;
+            padding: 22px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: 0 0 30px var(--red-soft);
+            position: relative;
         }
 
         .modal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 15px;
-        }
-        .modal-header h3 {
-            color: var(--red-glow); font-size: 14px; font-weight: 800;
-            display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px;
-        }
-
-        .auth-input {
-            width: 100%; background: #030001; border: 1px solid #1a060c;
-            padding: 12px 14px; border-radius: 8px; color: #fff; font-size: 12px; outline: none;
-            margin: 10px 0 15px 0;
-        }
-        .auth-input:focus { border-color: var(--red-glow); }
-
-        .btn-primary-full {
-            width: 100%; background: var(--red-glow); color: #fff; border: none;
-            padding: 12px; border-radius: 8px; font-weight: bold; font-size: 13px;
-            cursor: pointer; box-shadow: 0 0 12px var(--red-blur); text-align: center;
-            text-decoration: none; display: block;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 900;
+            font-size: 15px;
+            color: var(--red-glow);
+            margin-bottom: 16px;
         }
 
-        /* Subscription Plan Cards */
-        .plans-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-
-        .plan-card-item {
-            background: #090205; border: 1px solid #1c060d;
-            border-radius: 10px; padding: 12px 14px;
-            display: flex; justify-content: space-between; align-items: center;
-            cursor: pointer; transition: 0.2s;
-        }
-        .plan-card-item.selected {
-            border: 1px solid var(--red-glow);
-            background: rgba(255, 0, 60, 0.08);
-            box-shadow: 0 0 10px rgba(255, 0, 60, 0.2);
+        .modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
         }
 
-        .plan-title { font-size: 13px; font-weight: bold; color: #fff; }
-        .plan-price { font-size: 13px; font-weight: 800; color: var(--red-glow); }
-
-        /* Account Details Table Style */
-        .account-details-list {
-            display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;
-        }
-        .account-row {
-            background: #090205; border: 1px solid #1c060d;
-            padding: 10px 12px; border-radius: 8px;
-            display: flex; justify-content: space-between; align-items: center;
+        .plan-option {
+            background: var(--card-inner);
+            border: 1px solid var(--red-border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
             font-size: 12px;
+            font-weight: 800;
         }
-        .account-row span.label { color: var(--text-sub); }
-        .account-row span.value { color: #fff; font-weight: bold; }
 
-        @keyframes pulseGlow { 0% { opacity: 0.4; transform: translate(-50%, -50%) scale(0.95); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); } }
-        @keyframes pulseRed { 0% { box-shadow: 0 0 8px var(--red-blur); } 50% { box-shadow: 0 0 18px var(--red-glow); } 100% { box-shadow: 0 0 8px var(--red-blur); } }
+        .plan-option.selected {
+            border-color: var(--red-glow);
+            box-shadow: 0 0 10px var(--red-soft);
+        }
+
+        .plan-price { color: var(--red-glow); }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--red-border);
+        }
+
+        .detail-label { color: var(--text-sub); font-weight: 700; }
+        .detail-value { font-weight: 800; color: #fff; }
+
+        /* DEATHLY BANNER */
+        .deathly-banner {
+            position: fixed;
+            top: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 420px;
+            background: linear-gradient(135deg, #0d0206, #24000c);
+            border: 2px solid var(--red-glow);
+            box-shadow: 0 0 35px var(--red-glow), 0 0 15px #ff003c inset;
+            border-radius: 16px;
+            padding: 14px 18px;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 20000;
+            text-align: left;
+            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .deathly-banner.show {
+            top: 20px;
+            animation: deathlyPulse 1.5s infinite alternate;
+        }
+
+        @keyframes deathlyPulse {
+            0% { box-shadow: 0 0 20px var(--red-glow); }
+            100% { box-shadow: 0 0 45px #ff003c, 0 0 20px #ff003c inset; }
+        }
+
+        .deathly-banner i {
+            color: var(--red-glow);
+            font-size: 22px;
+            filter: drop-shadow(0 0 8px var(--red-glow));
+        }
     </style>
 </head>
 <body>
 
-    <!-- Floating Top-Right AI Voice Button -->
-    <div class="play-float-btn" id="voiceToggleBtn" onclick="toggleAIVoice()" title="Read Aloud">
-        <i class="fa-solid fa-play" id="playIcon"></i>
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="deathly-banner" id="deathlyBanner">
+        <i class="fa-solid fa-skull-crossbones"></i>
+        <div id="deathlyBannerText">
+            DEATHLY MODE ACTIVATED 💀⚡
+        </div>
     </div>
 
-    <div class="bg-glow-orb"></div>
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-card">
+            <h2><i class="fa-solid fa-skull"></i> FLAXXI USER</h2>
+            <p style="font-size: 10px; color: var(--text-sub);">Enter Account Credentials to Access Panel</p>
+            
+            <div class="input-group">
+                <label>USERNAME</label>
+                <input type="text" id="loginUsername" class="input-box" placeholder="Enter Username (e.g. Afzal)" autocomplete="off">
+            </div>
 
-    <!-- Sidebar Panel Drawer -->
+            <div class="input-group">
+                <label>PASSWORD</label>
+                <input type="password" id="loginPassword" class="input-box" placeholder="Enter Password" autocomplete="off">
+            </div>
+
+            <button class="btn-red" onclick="handleUserLogin()">
+                <i class="fa-solid fa-right-to-bracket"></i> Login to User Panel
+            </button>
+        </div>
+    </div>
+
     <div class="sidebar-drawer" id="sidebarDrawer">
         <div class="sidebar-header">
-            <h3>FLAXXI Panel</h3>
-            <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 16px;" onclick="toggleSidebar()"></i>
+            <div class="brand-logo"><i class="fa-solid fa-skull"></i> FLAXXI Panel</div>
+            <button class="sidebar-close" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
-        <div class="sidebar-sub-card">
-            <h4><i class="fa-solid fa-crown"></i> Active Plan</h4>
-            <p id="userActivePlanDisplay">Free Tier (6 Messages/Day)</p>
+        <div class="plan-box">
+            <div class="plan-box-title"><i class="fa-solid fa-crown"></i> Active Plan</div>
+            <div class="plan-box-sub" id="sidebarPlanText">Free Tier (6/6 Left)</div>
         </div>
 
-        <div class="sidebar-menu">
-            <div class="menu-item" onclick="openModal('plansModal'); toggleSidebar();"><i class="fa-solid fa-gem"></i> Subscription Plans</div>
-            <div class="menu-item" onclick="openModal('keyModal'); toggleSidebar();"><i class="fa-solid fa-key"></i> Key Enter (Redeem)</div>
-            <div class="menu-item" onclick="openModal('accountModal'); toggleSidebar();"><i class="fa-solid fa-user-gear"></i> Account Details</div>
-            <div class="menu-item" onclick="alert('Chat History Synced'); toggleSidebar();"><i class="fa-solid fa-clock-rotate-left"></i> Chat History</div>
-            <div class="menu-item" onclick="clearChatHistory()"><i class="fa-solid fa-trash-can"></i> Clear History</div>
-            <a href="https://wa.me/9779819833267" target="_blank" class="menu-item" style="text-decoration: none;"><i class="fa-brands fa-whatsapp"></i> WhatsApp Support</a>
-        </div>
-
-        <button class="logout-btn" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> Logout Account</button>
-    </div>
-
-    <!-- Top Bar -->
-    <div class="user-nav">
-        <div class="top-left-group">
-            <button class="btn-hamburger" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
-            <div class="brand-logo">
-                <i class="fa-solid fa-skull"></i>
-                <span>FLAXXI <span>AI</span></span>
+        <div class="menu-list">
+            <div class="menu-item" onclick="triggerPlansGlow(); openModal('plansModal');">
+                <i class="fa-solid fa-gem"></i> Subscription Plans
+            </div>
+            <div class="menu-item" onclick="openModal('keyModal')">
+                <i class="fa-solid fa-key"></i> Key Enter (Redeem)
+            </div>
+            <div class="menu-item" onclick="openModal('accountModal')">
+                <i class="fa-solid fa-user-gear"></i> Account Details
+            </div>
+            <div class="menu-item" onclick="clearChatHistory()">
+                <i class="fa-solid fa-trash"></i> Clear History
+            </div>
+            <div class="menu-item" onclick="window.open('https://wa.me/', '_blank')">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp Support
             </div>
         </div>
 
-        <div class="nav-right-actions">
-            <a href="https://wa.me/9779819833267" target="_blank" class="top-btn" style="border-color: #25d366; color: #25d366;">
-                <i class="fa-brands fa-whatsapp"></i> Support
-            </a>
-            <button class="top-btn" onclick="openModal('plansModal')"><i class="fa-solid fa-crown"></i> Plans</button>
+        <div class="menu-item logout" onclick="location.reload()">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout Account
         </div>
     </div>
 
-    <!-- Key Enter (Redeem) Modal -->
-    <div class="modal-overlay" id="keyModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-key"></i> Key Enter (Redeem)</h3>
-                <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('keyModal')"></i>
-            </div>
-            <input type="text" id="customApiKey" class="auth-input" placeholder="Enter License Key">
-            <button class="btn-primary-full" onclick="saveApiKey()">Save & Redeem</button>
+    <div class="app-header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <div class="brand-logo"><i class="fa-solid fa-skull"></i> FLAXXI AI</div>
         </div>
-    </div>
-
-    <!-- Account Details Modal -->
-    <div class="modal-overlay" id="accountModal">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-user-gear"></i> Account Details</h3>
-                <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('accountModal')"></i>
-            </div>
+        <div class="header-right">
+            <a href="https://wa.me/" target="_blank" class="pill-btn green"><i class="fa-brands fa-whatsapp"></i> Support</a>
+            <button class="pill-btn" id="plansHeaderBtn" onclick="triggerPlansGlow(); openModal('plansModal');">
+                <i class="fa-solid fa-crown" style="color:var(--red-glow);"></i> Plans
+            </button>
             
-            <div class="account-details-list">
-                <div class="account-row">
-                    <span class="label">User Status:</span>
-                    <span class="value" style="color:#25d366;"><i class="fa-solid fa-circle-check"></i> Connected</span>
+            <div class="play-wrapper" id="playAudioWrapper">
+                <div class="audio-wave-bars">
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
+                    <div class="audio-bar"></div>
                 </div>
-                <div class="account-row">
-                    <span class="label">Device ID:</span>
-                    <span class="value" id="accDeviceId">FX-882910</span>
-                </div>
-                <div class="account-row">
-                    <span class="label">Current Plan:</span>
-                    <span class="value" id="accCurrentPlan" style="color:var(--red-glow);">Free Access</span>
-                </div>
-                <div class="account-row">
-                    <span class="label">Daily Limit:</span>
-                    <span class="value" id="accDailyLimit">6 Messages</span>
+                <div class="play-circle-btn" onclick="playChatMessagesAudio()">
+                    <i class="fa-solid fa-play"></i>
                 </div>
             </div>
-
-            <button class="btn-primary-full" onclick="closeModal('accountModal')">Close</button>
         </div>
     </div>
 
-    <!-- FLAXXI AI PRO Plans Modal -->
+    <div class="hero-section">
+        <div class="hero-title">FLAXXI <span>AI</span></div>
+        <div class="hero-sub">AI without limits</div>
+        <div class="limit-badge" id="dailyLimitTag">Limit: 6 Left Today</div>
+    </div>
+
+    <div class="chat-container" id="chatContainer"></div>
+
+    <div class="chat-footer">
+        <div class="chat-box">
+            <button class="attachment-btn"><i class="fa-solid fa-paperclip"></i></button>
+            <input type="text" id="chatMessageInput" class="chat-input" placeholder="Ask for code or prompt..." onkeypress="handleKeyPress(event)">
+            <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="plansModal">
         <div class="modal-card">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-gem"></i> FLAXXI AI PRO</h3>
-                <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeModal('plansModal')"></i>
+                <span><i class="fa-solid fa-gem"></i> FLAXXI AI PRO</span>
+                <button class="modal-close" onclick="closeModal('plansModal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            
-            <div class="plans-list">
-                <div class="plan-card-item" onclick="selectPlan(this)">
-                    <span class="plan-title">1 Day Pass</span>
-                    <span class="plan-price">₹49</span>
-                </div>
-                <div class="plan-card-item" onclick="selectPlan(this)">
-                    <span class="plan-title">7 Days Pass</span>
-                    <span class="plan-price">₹199</span>
-                </div>
-                <div class="plan-card-item selected" onclick="selectPlan(this)">
-                    <span class="plan-title">1 Month Pass</span>
-                    <span class="plan-price">₹499</span>
-                </div>
-                <div class="plan-card-item" onclick="selectPlan(this)">
-                    <span class="plan-title">1 Year Pass</span>
-                    <span class="plan-price">₹1,999</span>
-                </div>
-                <div class="plan-card-item" onclick="selectPlan(this)">
-                    <span class="plan-title">Lifetime VIP Pass</span>
-                    <span class="plan-price">₹4,999</span>
-                </div>
-            </div>
-
-            <a href="https://wa.me/9779819833267" target="_blank" class="btn-primary-full">Buy via WhatsApp</a>
+            <div class="plan-option"><span>1 Day Pass</span> <span class="plan-price">₹49</span></div>
+            <div class="plan-option"><span>7 Days Pass</span> <span class="plan-price">₹199</span></div>
+            <div class="plan-option selected"><span>1 Month Pass</span> <span class="plan-price">₹499</span></div>
+            <div class="plan-option"><span>1 Year Pass</span> <span class="plan-price">₹1,999</span></div>
+            <div class="plan-option"><span>Lifetime VIP Pass 👑</span> <span class="plan-price">₹4,999</span></div>
+            <button class="btn-red" onclick="window.open('https://wa.me/', '_blank')">Buy via WhatsApp</button>
         </div>
     </div>
 
-    <!-- Main Content Area -->
-    <div class="main-app-viewport">
-        <div class="hero-center" id="heroScrollArea">
-            <div class="main-title">FLAXXI <span>AI</span></div>
-            <div class="sub-title">AI without limits</div>
-            <div class="limit-badge">Limit: <span id="currentBadgePlan">6 Messages Left</span></div>
-            <div class="chat-container" id="chatContainer"></div>
+    <div class="modal-overlay" id="keyModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span><i class="fa-solid fa-key"></i> Key Enter (Redeem)</span>
+                <button class="modal-close" onclick="closeModal('keyModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <input type="text" id="redeemKeyInput" class="input-box" placeholder="Enter License Key" style="margin-bottom: 14px;">
+            <button class="btn-red" onclick="redeemKey()">Save & Redeem</button>
         </div>
+    </div>
 
-        <div class="chat-input-wrapper">
-            <div class="file-preview-badge" id="fileBadge">
-                <i class="fa-solid fa-file" style="color:var(--red-glow);"></i>
-                <span id="fileNameDisplay">file.png</span>
-                <i class="fa-solid fa-xmark" style="cursor:pointer;" onclick="removeSelectedFile()"></i>
+    <div class="modal-overlay" id="accountModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span><i class="fa-solid fa-user-gear"></i> Account Details</span>
+                <button class="modal-close" onclick="closeModal('accountModal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
-
-            <div class="chat-input-box">
-                <input type="file" id="fileSelector" style="display:none;" onchange="handleFileSelect(event)">
-                <button class="btn-attach" onclick="document.getElementById('fileSelector').click()" title="Attach File">
-                    <i class="fa-solid fa-paperclip"></i>
-                </button>
-                <input type="text" id="userPrompt" placeholder="What can I do for you?" onkeypress="handleKeyPress(event)">
-                <button class="btn-send" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
+            <div class="detail-row"><span class="detail-label">User Name:</span><span class="detail-value" id="accUserName">Afzal</span></div>
+            <div class="detail-row"><span class="detail-label">User Status:</span><span class="detail-value" style="color:var(--green-glow);">✔ Connected</span></div>
+            <div class="detail-row"><span class="detail-label">Device ID:</span><span class="detail-value">FX-810778</span></div>
+            <div class="detail-row"><span class="detail-label">Current Plan:</span><span class="detail-value" id="accPlanValue" style="color:var(--red-glow);">Free Access</span></div>
+            <div class="detail-row"><span class="detail-label">Daily Limit:</span><span class="detail-value" id="accLimitValue">6 Messages/Day</span></div>
+            <button class="btn-red" style="margin-top:16px;" onclick="closeModal('accountModal')">Close</button>
         </div>
     </div>
 
     <script>
-        // Only Admin Key Configuration
-        const ADMIN_KEY = "FLAXXI-PRO-VIP";
-        const FREE_DAILY_LIMIT = 6;
+        let currentLoggedInUser = "Afzal";
+        let activeStatusText = "FLAXXI AI LOGIN SUCCESSFULLY USER ACTIVATED FREE TIER / LIMIT 6";
 
-        let lastAiText = "";
-        let isSpeaking = false;
-        let attachedFile = null;
+        const validAdminKeys = [
+            "FLAXXI-LIFETIME-QMOH",
+            "FLAXXI-PRO-100",
+            "TENZINO-PRO-2026"
+        ];
 
-        // Load or initialize local settings
-        let isPremium = localStorage.getItem('flaxxi_is_premium') === 'true';
-        let usedCount = parseInt(localStorage.getItem('flaxxi_used_count') || '0');
-        let lastDate = localStorage.getItem('flaxxi_last_date');
-        let currentDate = new Date().toDateString();
-
-        // Reset limit on a new day
-        if (lastDate !== currentDate) {
-            usedCount = 0;
-            localStorage.setItem('flaxxi_used_count', '0');
-            localStorage.setItem('flaxxi_last_date', currentDate);
-        }
-
-        // Random Device ID Generator
-        document.getElementById('accDeviceId').innerText = "FX-" + Math.floor(100000 + Math.random() * 900000);
-
-        function updateUIStatus() {
-            if (isPremium) {
-                document.getElementById('currentBadgePlan').innerText = "Unlimited Premium";
-                document.getElementById('userActivePlanDisplay').innerText = "Unlimited Premium (Activated)";
-                document.getElementById('accCurrentPlan').innerText = "Unlimited Premium";
-                document.getElementById('accDailyLimit').innerText = "Unlimited Messages";
+        function handleUserLogin() {
+            const u = document.getElementById('loginUsername').value.trim();
+            if(u !== "") {
+                currentLoggedInUser = u;
+                document.getElementById('accUserName').innerText = u;
+                document.getElementById('loginOverlay').style.display = 'none';
+                
+                addChatMessage(`Welcome ${currentLoggedInUser}! ${activeStatusText}`, 'bot');
+                showDeathlyBanner(`WELCOME ${currentLoggedInUser.toUpperCase()} BOSS 💀⚡`);
             } else {
-                let remaining = Math.max(0, FREE_DAILY_LIMIT - usedCount);
-                document.getElementById('currentBadgePlan').innerText = `${remaining} Left Today`;
-                document.getElementById('userActivePlanDisplay').innerText = `Free Tier (${remaining}/6 Left)`;
-                document.getElementById('accCurrentPlan').innerText = "Free Access";
-                document.getElementById('accDailyLimit').innerText = "6 Messages/Day";
+                alert("⚠️ Please enter a Username!");
             }
         }
 
-        updateUIStatus();
-
-        function toggleSidebar() { document.getElementById('sidebarDrawer').classList.toggle('active'); }
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
-
-        function selectPlan(element) {
-            document.querySelectorAll('.plan-card-item').forEach(card => card.classList.remove('selected'));
-            element.classList.add('selected');
+        function handleKeyPress(e) {
+            if(e.key === 'Enter') sendMessage();
         }
 
-        function handleFileSelect(e) {
-            const file = e.target.files[0];
-            if (file) {
-                attachedFile = file;
-                document.getElementById('fileNameDisplay').innerText = file.name;
-                document.getElementById('fileBadge').style.display = 'flex';
+        function sendMessage() {
+            const input = document.getElementById('chatMessageInput');
+            const text = input.value.trim();
+            if(!text) return;
+
+            addChatMessage(text, 'user');
+            input.value = '';
+
+            const lowerText = text.toLowerCase();
+
+            // "HELLO FLAXXI" AUTO RESPONSE
+            if(lowerText.includes('hello flaxxi') || lowerText.includes('hi flaxxi') || lowerText === 'hello' || lowerText === 'hi') {
+                setTimeout(() => {
+                    const bossReply = `Yes ${currentLoggedInUser} Boss! 💀⚡`;
+                    addChatMessage(bossReply, 'bot boss-msg');
+                    
+                    showDeathlyBanner(`RESPONDED: YES ${currentLoggedInUser.toUpperCase()} BOSS! 💀⚡`);
+
+                    const wrapper = document.getElementById('playAudioWrapper');
+                    wrapper.classList.add('playing');
+
+                    if ('speechSynthesis' in window) {
+                        window.speechSynthesis.cancel();
+                        const speech = new SpeechSynthesisUtterance(`Yes ${currentLoggedInUser} Boss!`);
+                        speech.pitch = 0.8;
+                        speech.rate = 0.9;
+                        speech.onend = function() { wrapper.classList.remove('playing'); };
+                        window.speechSynthesis.speak(speech);
+                    } else {
+                        wrapper.classList.remove('playing');
+                    }
+                }, 400);
             }
-        }
-
-        function removeSelectedFile() {
-            attachedFile = null;
-            document.getElementById('fileSelector').value = '';
-            document.getElementById('fileBadge').style.display = 'none';
-        }
-
-        function saveApiKey() {
-            const inputKey = document.getElementById('customApiKey').value.trim();
-            if (!inputKey) {
-                alert("⚠️ Please enter a License Key!");
-                return;
-            }
-
-            // Verify Key strictly against ADMIN_KEY only
-            if (inputKey.toUpperCase() === ADMIN_KEY) {
-                isPremium = true;
-                localStorage.setItem('flaxxi_is_premium', 'true');
-                localStorage.setItem('flaxxi_key', inputKey);
-                updateUIStatus();
-                alert("✅ Key Redeemed Successfully! Welcome to Premium Unlimited Access.");
-                closeModal('keyModal');
+            // CODE DETECT
+            else if(lowerText.includes('code') || lowerText.includes('html') || lowerText.includes('script') || lowerText.includes('python')) {
+                setTimeout(() => {
+                    const sampleCode = `// FLAXXI AI Generated Code
+function deathlyEngine() {
+    console.log("FLAXXI AI Engine Activated for ${currentLoggedInUser} Boss 💀⚡");
+    return true;
+}`;
+                    addCodeMessage("Here is your requested code:", sampleCode);
+                }, 500);
             } else {
-                alert("❌ Invalid or Expired License Key! Please enter a valid Admin Key.");
+                setTimeout(() => {
+                    addChatMessage(`FLAXXI AI: Processing request for "${text}"...`, 'bot');
+                }, 500);
+            }
+        }
+
+        function addChatMessage(msg, senderClass) {
+            const container = document.getElementById('chatContainer');
+            const div = document.createElement('div');
+            div.className = `chat-msg ${senderClass}`;
+            div.innerText = msg;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function addCodeMessage(introMsg, codeText) {
+            const container = document.getElementById('chatContainer');
+            const div = document.createElement('div');
+            div.className = 'chat-msg bot';
+
+            const codeId = 'code_' + Date.now();
+
+            div.innerHTML = `
+                <div>${introMsg}</div>
+                <div class="code-wrapper">
+                    <div class="code-header">
+                        <span><i class="fa-solid fa-code"></i> CODE</span>
+                        <button class="copy-code-btn" onclick="copyCode('${codeId}', this)">
+                            <i class="fa-regular fa-copy"></i> Copy
+                        </button>
+                    </div>
+                    <pre id="${codeId}">${escapeHtml(codeText)}</pre>
+                </div>
+            `;
+
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+
+        function copyCode(elementId, btn) {
+            const codeContent = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(codeContent).then(() => {
+                btn.innerHTML = `<i class="fa-solid fa-check" style="color:var(--green-glow);"></i> Copied!`;
+                showDeathlyBanner("CODE COPIED TO CLIPBOARD 💀⚡");
+
+                setTimeout(() => {
+                    btn.innerHTML = `<i class="fa-regular fa-copy"></i> Copy`;
+                }, 2500);
+            }).catch(err => {
+                alert("Failed to copy code.");
+            });
+        }
+
+        function playChatMessagesAudio() {
+            const wrapper = document.getElementById('playAudioWrapper');
+            const chatBox = document.getElementById('chatContainer');
+            let textToRead = chatBox.innerText || "FLAXXI AI Ready!";
+
+            wrapper.classList.add('playing');
+            showDeathlyBanner("READING CHAT VOICE AUDIO 💀⚡");
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const speech = new SpeechSynthesisUtterance(textToRead);
+                speech.onend = function() { wrapper.classList.remove('playing'); };
+                window.speechSynthesis.speak(speech);
+            } else {
+                wrapper.classList.remove('playing');
             }
         }
 
         function clearChatHistory() {
             document.getElementById('chatContainer').innerHTML = '';
-            toggleSidebar();
+            alert("Chat History Cleared!");
         }
 
-        function logoutUser() {
-            if(confirm("Are you sure you want to reset your account?")) {
-                localStorage.clear();
-                location.reload();
-            }
+        function toggleSidebar() {
+            document.getElementById('sidebarDrawer').classList.toggle('open');
         }
 
-        function toggleAIVoice() {
-            if (!('speechSynthesis' in window)) return;
-            const icon = document.getElementById('playIcon');
+        function openModal(id) {
+            document.getElementById(id).classList.add('active');
+            document.getElementById('sidebarDrawer').classList.remove('open');
+        }
 
-            if (isSpeaking) {
-                window.speechSynthesis.cancel();
-                isSpeaking = false;
-                icon.className = "fa-solid fa-play";
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+        }
+
+        function triggerPlansGlow() {
+            const btn = document.getElementById('plansHeaderBtn');
+            btn.classList.add('plans-glow-active');
+            setTimeout(() => { btn.classList.remove('plans-glow-active'); }, 1200);
+        }
+
+        function redeemKey() {
+            const k = document.getElementById('redeemKeyInput').value.trim();
+            if(!k) { alert("Please enter a License Key!"); return; }
+
+            if(validAdminKeys.includes(k)) {
+                activeStatusText = "FLAXXI AI LOGIN SUCCESSFULLY USER ACTIVATED UNLIMITED VIP TIER";
+                showDeathlyBanner("VIP TIER ACTIVATED SUCCESSFULLY 👑💀⚡");
+
+                setTimeout(() => {
+                    document.getElementById('sidebarPlanText').innerText = "Lifetime VIP Pass 👑";
+                    document.getElementById('dailyLimitTag').innerText = "Plan: Unlimited VIP";
+                    document.getElementById('accPlanValue').innerText = "Lifetime VIP Pass 👑";
+                    document.getElementById('accLimitValue').innerText = "Unlimited Messages";
+                    document.getElementById('redeemKeyInput').value = '';
+                    closeModal('keyModal');
+                }, 800);
             } else {
-                if (!lastAiText) lastAiText = "FLAXXI AI is ready.";
-                const utterance = new SpeechSynthesisUtterance(lastAiText);
-                utterance.onend = () => { isSpeaking = false; icon.className = "fa-solid fa-play"; };
-                window.speechSynthesis.speak(utterance);
-                isSpeaking = true;
-                icon.className = "fa-solid fa-stop";
+                alert("❌ Invalid or Expired License Key!");
             }
         }
 
-        async function fetchDetailedFastAI(promptText) {
-            if (/^[0-9\s\+\-\*\/\(\)\.\^\%]+$/.test(promptText.trim())) {
-                try {
-                    const mathCalc = Function(`"use strict"; return (${promptText.replace(/×/g, '*').replace(/÷/g, '/')})`)();
-                    return `${promptText} = ${mathCalc}`;
-                } catch(e) {}
-            }
-
-            try {
-                const res = await fetch(`https://text.pollinations.ai/${encodeURIComponent(promptText)}?model=openai`);
-                if (res.ok) {
-                    const text = await res.text();
-                    if (text && text.trim()) return text.trim();
-                }
-            } catch (e) {}
-
-            return "Answer for: " + promptText;
+        function showDeathlyBanner(customMsg) {
+            const banner = document.getElementById('deathlyBanner');
+            const bannerText = document.getElementById('deathlyBannerText');
+            if(customMsg) bannerText.innerText = customMsg;
+            banner.classList.add('show');
+            setTimeout(() => { banner.classList.remove('show'); }, 3500);
         }
 
-        async function sendMessage() {
-            // Check Daily Limit for non-premium users
-            if (!isPremium && usedCount >= FREE_DAILY_LIMIT) {
-                alert("⚠️ You have reached your Free Daily Limit of 6 messages!\n\nPlease purchase a Key or enter a valid License Key to enjoy Unlimited Access.");
-                openModal('plansModal');
-                return;
-            }
+        /* --- PARTICLES CANVAS ANIMATION --- */
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
 
-            const input = document.getElementById('userPrompt');
-            const text = input.value.trim();
-            if (!text && !attachedFile) return;
-
-            // Increment count for free users
-            if (!isPremium) {
-                usedCount++;
-                localStorage.setItem('flaxxi_used_count', usedCount.toString());
-                updateUIStatus();
-            }
-
-            const chatBox = document.getElementById('chatContainer');
-            const heroArea = document.getElementById('heroScrollArea');
-            
-            const userMsg = document.createElement('div');
-            userMsg.className = 'msg-bubble msg-user';
-            
-            let messageHTML = text;
-            if (attachedFile) {
-                messageHTML += `<br><small style="font-size:10px; opacity:0.8;"><i class="fa-solid fa-paperclip"></i> ${attachedFile.name}</small>`;
-            }
-            userMsg.innerHTML = messageHTML;
-            chatBox.appendChild(userMsg);
-
-            input.value = '';
-            removeSelectedFile();
-            heroArea.scrollTop = heroArea.scrollHeight;
-
-            const aiMsg = document.createElement('div');
-            aiMsg.className = 'msg-bubble msg-ai';
-            aiMsg.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color:var(--red-glow)"></i> Generating...`;
-            chatBox.appendChild(aiMsg);
-            heroArea.scrollTop = heroArea.scrollHeight;
-
-            const result = await fetchDetailedFastAI(text || "Process file");
-            lastAiText = result;
-            aiMsg.innerText = result;
-            heroArea.scrollTop = heroArea.scrollHeight;
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedY = -(Math.random() * 0.7 + 0.2);
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.5 + 0.2;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y < 0) this.reset();
+            }
+            draw() {
+                ctx.fillStyle = `rgba(255, 0, 60, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 40; i++) particles.push(new Particle());
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
     </script>
 </body>
 </html>
