@@ -29,7 +29,7 @@
             position: relative;
         }
 
-        /* Real-time Deathly Canvas Background */
+        /* Canvas Animation */
         #deathCanvas {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -37,7 +37,7 @@
             pointer-events: none;
         }
 
-        /* Login Overlay */
+        /* Login Screen Overlay */
         .auth-screen-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5, 2, 3, 0.95);
@@ -52,14 +52,14 @@
             border: 1px solid var(--red-blood);
             box-shadow: 0 0 35px var(--red-glow);
             border-radius: 20px;
-            width: 90%; max-width: 400px;
+            width: 90%; max-width: 420px;
             padding: 30px;
             text-align: center;
             position: relative;
             animation: deathPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .auth-brand { font-size: 26px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 0 15px var(--red-glow); }
+        .auth-brand { font-size: 24px; font-weight: 900; margin-bottom: 5px; text-shadow: 0 0 15px var(--red-glow); }
         .auth-brand i { color: var(--red-blood); animation: skullPulse 1.5s infinite alternate; }
         .auth-desc { font-size: 12px; color: var(--text-sub); margin-bottom: 25px; }
 
@@ -81,7 +81,7 @@
         }
         .btn-auth-submit:hover { transform: scale(1.02); box-shadow: 0 0 25px var(--red-glow); }
 
-        /* Top Navigation */
+        /* Top Nav */
         .admin-nav {
             display: flex; align-items: center; justify-content: space-between;
             padding: 15px 25px; background: rgba(13, 5, 8, 0.85);
@@ -110,7 +110,7 @@
             box-shadow: 0 0 12px var(--red-glow); animation: deathPulse 1.2s infinite alternate;
         }
 
-        /* Container */
+        /* Main Container */
         .dashboard-container { max-width: 1100px; width: 100%; margin: 30px auto; padding: 0 20px 40px; z-index: 1; }
 
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
@@ -131,14 +131,13 @@
             background: var(--card-death); border: 1px solid var(--border-death);
             border-radius: 18px; padding: 25px; margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8); position: relative;
-            animation: cardFloat 5s ease-in-out infinite alternate;
         }
 
         .panel-header { font-size: 16px; font-weight: 900; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; color: #fff; letter-spacing: 1px; }
         .panel-header-left { display: flex; align-items: center; gap: 10px; }
         .panel-header i { color: var(--red-blood); animation: skullPulse 2s infinite alternate; }
 
-        /* Server Toggle Status Switch */
+        /* Server Toggle Button */
         .server-status-btn {
             padding: 8px 18px; border-radius: 25px; font-size: 12px; font-weight: 900;
             cursor: pointer; border: none; display: flex; align-items: center; gap: 8px;
@@ -159,6 +158,15 @@
         }
         .option-pill.active { border-color: var(--red-blood); color: #fff; background: var(--red-blood); box-shadow: 0 0 10px var(--red-glow); }
 
+        /* Input with Eye Button */
+        .input-with-action { position: relative; display: flex; align-items: center; }
+        .input-with-action .death-field { padding-right: 45px; }
+        .input-action-btn {
+            position: absolute; right: 10px; background: transparent; border: none;
+            color: var(--text-sub); cursor: pointer; font-size: 14px; transition: color 0.2s;
+        }
+        .input-action-btn:hover { color: var(--red-blood); }
+
         .btn-death-generate {
             background: var(--red-blood); color: #fff; border: none; padding: 14px 25px;
             border-radius: 10px; font-weight: 900; cursor: pointer; display: flex; align-items: center;
@@ -167,7 +175,6 @@
         }
         .btn-death-generate:hover { transform: scale(1.02); box-shadow: 0 0 30px var(--red-glow); }
 
-        /* Output Key Box */
         .generated-key-container {
             background: rgba(255, 0, 60, 0.08); border: 1px dashed var(--red-blood);
             padding: 15px; border-radius: 10px; display: none; align-items: center;
@@ -184,7 +191,7 @@
         }
         .btn-copy:hover { border-color: var(--red-blood); color: var(--red-blood); box-shadow: 0 0 10px var(--red-glow); }
 
-        /* Table */
+        /* Tables */
         .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border-death); }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
         th { background: #120409; color: var(--text-sub); padding: 14px 16px; font-weight: 900; border-bottom: 1px solid var(--border-death); text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
@@ -194,7 +201,7 @@
         .badge-status { padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: bold; display: inline-block; }
         .status-active { background: rgba(37, 211, 102, 0.15); color: #25d366; border: 1px solid #25d366; box-shadow: 0 0 8px rgba(37, 211, 102, 0.3); }
 
-        /* Settings Modal */
+        /* Modal Overlay */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px);
@@ -206,16 +213,15 @@
         @keyframes skullPulse { 0% { transform: scale(1); filter: drop-shadow(0 0 2px var(--red-blood)); } 100% { transform: scale(1.2); filter: drop-shadow(0 0 15px var(--red-blood)); } }
         @keyframes deathPulse { 0% { box-shadow: 0 0 8px var(--red-glow); } 100% { box-shadow: 0 0 22px var(--red-glow); } }
         @keyframes deathPop { 0% { opacity: 0; transform: translateY(15px) scale(0.9); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
-        @keyframes cardFloat { 0% { transform: translateY(0px); } 100% { transform: translateY(-6px); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <!-- Canvas Animation -->
+    <!-- Dynamic Background Canvas -->
     <canvas id="deathCanvas"></canvas>
 
-    <!-- Admin Login Screen Overlay -->
+    <!-- Admin Login Overlay -->
     <div class="auth-screen-overlay" id="adminLoginOverlay">
         <div class="auth-card-glowing">
             <div class="auth-brand"><i class="fa-solid fa-skull"></i> ADMIN ACCESS</div>
@@ -235,7 +241,7 @@
         </div>
     </div>
 
-    <!-- Admin Settings Modal -->
+    <!-- Credentials Modal -->
     <div class="modal-overlay" id="settingsModal">
         <div class="auth-card-glowing">
             <div class="auth-brand"><i class="fa-solid fa-gear"></i> ADMIN SETTINGS</div>
@@ -256,7 +262,7 @@
         </div>
     </div>
 
-    <!-- Top Admin Nav -->
+    <!-- Top Admin Bar -->
     <div class="admin-nav">
         <div class="brand">
             <i class="fa-solid fa-skull"></i>
@@ -268,7 +274,7 @@
         </div>
     </div>
 
-    <!-- Dashboard Container -->
+    <!-- Main Content Container -->
     <div class="dashboard-container">
 
         <!-- Stat Cards Grid -->
@@ -290,7 +296,45 @@
             </div>
         </div>
 
-        <!-- App Server Control & Generator Box -->
+        <!-- API Key & Global Free Users Config Box -->
+        <div class="panel-box">
+            <div class="panel-header">
+                <div class="panel-header-left">
+                    <i class="fa-solid fa-code"></i>
+                    <span>AI API Key & Free Users Configuration</span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <!-- API Key Section -->
+                <div class="input-group">
+                    <label>Gemini / AI API Key</label>
+                    <div class="input-with-action">
+                        <input type="password" id="globalApiKey" class="death-field" placeholder="AIzaSy...">
+                        <button class="input-action-btn" onclick="toggleApiKeyVisibility()"><i class="fa-solid fa-eye" id="eyeIcon"></i></button>
+                    </div>
+                </div>
+
+                <!-- Free Users Daily Limit Options (With Unlimited Option) -->
+                <div class="input-group">
+                    <label>Free Users Daily Limit (Without Key)</label>
+                    <div class="option-badge-row">
+                        <div class="option-pill free-pill" onclick="selectFreeLimit('1', this)">1 Msg</div>
+                        <div class="option-pill free-pill" onclick="selectFreeLimit('3', this)">3 Msgs</div>
+                        <div class="option-pill free-pill" onclick="selectFreeLimit('5', this)">5 Msgs</div>
+                        <div class="option-pill free-pill" onclick="selectFreeLimit('10', this)">10 Msgs</div>
+                        <div class="option-pill free-pill" onclick="selectFreeLimit('15', this)">15 Msgs</div>
+                        <div class="option-pill free-pill active" onclick="selectFreeLimit('Unlimited', this)">Unlimited 🚀</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-death-generate" onclick="saveGlobalApiConfig()" style="background: #110509; border: 1px solid var(--red-blood);">
+                <i class="fa-solid fa-floppy-disk"></i> Save Global Configurations
+            </button>
+        </div>
+
+        <!-- App Server Control & Key Generator Box -->
         <div class="panel-box">
             <div class="panel-header">
                 <div class="panel-header-left">
@@ -331,9 +375,9 @@
                 </div>
             </div>
 
-            <!-- Daily Message Limit Options -->
+            <!-- Custom Premium Key Daily Message Limit -->
             <div class="input-group" style="margin-bottom: 15px;">
-                <label>Daily Message Limit</label>
+                <label>Premium Key Daily Message Limit</label>
                 <div class="option-badge-row">
                     <div class="option-pill msg-pill" onclick="selectMessageLimit('5', this)">5 Messages/Day</div>
                     <div class="option-pill msg-pill active" onclick="selectMessageLimit('10', this)">10 Messages/Day</div>
@@ -347,15 +391,15 @@
                 <i class="fa-solid fa-skull"></i> Create Access Key
             </button>
 
-            <!-- Output Key Display Box -->
+            <!-- Key Output Container -->
             <div class="generated-key-container" id="keyBox">
                 <span class="key-text" id="generatedKeyText">TENZINO-1MONTH-XXXX</span>
                 <button class="btn-copy" onclick="copyKey()"><i class="fa-regular fa-copy"></i> Copy Key</button>
             </div>
         </div>
 
-        <!-- Database Keys Table -->
-        <div class="panel-box" style="animation: none;">
+        <!-- Database Keys Table Panel -->
+        <div class="panel-box">
             <div class="panel-header">
                 <div class="panel-header-left">
                     <i class="fa-solid fa-database"></i>
@@ -369,7 +413,7 @@
                             <th>ACTIVATION KEY</th>
                             <th>PLAN</th>
                             <th>DEVICES</th>
-                            <th>DAILY MSG LIMIT</th>
+                            <th>KEY MSG LIMIT</th>
                             <th>STATUS</th>
                             <th>ACTION</th>
                         </tr>
@@ -386,6 +430,7 @@
     <script>
         let selectedDeviceLimit = "1";
         let selectedMsgLimit = "10";
+        let selectedFreeLimit = localStorage.getItem('flaxxi_free_msg_limit') || "Unlimited";
         let isServerOpen = localStorage.getItem('flaxxi_server_status') !== 'closed';
         let keysDatabase = JSON.parse(localStorage.getItem('flaxxi_admin_keys') || '[]');
 
@@ -403,6 +448,20 @@
             } else {
                 document.getElementById('adminLoginOverlay').style.display = 'none';
             }
+
+            // Load Saved API Key and Free Limits
+            const savedApiKey = localStorage.getItem('flaxxi_global_api_key') || '';
+            document.getElementById('globalApiKey').value = savedApiKey;
+            
+            // Set Free Limit Pills UI State
+            document.querySelectorAll('.free-pill').forEach(pill => {
+                if (pill.innerText.includes(selectedFreeLimit)) {
+                    pill.classList.add('active');
+                } else {
+                    pill.classList.remove('active');
+                }
+            });
+
             updateServerUI();
             renderDashboard();
         };
@@ -476,6 +535,31 @@
             localStorage.setItem('admin_pass', newP);
             alert('Admin credentials updated successfully!');
             closeSettingsModal();
+        }
+
+        function toggleApiKeyVisibility() {
+            const field = document.getElementById('globalApiKey');
+            const icon = document.getElementById('eyeIcon');
+            if (field.type === "password") {
+                field.type = "text";
+                icon.className = "fa-solid fa-eye-slash";
+            } else {
+                field.type = "password";
+                icon.className = "fa-solid fa-eye";
+            }
+        }
+
+        function selectFreeLimit(limit, element) {
+            selectedFreeLimit = limit;
+            document.querySelectorAll('.free-pill').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function saveGlobalApiConfig() {
+            const apiKey = document.getElementById('globalApiKey').value.trim();
+            localStorage.setItem('flaxxi_global_api_key', apiKey);
+            localStorage.setItem('flaxxi_free_msg_limit', selectedFreeLimit);
+            alert('Global API Key & Free Limit updated successfully!');
         }
 
         function toggleAppServer() {
